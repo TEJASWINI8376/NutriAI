@@ -86,7 +86,29 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --surface: oklch(0.983 0.009 299.2);
+  --on-surface: oklch(0.225 0.039 266);
+  --on-surface-variant: oklch(0.395 0.021 158.3);
+  --surface-container-lowest: oklch(1 0 0);
+  --surface-container-low: oklch(0.967 0.016 282.3);
+  --surface-container: oklch(0.949 0.024 278.4);
+  --surface-container-high: oklch(0.931 0.033 276.4);
+  --surface-container-highest: oklch(0.915 0.038 272.5);
+  --surface-dim: oklch(0.888 0.038 274.1);
+  --primary-container: oklch(0.546 0.117 163.6);
+  --primary-fixed: oklch(0.897 0.129 162.7);
+  --on-primary-fixed: oklch(0.219 0.047 163.2);
+  --secondary-container: oklch(0.745 0.146 237.8);
+  --on-secondary-container: oklch(0.373 0.081 237);
+  --outline: oklch(0.566 0.02 158.7);
+  --outline-variant: oklch(0.825 0.021 154.8);
+  --error-container: oklch(0.918 0.042 25.2);
+  --on-error-container: oklch(0.417 0.17 27.4);
+  --tertiary: oklch(0.479 0.104 69.9);
+  --tertiary-fixed: oklch(0.917 0.061 69.3);
+  --on-tertiary-fixed: oklch(0.225 0.049 70);
+  --background: oklch(0.983 0.009 299.2);
+
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
