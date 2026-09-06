@@ -14,7 +14,215 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      additives: {
+        Row: {
+          detail: string
+          id: string
+          plain_name: string
+          position: number
+          product_id: string
+          purpose: string
+          risk_level: string
+          technical_name: string
+        }
+        Insert: {
+          detail: string
+          id?: string
+          plain_name: string
+          position?: number
+          product_id: string
+          purpose: string
+          risk_level?: string
+          technical_name: string
+        }
+        Update: {
+          detail?: string
+          id?: string
+          plain_name?: string
+          position?: number
+          product_id?: string
+          purpose?: string
+          risk_level?: string
+          technical_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "additives_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ingredients: {
+        Row: {
+          category: string
+          description: string
+          id: string
+          name: string
+          position: number
+          product_id: string
+          tag: string
+        }
+        Insert: {
+          category?: string
+          description: string
+          id?: string
+          name: string
+          position?: number
+          product_id: string
+          tag: string
+        }
+        Update: {
+          category?: string
+          description?: string
+          id?: string
+          name?: string
+          position?: number
+          product_id?: string
+          tag?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingredients_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspections: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          product_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          product_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          product_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspections_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nutrients: {
+        Row: {
+          amount: string
+          dv_percent: number | null
+          id: string
+          label: string
+          note: string | null
+          position: number
+          product_id: string
+          why_it_matters: string
+        }
+        Insert: {
+          amount: string
+          dv_percent?: number | null
+          id?: string
+          label: string
+          note?: string | null
+          position?: number
+          product_id: string
+          why_it_matters: string
+        }
+        Update: {
+          amount?: string
+          dv_percent?: number | null
+          id?: string
+          label?: string
+          note?: string | null
+          position?: number
+          product_id?: string
+          why_it_matters?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nutrients_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          badges: string[]
+          brand: string
+          calibration: number
+          calories: number
+          carbs_g: number
+          created_at: string
+          fat_g: number
+          id: string
+          image_url: string | null
+          name: string
+          nutri_score: string | null
+          ocr_verified: boolean
+          protein_g: number
+          serving_label: string
+          serving_weight: string
+          slug: string
+        }
+        Insert: {
+          badges?: string[]
+          brand: string
+          calibration?: number
+          calories?: number
+          carbs_g?: number
+          created_at?: string
+          fat_g?: number
+          id?: string
+          image_url?: string | null
+          name: string
+          nutri_score?: string | null
+          ocr_verified?: boolean
+          protein_g?: number
+          serving_label?: string
+          serving_weight?: string
+          slug: string
+        }
+        Update: {
+          badges?: string[]
+          brand?: string
+          calibration?: number
+          calories?: number
+          carbs_g?: number
+          created_at?: string
+          fat_g?: number
+          id?: string
+          image_url?: string | null
+          name?: string
+          nutri_score?: string | null
+          ocr_verified?: boolean
+          protein_g?: number
+          serving_label?: string
+          serving_weight?: string
+          slug?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
