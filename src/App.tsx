@@ -1,215 +1,144 @@
-import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  ArrowRight,
-  Bell,
-  Camera,
-  Check,
-  ChevronRight,
-  Crop,
-  FlaskConical,
-  GalleryHorizontalEnd,
-  Home,
-  Image as ImageIcon,
-  Lightbulb,
-  LoaderCircle,
-  ScanLine,
-  ShieldCheck,
-  Sparkles,
-  UserRound,
-  Verified,
-  X,
+  Bell, Biohazard, Check, CirclePause, CirclePlay, FileText,
+  Home, Image, Info, LockKeyhole, Play,
+  ReceiptText, RefreshCw, ScanLine, ShieldCheck, Sparkles, UserRound, X,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
-type Scan = {
-  id: string;
-  product_name: string;
-  brand: string;
-  grade: string;
-  health_score: number;
-  image_url: string;
-  scanned_at: string;
-};
+type ScanStatus = 'active' | 'paused' | 'complete' | 'cancelled';
+type ScanSession = { id: string; progress: number; is_paused: boolean; status: ScanStatus };
+type Tab = 'home' | 'scan' | 'history' | 'profile';
 
-const productImages = {
-  almond: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCkTH-6uwTAvqzxPC88AESbmfAodcajEQNSLc2AryRSUcUaKMydtr5HsvRznxJ_09iYM4dqqGL9UM6ERuS23w1q41nkq4MSKtJhi9mrvUSu5PmV1vfWIlfnMQEDLJA5lMx5ErGpb9HHiMUtWUHLQ3mqtz1vOZ1x9_Mr7W4R-d5ggOq5lLvGEFVwSWAb7v66_3jXOxGYOvxfJ7AfSNH9f04nJdC4ZMBaMTTOfk5X_hDTqs1YFyX9f8mh',
-  cacao: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD3VBhM_9KDAjYLMoT_8ENmAU6OY3GvrjYuTYIwwyas8_Fj3POLNRVzfTCU0pqkRc-QIKP-9SxhqCF7vZVaax-tezV-oVSxyoTY9WitEi8S6or-yDVwGQ9YFmQd68ZHCkGKriOT-Vibsuyyj0kYmmMZCKlzqaGJYeyeZ4t6cwB7osRiVV-98yfPbi19PguuHTGhBgETbGuSwxWJZEuZVZFJmMRMjZX9wQQgM_tMnMD8_9OGhcWq8lwe',
-  scanner: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD8qrIUT3WVDy9EZ96WHG1xvqTHvKu5Ue_rQxbfCgQFo_SBFJrIg_CRZlXi62B0frsV3CnKAv2OVZdt5HMlvLtSI_Mxms2JCqxH65QPDhK1s-07FD_93ep2ez0AEDWuq-gGr7Kuh4-ZCh-TJNPjQDcCyNe4T7rFaPFDi8q6zhwtONPb8PSpWQyhmHwXJmzqXiDpIG8-3R20BREOsz3uXMIzVdO0B2wmfiP8NeaViVTOw6va3gl2EJ6j',
-};
+const scannedImage = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDihowygc4oLvf529R26eQLyz9xxaKCS1AnW5geKK_GaVZea1cbVdgSGOQXeAn3l_h2bPwTcTlTaisF0PsydL1x2xxCTrfIHeFaYwLB2CQe-sFK-e4ScztOK6rFG-BbNmYR_bOUNMUEo5Yb0UQvL6iymd2S9KHoKZnmdCV5Ll1f-UazqaUB6jTJydKRg7jkFRgBJ7gIXv_8yHAtrpWzLJjLVdgzdlK41nG40dpZHMnc10_L2379k8tL';
+const profileImage = 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYTePcv1xZgqSPswYzQhP8HyU44HZG_Th9s_IBGOy7M_SRfVSP5K3HaTWugilzl9yn8Qcqw64YfNUc5-IVTwfPpkNT26kkhLEvbz6N_mGff78MdnUPLznedxKcMR0xMeL0Xl_qfibhiNIHxttYm2mIbqmsGsOYPOfjSS0H4LkVhmGGeUNJibVFF4lqYFjytQntE257bQXNv_Hl2Bv9Jl5DrDXxdGGVRQM459SS16ZOY63dVkRm-5Mi';
 
-const starterScans: Scan[] = [
-  { id: 'starter-almond', product_name: 'Pure Almond Silk Drink', brand: 'Earth Pure Co.', grade: 'Grade A', health_score: 94, image_url: productImages.almond, scanned_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
-  { id: 'starter-cacao', product_name: 'Dark Cacao Super-Bar', brand: 'BioHarvest', grade: 'Grade B+', health_score: 82, image_url: productImages.cacao, scanned_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() },
-];
-
-function formatAge(date: string): string {
-  const hours = Math.floor((Date.now() - new Date(date).getTime()) / 3600000);
-  if (hours < 1) return 'Just now';
-  if (hours < 24) return `${hours}h ago`;
-  if (hours < 48) return 'Yesterday';
-  return `${Math.floor(hours / 24)}d ago`;
-}
+const steps = [
+  ['Reading food label', 'Parsed 28 textual lines across packaging bounding boxes.', 'Done'],
+  ['Extracting ingredients', 'Isolated 14 distinct raw components & binder ratios.', 'Done'],
+  ['Identifying additives', 'Cross-matching E322, Xanthan Gum, and Dipotassium Phosphate...', 'Active'],
+  ['Analyzing nutrition', 'Bioavailability, macronutrients, and glycemic forecast.', 'Waiting'],
+  ['Simplifying technical terms', 'Generating everyday plain-language ingredient cards.', 'Waiting'],
+  ['Checking information', 'Double-checking allergy warnings with your profile.', 'Waiting'],
+] as const;
 
 function App() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const [scans, setScans] = useState<Scan[]>([]);
-  const [loadingScans, setLoadingScans] = useState(true);
-  const [busy, setBusy] = useState<'camera' | 'gallery' | null>(null);
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [error, setError] = useState('');
+  const [session, setSession] = useState<ScanSession | null>(null);
+  const [tab, setTab] = useState<Tab>('scan');
+  const [notice, setNotice] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  const updateSession = async (changes: Partial<ScanSession>) => {
+    if (!session) return;
+    const next = { ...session, ...changes };
+    setSession(next);
+    const { error } = await supabase.from('scan_sessions').update({
+      progress: next.progress, is_paused: next.is_paused, status: next.status, updated_at: new Date().toISOString(),
+    }).eq('id', next.id);
+    if (error) setNotice('Your latest scan update could not be saved.');
+  };
 
   useEffect(() => {
-    async function loadScans(): Promise<void> {
-      const { data, error: fetchError } = await supabase
-        .from('scan_history')
-        .select('*')
-        .order('scanned_at', { ascending: false })
-        .limit(8);
-
-      if (fetchError) {
-        setError('Your recent scans are temporarily unavailable.');
-        setScans(starterScans);
-      } else if (data?.length) {
-        setScans(data as Scan[]);
+    let mounted = true;
+    const load = async () => {
+      const { data, error } = await supabase.from('scan_sessions').select('id, progress, is_paused, status').order('updated_at', { ascending: false }).limit(1).maybeSingle();
+      if (!mounted) return;
+      if (error) {
+        setNotice('We could not load your scan right now.');
+      } else if (data) {
+        setSession(data as ScanSession);
       } else {
-        setScans(starterScans);
-        await supabase.from('scan_history').insert(starterScans.map((scan) => ({
-          product_name: scan.product_name,
-          brand: scan.brand,
-          grade: scan.grade,
-          health_score: scan.health_score,
-          image_url: scan.image_url,
-          scanned_at: scan.scanned_at,
-        })));
+        const { data: created, error: createError } = await supabase.from('scan_sessions').insert({ progress: 68, is_paused: false, status: 'active' }).select('id, progress, is_paused, status').maybeSingle();
+        if (createError) setNotice('We could not start your scan right now.');
+        else if (created) setSession(created as ScanSession);
       }
-      setLoadingScans(false);
-    }
-    void loadScans();
-  }, []);
-
-  useEffect(() => () => {
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-  }, []);
-
-  async function openCamera(): Promise<void> {
-    setError('');
-    setBusy('camera');
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-      streamRef.current = stream;
-      setCameraOpen(true);
-      setTimeout(() => {
-        if (videoRef.current) videoRef.current.srcObject = stream;
-      }, 0);
-    } catch {
-      setError('Camera access was not available. You can still choose a photo from your gallery.');
-    } finally {
-      setBusy(null);
-    }
-  }
-
-  function closeCamera(): void {
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-    setCameraOpen(false);
-  }
-
-  async function handleGallery(event: ChangeEvent<HTMLInputElement>): Promise<void> {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setError('');
-    setBusy('gallery');
-    const imageUrl = URL.createObjectURL(file);
-    const scan: Omit<Scan, 'id'> = {
-      product_name: file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ') || 'New food scan',
-      brand: 'Personal scan',
-      grade: 'Pending',
-      health_score: 0,
-      image_url: imageUrl,
-      scanned_at: new Date().toISOString(),
+      setLoading(false);
     };
-    const { data, error: insertError } = await supabase.from('scan_history').insert(scan).select().maybeSingle();
-    if (insertError) {
-      setError('This scan could not be saved. Please try again.');
-    } else if (data) {
-      setScans((current) => [data as Scan, ...current].slice(0, 8));
-    }
-    setBusy(null);
-    event.target.value = '';
-  }
+    void load();
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!session || session.status !== 'active' || session.is_paused || session.progress >= 100) return;
+    const timer = window.setInterval(() => {
+      void updateSession({ progress: Math.min(session.progress + 4, 100), status: session.progress + 4 >= 100 ? 'complete' : 'active' });
+    }, 1800);
+    return () => window.clearInterval(timer);
+  }, [session]);
+
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(''), 3500);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
+
+  const progress = session?.progress ?? 68;
+  const paused = session?.is_paused ?? false;
+  const complete = session?.status === 'complete';
+  const activeStep = useMemo(() => complete ? 6 : progress > 84 ? 5 : 3, [complete, progress]);
+
+  const handlePause = () => void updateSession({ is_paused: !paused, status: paused ? 'active' : 'paused' });
+  const handleCancel = () => {
+    if (!session) return;
+    void updateSession({ progress: 0, is_paused: false, status: 'cancelled' });
+    setNotice('Scan cancelled. Tap resume to start a fresh analysis.');
+  };
+  const handleResume = () => void updateSession({ progress: 12, is_paused: false, status: 'active' });
 
   return (
-    <div className="app-shell">
-      <header className="topbar">
-        <div className="brand-lockup">
-          <div className="brand-mark"><ScanLine size={21} strokeWidth={2.5} /></div>
-          <div>
-            <div className="brand-name">NutriAI</div>
-            <div className="ready-state"><span /> Scanner ready</div>
+    <div className="min-h-screen bg-[#faf8ff] text-[#131b2e] antialiased">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#e8e9f4]/70 bg-[#faf8ff]/90 pt-[env(safe-area-inset-top)] shadow-[0_1px_8px_rgba(0,0,0,.04)] backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-4">
+          <button className="flex items-center gap-2 text-left" onClick={() => setTab('scan')} aria-label="Open scanner">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#d9f8e9] text-[#006948]"><Sparkles size={19} strokeWidth={2.5} /></div>
+            <div><div className="text-[18px] font-bold leading-5 tracking-tight">NutriAI</div><div className="mt-0.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[.08em] text-[#006948]"><span className="h-2 w-2 rounded-full bg-[#006948]" /> Scanner ready</div></div>
+          </button>
+          <div className="flex items-center gap-1">
+            <button onClick={() => setNotice('You are all caught up.')} className="flex h-11 w-11 items-center justify-center rounded-full text-[#3d4a42] transition hover:bg-[#eaedff]" aria-label="Notifications"><Bell size={21} /></button>
+            <button onClick={() => setTab('profile')} className="flex h-11 w-11 items-center justify-center" aria-label="Profile"><img alt="Profile" className="h-8 w-8 rounded-full object-cover shadow" src={profileImage} /></button>
           </div>
-        </div>
-        <div className="top-actions">
-          <button className="icon-button" aria-label="Notifications"><Bell size={23} /></button>
-          <button className="profile-avatar" aria-label="Open profile"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYTePcv1xZgqSPswYzQhP8HyU44HZG_Th9s_IBGOy7M_SRfVSP5K3HaTWugilzl9yn8Qcqw64YfNUc5-IVTwfPpkNT26kkhLEvbz6N_mGff78MdnUPLznEdkXcMR0xMeL0Xl_qfibhiNIHxttYm2mIbqmsGsOYPOfjSS0H4LkVhmGGeUNJibVFF4lqYFjytQntE257bQXNv_Hl2Bv9Jl5DrDXxdGGVRQM459SS16ZOY63dVkRm-5Mi" alt="Profile" /></button>
         </div>
       </header>
 
-      <main className="content">
-        <section className="intro">
-          <div className="eyebrow"><span className="eyebrow-icon"><ScanLine size={15} /></span> Bio-intelligence vision</div>
-          <h1>Scan your food</h1>
-          <p>Scan a food label to instantly decode ingredients, additives, and clinical nutritional health ratings.</p>
-        </section>
-
-        {error && <div className="error-banner" role="alert">{error}<button onClick={() => setError('')} aria-label="Dismiss"><X size={16} /></button></div>}
-
-        <section className="action-stack">
-          <article className="action-card camera-card">
-            <div className="card-title-row">
-              <div className="action-icon mint"><Camera size={28} /></div>
-              <div><div className="action-title">Scan with camera <span className="live-pill">LIVE</span></div><p>Point at the barcode or ingredient label</p></div>
+      <main className="mx-auto min-h-screen max-w-3xl px-4 pb-28 pt-20">
+        {tab !== 'scan' ? <Placeholder tab={tab} onScan={() => setTab('scan')} /> : (
+          <>
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-1.5 rounded-full bg-[#eaedff] px-3 py-1 text-xs font-bold text-[#006948]"><span className="h-2 w-2 animate-pulse rounded-full bg-[#006948]" /> Neural Engine v2.4</div>
+              <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[.08em] text-[#3d4a42]"><LockKeyhole size={16} /> Encrypted analysis</div>
             </div>
-            <div className="scanner-preview">
-              <img src={productImages.scanner} alt="Food nutrition label preview" />
-              <div className="viewfinder"><div className="align-row"><Crop size={15} /><span>Auto-align</span><Crop size={15} /></div><div className="scan-line" /><span className="capture-copy">Ready for capture</span></div>
-            </div>
-            <button className="primary-button" onClick={() => void openCamera()} disabled={busy !== null}><Camera size={20} />{busy === 'camera' ? 'Initializing lens...' : 'Open camera scanner'}</button>
-          </article>
 
-          <article className="action-card gallery-card">
-            <div className="card-title-row"><div className="action-icon blue"><GalleryHorizontalEnd size={28} /></div><div><div className="action-title">Upload from gallery</div><p>Select a clear screenshot or saved receipt</p></div></div>
-            <div className="gallery-footer"><div className="support-copy"><ImageIcon size={18} /><span>Supports JPG, PNG,<br /> HEIC</span></div><button className="secondary-button" onClick={() => fileInputRef.current?.click()} disabled={busy !== null}>{busy === 'gallery' ? <LoaderCircle className="spin" size={18} /> : null}<span>{busy === 'gallery' ? 'Analyzing...' : 'Browse photos'}</span><ArrowRight size={19} /></button></div>
-            <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={(event) => void handleGallery(event)} />
-          </article>
-        </section>
+            <section className="animate-float-in relative mt-3 overflow-hidden rounded-2xl bg-white p-5 text-center shadow-[0_2px_10px_rgba(29,38,74,.04)] sm:p-8">
+              <div className="pointer-events-none absolute -right-10 -top-12 h-48 w-48 rounded-full bg-[#39b8fd]/20 blur-3xl" /><div className="pointer-events-none absolute -bottom-10 -left-10 h-44 w-44 rounded-full bg-[#85f8c4]/30 blur-3xl" />
+              <div className="relative mx-auto my-2 flex h-44 w-44 items-center justify-center sm:h-48 sm:w-48">
+                <div className="absolute h-36 w-36 rounded-full bg-[#85f8c4]/20 animate-pulse" /><div className="absolute h-44 w-44 rounded-full border-[18px] border-[#c9e6ff]/45 animate-orbit" />
+                <div className="relative z-10 h-28 w-28 rounded-full bg-[#f2f3ff] p-1.5 shadow-md"><div className="relative h-full w-full overflow-hidden rounded-full bg-[#dae2fd]"><img className="h-full w-full object-cover" src={scannedImage} alt="Oat milk label being analyzed" /><div className="absolute inset-0 flex flex-col justify-between bg-[#006948]/25 p-1.5"><div className="animate-scan-line h-0.5 w-full bg-[#85f8c4] shadow-[0_0_8px_#68dba9]" /><div className="flex items-end justify-between text-[10px] font-bold text-white"><span>OCR: 99.4%</span><ScanLine size={14} /></div></div></div><div className="absolute -bottom-2 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#006948] text-white shadow-md"><Biohazard size={16} /></div></div>
+              </div>
+              <div className="relative mt-1 flex items-baseline justify-center gap-1"><span className="text-[34px] font-extrabold leading-none tracking-[-.04em] text-[#006948]">{progress}%</span><span className="text-[18px] font-semibold text-[#3d4a42]">{complete ? 'Complete' : 'Complete'}</span></div>
+              <div className="relative mx-auto mt-3 h-2 max-w-[260px] overflow-hidden rounded-full bg-[#eaedff]"><div className="h-full rounded-full bg-[#006948] transition-all duration-700" style={{ width: `${progress}%` }} /></div>
+              <h1 className="relative mt-5 text-[22px] font-bold tracking-[-.02em] sm:text-2xl">{complete ? 'Your food profile is ready.' : paused ? 'Analysis is paused.' : 'Understanding Your Food…'}</h1>
+              <p className="relative mx-auto mt-1 max-w-md text-sm leading-6 text-[#3d4a42]">{complete ? 'Your ingredients, nutrients, and allergy information have been checked.' : paused ? 'Resume whenever you are ready to continue the clinical extraction.' : 'Our AI is analyzing label text, translating additives, and breaking down nutrients in real time.'}</p>
+            </section>
 
-        <section className="tip-card"><div className="tip-icon"><Lightbulb size={20} /></div><div><div className="tip-title">Scanning tip <span>•</span></div><p>For 99.8% precision, flatten any foil glare and frame the complete ingredients panel along with the nutritional values.</p></div></section>
+            <section className="mt-5 rounded-2xl bg-white p-5 shadow-[0_2px_10px_rgba(29,38,74,.04)] sm:p-6"><div className="mb-5 flex items-center justify-between"><h2 className="text-xs font-bold uppercase tracking-[.08em]">Clinical extraction steps</h2><span className="rounded-full bg-[#eaedff] px-2.5 py-1 text-xs font-bold text-[#006591]">Step {complete ? 6 : activeStep} of 6</span></div><div className="space-y-3">
+              {steps.map(([title, description, state], index) => { const done = complete || index < (complete ? 6 : 2); const active = !complete && index === 2 && !paused; return <div key={title} className={`flex items-start gap-3 rounded-xl ${active ? 'bg-[#f2f3ff] p-2' : ''} ${state === 'Waiting' && !done && !active ? 'opacity-60' : ''}`}><div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${done ? 'bg-[#85f8c4] text-[#002114]' : active ? 'bg-[#39b8fd] text-[#004666] animate-spin' : 'bg-[#eaedff] text-[#6d7a72]'}`}>{done ? <Check size={17} /> : active ? <RefreshCw size={17} /> : <span className="h-2 w-2 rounded-full bg-[#6d7a72]" />}</div><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-2"><span className={`truncate text-sm font-semibold ${active ? 'text-[#006591]' : ''}`}>{title}</span><span className={`shrink-0 text-[11px] font-bold ${done ? 'text-[#006948]' : active ? 'rounded-full bg-[#006591] px-2 py-0.5 text-white' : 'text-[#6d7a72]'}`}>{done ? 'Done' : active ? 'Active' : 'Waiting'}</span></div><p className="text-xs leading-4 text-[#3d4a42]">{description}</p></div></div>; })}
+            </div></section>
 
-        <section className="standards"><div className="section-kicker">NutriAI verification standard <ShieldCheck size={17} /></div><div className="standard-grid"><Standard icon={<Check size={18} />} tone="mint" title="Zero jargon" copy="Plain talk" /><Standard icon={<FlaskConical size={18} />} tone="blue" title="Additive lab" copy="E-code safety" /><Standard icon={<ShieldCheck size={18} />} tone="amber" title="Allergen fit" copy="Tailored alerts" /></div></section>
-
-        <section className="recent"><div className="section-heading"><div><h2>Recent scans <span>{scans.length}</span></h2></div><button>View all <ChevronRight size={16} /></button></div>{loadingScans ? <div className="loading-row"><LoaderCircle className="spin" size={22} /> Loading scan history</div> : scans.map((scan) => <ScanRow key={scan.id} scan={scan} />)}</section>
+            <div className="mt-3 flex items-start gap-3 rounded-2xl bg-[#e2e7ff] p-4 shadow-sm"><ShieldCheck className="mt-0.5 shrink-0 text-[#006591]" size={21} /><div><h3 className="text-sm font-bold">Evidence-based integrity</h3><p className="mt-0.5 text-xs leading-5 text-[#3d4a42]">Chemical names are cross-referenced with peer-reviewed medical food databases without commercial or brand bias.</p></div></div>
+            <div className="mt-3 grid grid-cols-2 gap-3"><Metric icon={<Biohazard size={21} />} label="Detected items" value="14 Active" /><Metric icon={<Image size={20} />} label="Allergen scan" value="Clear So Far" accent /></div>
+            <div className="mt-6 flex flex-col gap-2"><button onClick={paused ? handlePause : complete || session?.status === 'cancelled' ? handleResume : handlePause} className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold transition active:scale-[.99] ${paused ? 'bg-[#006948] text-white' : 'bg-[#e2e7ff] text-[#131b2e]'}`}>{paused ? <Play size={19} /> : complete || session?.status === 'cancelled' ? <CirclePlay size={19} /> : <CirclePause size={19} />} {paused ? 'Resume Analysis' : complete || session?.status === 'cancelled' ? 'Start New Analysis' : 'Pause Analysis'}</button><button onClick={handleCancel} className="flex items-center justify-center gap-1 py-2 text-sm font-semibold text-[#ba1a1a] transition hover:opacity-70"><X size={16} /> Cancel scan</button></div>
+          </>
+        )}
       </main>
 
-      <nav className="bottom-nav"><NavItem icon={<Home size={22} />} label="Home" /><div className="scan-nav"><button onClick={() => void openCamera()} aria-label="Scan"><Camera size={27} /></button><span>Scan</span></div><NavItem icon={<GalleryHorizontalEnd size={22} />} label="History" /><NavItem icon={<UserRound size={22} />} label="Profile" /></nav>
-
-      {cameraOpen && <div className="camera-modal" role="dialog" aria-modal="true"><div className="modal-panel"><button className="close-modal" onClick={closeCamera} aria-label="Close camera"><X size={21} /></button><div className="modal-heading"><Sparkles size={18} /> Live scanner</div><div className="live-view"><video ref={videoRef} autoPlay playsInline muted /><div className="modal-frame"><span /><span /><span /><span /></div><div className="modal-label">Center the ingredients panel</div></div><button className="primary-button" onClick={closeCamera}><Check size={19} /> Done scanning</button></div></div>}
+      {notice && <div role="status" className="fixed left-1/2 top-20 z-[60] flex -translate-x-1/2 items-center gap-2 rounded-full bg-[#131b2e] px-4 py-2 text-xs font-semibold text-white shadow-xl"><Info size={15} /> {notice}</div>}
+      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-[#eaedff] bg-[#faf8ff]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(0,0,0,.04)] backdrop-blur-xl"><div className="mx-auto flex h-16 max-w-3xl items-center justify-around px-4"><NavItem label="Home" icon={<Home size={22} />} active={tab === 'home'} onClick={() => setTab('home')} /><div className="relative -top-5 flex flex-col items-center"><button onClick={() => setTab('scan')} className="flex h-14 w-14 items-center justify-center rounded-full bg-[#006948] text-white shadow-[0_8px_20px_rgba(0,105,72,.35)] transition hover:scale-105 active:scale-95" aria-label="Scan"><ScanLine size={27} /></button><span className={`mt-1 text-[10px] font-bold ${tab === 'scan' ? 'text-[#006948]' : 'text-[#3d4a42]'}`}>Scan</span></div><NavItem label="History" icon={<ReceiptText size={22} />} active={tab === 'history'} onClick={() => setTab('history')} /><NavItem label="Profile" icon={<UserRound size={22} />} active={tab === 'profile'} onClick={() => setTab('profile')} /></div><div className="mx-auto mb-1 h-1 w-32 rounded-full bg-[#bccac0]/60" /></nav>
     </div>
   );
 }
 
-function Standard({ icon, tone, title, copy }: { icon: ReactNode; tone: string; title: string; copy: string }) {
-  return <div className="standard-card"><div className={`standard-icon ${tone}`}>{icon}</div><strong>{title}</strong><span>{copy}</span></div>;
-}
-
-function ScanRow({ scan }: { scan: Scan }) {
-  const isPending = scan.grade === 'Pending';
-  return <article className="scan-row"><img src={scan.image_url} alt="" /><div className="scan-info"><div className="scan-name">{scan.product_name} {!isPending && <Verified size={16} />}</div><div className="scan-meta">{scan.brand}<i /> {formatAge(scan.scanned_at)}</div></div><div className="scan-score"><span className={`grade ${isPending ? 'pending' : scan.grade.startsWith('A') ? 'green' : 'blue'}`}><b />{scan.grade}</span><small>{isPending ? 'Analysis queued' : `${scan.health_score}/100 Health`}</small></div></article>;
-}
-
-function NavItem({ icon, label }: { icon: ReactNode; label: string }) {
-  return <button className="nav-item">{icon}<span>{label}</span></button>;
-}
+function Metric({ icon, label, value, accent = false }: { icon: React.ReactNode; label: string; value: string; accent?: boolean }) { return <div className="flex min-w-0 items-center gap-2 rounded-2xl bg-white p-3 shadow-[0_2px_10px_rgba(29,38,74,.04)]"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#eaedff] text-[#006948]">{icon}</div><div className="min-w-0"><div className="text-[10px] font-bold uppercase tracking-wide text-[#3d4a42]">{label}</div><div className={`text-lg font-bold leading-6 ${accent ? 'text-[#006948]' : ''}`}>{value}</div></div></div>; }
+function NavItem({ label, icon, active, onClick }: { label: string; icon: React.ReactNode; active: boolean; onClick: () => void }) { return <button onClick={onClick} className={`flex h-14 w-16 flex-col items-center justify-center gap-0.5 transition ${active ? 'font-bold text-[#006948]' : 'text-[#3d4a42]'}`}>{icon}<span className="text-[10px]">{label}</span></button>; }
+function Placeholder({ tab, onScan }: { tab: Tab; onScan: () => void }) { const title = tab === 'home' ? 'Welcome back.' : tab === 'history' ? 'Scan history' : 'Your profile'; const copy = tab === 'home' ? 'Your latest nutrition analysis is ready whenever you are.' : tab === 'history' ? 'Past analyses will appear here as you scan more foods.' : 'Your allergy preferences and health goals will live here.'; return <div className="flex min-h-[70vh] flex-col items-center justify-center text-center"><div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#e2e7ff] text-[#006948]"><FileText size={28} /></div><h1 className="text-2xl font-bold">{title}</h1><p className="mt-2 max-w-sm text-sm leading-6 text-[#3d4a42]">{copy}</p><button onClick={onScan} className="mt-6 rounded-xl bg-[#006948] px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-[#005137]">Open scanner</button></div>; }
 
 export default App;
