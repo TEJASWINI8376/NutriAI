@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "tertiary": "#825100", "surface-container-highest": "#dae2fd", "secondary-fixed-dim": "#89ceff", "primary-fixed-dim": "#68dba9", "on-secondary-fixed": "#001e2f", "on-primary": "#ffffff", "tertiary-container": "#a36700", "inverse-primary": "#68dba9", "inverse-on-surface": "#eef0ff", "surface-container-high": "#e2e7ff", "inverse-surface": "#283044", "on-error-container": "#93000a", "surface-tint": "#006c4a", "on-secondary-fixed-variant": "#004c6e", "on-primary-fixed-variant": "#005137", "surface": "#faf8ff", "on-background": "#131b2e", "on-tertiary": "#ffffff", "tertiary-fixed-dim": "#ffb95f", "outline-variant": "#bccac0", "surface-container-low": "#f2f3ff", "secondary": "#006591", "on-primary-fixed": "#002114", "on-tertiary-fixed": "#2a1700", "background": "#faf8ff", "outline": "#6d7a72", "on-secondary-container": "#004666", "surface-container": "#eaedff", "on-tertiary-container": "#fffbff", "error-container": "#ffdad6", "surface-variant": "#dae2fd", "primary-container": "#00855d", "on-surface": "#131b2e", "primary-fixed": "#85f8c4", "surface-container-lowest": "#ffffff", "secondary-fixed": "#c9e6ff", "surface-dim": "#d2d9f4", "on-primary-container": "#f5fff7", "primary": "#006948", "on-surface-variant": "#3d4a42", "tertiary-fixed": "#ffddb8", "on-tertiary-fixed-variant": "#653e00", "on-secondary": "#ffffff", "error": "#ba1a1a", "on-error": "#ffffff", "secondary-container": "#39b8fd", "surface-bright": "#faf8ff" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "margin-mobile": "1rem", "space-4xl": "3rem", "space-3xl": "2.5rem", "space-md": "0.75rem", "gutter-mobile": "1rem", "space-sm": "0.5rem", "space-base": "1rem", "space-2xl": "2rem", "space-lg": "1.25rem", "space-xs": "0.25rem", "gutter-tablet": "1.5rem", "margin-tablet": "2rem", "space-2xs": "0.125rem", "space-xl": "1.5rem" }, fontFamily: { "label-lg": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "metric-numeral": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"] }, fontSize: { "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "metric-numeral": ["28px", { "lineHeight": "32px", "letterSpacing": "-0.03em", "fontWeight": "800" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "headline-xl-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }] } } } };</script><style>@layer base{html,body{width:100%;margin:0;padding:0;min-height:100%;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen antialiased"><header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter-mobile flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="NutriAI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnYvgsvVrIbKMYWwMm-OHiQxDEn8Ijzg0TsD-j_c0BlRaNTVttMHLF94qvqoUp166EceRlePJJtHFZbirPi_iVb8dyDyU98eS6WzQ-1ITTUzsPeBzRZ428utVRPxGJg7m04pT8V6CrjhDQp-jI6_hygkWIgU5c4mCwDKabhSfO46enxK25YPbX8oHanM3NLm7HrBrTPyOWH2iBHB7SfoVgM8SfCMJDSJWG9hvB2EyCY90NNZnPij2A"/><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">NutriAI</span><span class="font-label-md text-label-md text-on-surface-variant font-normal hidden">Camera Scanner</span></div><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Scanner Ready</span></div></div></div><div class="flex items-center gap-space-sm"><button aria-label="Notifications" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span></button><a class="w-11 h-11 flex items-center justify-center" data-path="profile" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-[0_2px_6px_rgba(0,0,0,0.08)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYTePcv1xZgqSPswYzQhP8HyU44HZG_Th9s_IBGOy7M_SRfVSP5K3HaTWugilzl9yn8Qcqw64YfNUc5-IVTwfPpkNT26kkhLEvbz6N_mGff78MdnUPLznEdkXcMR0xMeL0Xl_qfibhiNIHxttYm2mIbqmsGsOYPOfjSS0H4LkVhmGGeUNJibVFF4lqYFjytQntE257bQXNv_Hl2Bv9Jl5DrDXxdGGVRQM459SS16ZOY63dVkRm-5Mi"/></a></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface"><div class="flex flex-col w-full px-margin-mobile pb-space-2xl">
+<!-- Top Intro Section -->
+<div class="pt-space-lg pb-space-base flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary-fixed text-primary">
+<span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary">Bio-Intelligence Vision</span>
+</div>
+<h1 class="font-headline-xl-mobile text-headline-xl-mobile text-on-surface tracking-tight">Scan Your Food</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm">
+      Scan a food label to instantly decode ingredients, additives, and clinical nutritional health ratings.
+    </p>
+</div>
+<!-- Primary Scanning Launchers Grid -->
+<div class="flex flex-col gap-space-base mt-space-xs">
+<!-- Camera Action Card -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-md transition-all duration-300 hover:shadow-xl active:scale-[0.99] group">
+<!-- Glow ambient backdrop -->
+<div class="absolute -right-8 -top-8 w-36 h-36 bg-primary-fixed/30 rounded-full blur-2xl pointer-events-none transition-transform group-hover:scale-125"></div>
+<div class="relative z-10 flex flex-col gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-md">
+<div class="w-13 h-13 w-[52px] h-[52px] rounded-xl bg-primary-fixed/40 flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">Scan with Camera</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">LIVE</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Point at the barcode or ingredient label</p>
+</div>
+</div>
+</div>
+<!-- Scanner Simulation Viewfinder Graphic -->
+<div class="relative w-full h-32 rounded-lg bg-surface-container-low overflow-hidden flex items-center justify-center">
+<img class="absolute inset-0 w-full h-full object-cover opacity-35 filter blur-[0.5px]" data-alt="Close up view of healthy organic whole grain cereal box nutrition label with clean typography, well lit in natural soft kitchen daylight, sharp laboratory clarity, emerald green accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8qrIUT3WVDy9EZ96WHG1xvqTHvKu5Ue_rQxbfCgQFo_SBFJrIg_CRZlXi62B0frsV3CnKAv2OVZdt5HMlvLtSI_Mxms2JCqxH65QPDhK1s-07FD_93ep2ez0AEDWuq-gGr7Kuh4-ZCh-TJNPjQDcCyNe4T7rFaPFDi8q6zhwtONPb8PSpWQyhmHwXJmzqXiDpIG8-3R20BREOsz3uXMIzVdO0B2wmfiP8NeaViVTOw6va3gl2EJ6j"/>
+<!-- Scanner Target Frame Overlay -->
+<div class="relative z-10 w-44 h-20 rounded-md bg-surface-container-lowest/80 backdrop-blur-sm flex flex-col items-center justify-center p-space-xs shadow-sm">
+<div class="w-full flex items-center justify-between text-primary px-1">
+<span class="material-symbols-outlined text-[14px]">crop_free</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold tracking-wider animate-pulse">AUTO-ALIGN</span>
+<span class="material-symbols-outlined text-[14px]">crop_free</span>
+</div>
+<div class="w-full h-0.5 bg-primary/40 mt-1 relative overflow-hidden rounded-full">
+<div class="absolute inset-y-0 left-0 w-1/3 bg-primary animate-[moveScan_1.8s_ease-in-out_infinite]"></div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] mt-1">Ready for capture</span>
+</div>
+</div>
+<button class="w-full py-3.5 px-space-base rounded-xl bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-space-xs shadow-[0_4px_16px_rgba(0,105,72,0.25)] hover:bg-primary-container active:scale-[0.98] transition-all" id="btn-open-camera" type="button">
+<span class="material-symbols-outlined text-[20px]">center_focus_strong</span>
+<span>Open Camera Scanner</span>
+</button>
+</div>
+</div>
+<!-- Gallery Action Card -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.99] group">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-md">
+<div class="w-[52px] h-[52px] rounded-xl bg-secondary-fixed/50 flex items-center justify-center text-secondary shadow-sm">
+<span class="material-symbols-outlined text-[28px]">photo_library</span>
+</div>
+<div>
+<span class="font-headline-sm text-headline-sm text-on-surface">Upload from Gallery</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Select a clear screenshot or saved receipt</p>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-secondary">image</span>
+<span class="font-label-md text-label-md">Supports JPG, PNG, HEIC</span>
+</div>
+<button class="py-2.5 px-space-lg rounded-xl bg-surface-container-high text-on-surface font-label-lg text-label-lg hover:bg-surface-container-highest active:scale-95 transition-all flex items-center gap-1.5" id="btn-upload-gallery" type="button">
+<span>Browse Photos</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Smart Bio Tip Card -->
+<div class="mt-space-base rounded-xl bg-surface-container-low p-space-base flex gap-space-md items-start">
+<div class="w-9 h-9 rounded-full bg-tertiary-fixed/60 flex items-center justify-center text-tertiary shrink-0">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Scanning Tip</span>
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        For 99.8% precision, flatten any foil glare and frame the complete ingredients panel along with the nutritional values.
+      </p>
+</div>
+</div>
+<!-- Clinical Pillars / Guarantees -->
+<div class="mt-space-lg flex flex-col gap-space-sm">
+<div class="flex items-center justify-between px-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold">NutriAI Verification Standard</span>
+<span class="material-symbols-outlined text-[16px] text-primary">verified_user</span>
+</div>
+<div class="grid grid-cols-3 gap-space-xs">
+<!-- Pillar 1 -->
+<div class="rounded-xl bg-surface-container-lowest p-space-sm flex flex-col items-center text-center shadow-sm">
+<div class="w-8 h-8 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary mb-1">
+<span class="material-symbols-outlined text-[18px]">spellcheck</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface font-bold">Zero Jargon</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] leading-tight mt-0.5">Plain talk</span>
+</div>
+<!-- Pillar 2 -->
+<div class="rounded-xl bg-surface-container-lowest p-space-sm flex flex-col items-center text-center shadow-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed/50 flex items-center justify-center text-secondary mb-1">
+<span class="material-symbols-outlined text-[18px]">biotech</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface font-bold">Additive Lab</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] leading-tight mt-0.5">E-code safety</span>
+</div>
+<!-- Pillar 3 -->
+<div class="rounded-xl bg-surface-container-lowest p-space-sm flex flex-col items-center text-center shadow-sm">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed/60 flex items-center justify-center text-tertiary mb-1">
+<span class="material-symbols-outlined text-[18px]">health_and_safety</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface font-bold">Allergen Fit</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] leading-tight mt-0.5">Tailored alerts</span>
+</div>
+</div>
+</div>
+<!-- Recent Scan Shortcuts / Instant Re-inspect -->
+<div class="mt-space-lg flex flex-col gap-space-sm">
+<div class="flex items-center justify-between px-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">Recent Scans</span>
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-on-surface text-[11px] flex items-center justify-center font-bold">2</span>
+</div>
+<button class="text-primary font-label-md text-label-md hover:underline flex items-center" type="button">
+<span>View all</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+<!-- Product Mini Card 1 -->
+<div class="w-full rounded-xl bg-surface-container-lowest p-space-md flex items-center justify-between shadow-sm transition-transform active:scale-[0.99] cursor-pointer">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low overflow-hidden relative shrink-0">
+<img class="w-full h-full object-cover" data-alt="Packaged artisanal almond milk bottle clean modern bio packaging on bright clinical studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkTH-6uwTAvqzxPC88AESbmfAodcajEQNSLc2AryRSUcUaKMydtr5HsvRznxJ_09iYM4dqqGL9UM6ERuS23w1q41nkq4MSKtJhi9mrvUSu5PmV1vfWIlfnMQEDLJA5lMx5ErGpb9HHiMUtWUHLQ3mqtz1vOZ1x9_Mr7W4R-d5ggOq5lLvGEFVwSWAb7v66_3jXOxGYOvxfJ7AfSNH9f04nJdC4ZMBaMTTOfk5X_hDTqs1YFyX9f8mh"/>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Pure Almond Silk Drink</span>
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+</div>
+<div class="flex items-center gap-space-xs mt-0.5">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Earth Pure Co.</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">2h ago</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end shrink-0 pl-space-sm">
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm font-bold">Grade A</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[11px] mt-1">94/100 Health</span>
+</div>
+</div>
+<!-- Product Mini Card 2 -->
+<div class="w-full rounded-xl bg-surface-container-lowest p-space-md flex items-center justify-between shadow-sm transition-transform active:scale-[0.99] cursor-pointer">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low overflow-hidden relative shrink-0">
+<img class="w-full h-full object-cover" data-alt="Granola bar healthy organic trail snack in minimalist eco packaging on bright pure white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3VBhM_9KDAjYLMoT_8ENmAU6OY3GvrjYuTYIwwyas8_Fj3POLNRVzfTCU0pqkRc-QIKP-9SxhqCF7vZVaax-tezV-oVSxyoTY9WitEi8S6or-yDVwGQ9YFmQd68ZHCkGKriOT-Vibsuyyj0kYmmMZCKlzqaGJYeyeZ4t6cwB7osRiVV-98yfPbi19PguuHTGhBgETbGuSwxWJZEuZVZFJmMRMjZX9wQQgM_tMnMD8_9OGhcWq8lwe"/>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Dark Cacao Super-Bar</span>
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+</div>
+<div class="flex items-center gap-space-xs mt-0.5">
+<span class="font-body-sm text-body-sm text-on-surface-variant">BioHarvest</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Yesterday</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end shrink-0 pl-space-sm">
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm font-bold">Grade B+</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[11px] mt-1">82/100 Health</span>
+</div>
+</div>
+</div>
+<!-- Hidden File Input for Gallery Flow Simulation -->
+<input accept="image/*" class="hidden" id="scanner-file-input" type="file"/>
+<!-- Inline Micro-Interaction Script -->
+<script>
+    (function() {
+      const openCamBtn = document.getElementById('btn-open-camera');
+      const uploadGalBtn = document.getElementById('btn-upload-gallery');
+      const fileInput = document.getElementById('scanner-file-input');
+
+      if (openCamBtn) {
+        openCamBtn.addEventListener('click', function() {
+          const originalText = openCamBtn.innerHTML;
+          openCamBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">refresh</span><span>Initializing Lens...</span>';
+          openCamBtn.classList.add('opacity-90');
+          setTimeout(() => {
+            openCamBtn.innerHTML = originalText;
+            openCamBtn.classList.remove('opacity-90');
+            // Navigate or simulate viewfinder trigger
+            const camLink = document.querySelector('a[data-path="camera-scanner"]');
+            if (camLink) camLink.click();
+          }, 600);
+        });
+      }
+
+      if (uploadGalBtn && fileInput) {
+        uploadGalBtn.addEventListener('click', function() {
+          fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function(e) {
+          if (e.target.files && e.target.files[0]) {
+            uploadGalBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-primary animate-pulse">sync</span><span>Analyzing...</span>';
+            setTimeout(() => {
+              uploadGalBtn.innerHTML = '<span>Browse Photos</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
+            }, 1200);
+          }
+        });
+      }
+    })();
+  </script>
+</div></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/95 backdrop-blur-xl shadow-[0_-4px_16px_rgba(0,0,0,0.04)]" data-active-classes="text-primary font-bold"><div class="relative flex items-center justify-around h-16 px-gutter-mobile"><a class="flex flex-col items-center justify-center w-14 h-14 text-on-surface-variant transition-colors" data-path="home-dashboard" href="#"><span class="material-symbols-outlined text-[24px]">home</span><span class="font-label-sm text-label-sm mt-0.5">Home</span></a><div class="relative -top-5 flex flex-col items-center"><a aria-current="page" class="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-[0_8px_20px_rgba(0,105,72,0.35)] transition-transform active:scale-95 text-primary font-bold" data-path="camera-scanner" href="#"><span class="material-symbols-outlined text-[28px]">photo_camera</span></a><span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Scan</span></div><a class="flex flex-col items-center justify-center w-14 h-14 text-on-surface-variant transition-colors" data-path="scan-history" href="#"><span class="material-symbols-outlined text-[24px]">receipt_long</span><span class="font-label-sm text-label-sm mt-0.5">History</span></a><a class="flex flex-col items-center justify-center w-14 h-14 text-on-surface-variant transition-colors" data-path="user-profile" href="#"><span class="material-symbols-outlined text-[24px]">person</span><span class="font-label-sm text-label-sm mt-0.5">Profile</span></a></div><div class="w-full flex justify-center pb-1"><div class="w-32 h-1 bg-outline-variant/60 rounded-full"></div></div></nav></body></html>

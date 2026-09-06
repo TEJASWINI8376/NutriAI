@@ -17,3 +17,6 @@ NutriAI is designed to make nutrition information **personalized, transparent, a
 
 **NutriAI: Know your health. Understand your food. Make informed choices.**
 
+## Food Scanner
+
+The integrated food-scanner application provides the food label analysis workflow described above.
