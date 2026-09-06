@@ -5,7 +5,6 @@ import {
   Camera,
   Check,
   ChevronRight,
-  CircleUserRound,
   Crop,
   FlaskConical,
   GalleryHorizontalEnd,
@@ -76,7 +75,14 @@ function App() {
         setScans(data as Scan[]);
       } else {
         setScans(starterScans);
-        await supabase.from('scan_history').insert(starterScans.map(({ id: _id, ...scan }) => scan));
+        await supabase.from('scan_history').insert(starterScans.map((scan) => ({
+          product_name: scan.product_name,
+          brand: scan.brand,
+          grade: scan.grade,
+          health_score: scan.health_score,
+          image_url: scan.image_url,
+          scanned_at: scan.scanned_at,
+        })));
       }
       setLoadingScans(false);
     }
