@@ -1,17 +1,23 @@
-# nutriAI
-NutrIA is an AI-powered personalized nutrition and food-safety assistant that helps users understand whether a particular food is suitable for them based on their health profile, medical reports, prescriptions, ingredients, and nutritional information.
+# NutriAI - Your Personalized Food & Health Intelligence
 
-## Authentication
+**NutriAI** is an AI-powered personalized nutrition assistant designed to help users make more informed food choices based on their individual health information. Instead of giving generic dietary advice, NutriAI connects **patient health data with real-world food information** to provide a personalized and explainable **"Can I Eat This?"** assessment.
 
-The patient-medical branch includes a dependency-free `AuthService` in `auth.js` for the initial account flow:
+The app works through three integrated components.
 
-- Registers normalized email addresses with salted scrypt password hashes.
-- Creates opaque, expiring session tokens on login.
-- Authenticates and logs out sessions without exposing password hashes.
-- Rejects weak passwords, duplicate accounts, invalid credentials, and expired sessions.
+## Patient & Medical
 
-Run the tests with:
+Users create a health profile and can upload medical reports and prescriptions through their camera, gallery, or PDF. Medical OCR extracts relevant information, which is displayed for user verification. Only after confirmation is the information added to the user's verified health profile.
 
-```bash
-node --test auth.test.js
-```
+## Food Analysis
+
+Users can scan a food product or upload an image of its label. Food OCR extracts ingredients, serving size, and nutritional information such as calories, sugar, sodium, fat, saturated fat, carbohydrates, and protein. Uncertain or low-confidence information is identified and can undergo basic verification.
+
+## Agent & Decision
+
+NutriAI's decision layer combines the verified patient profile with the analyzed food information. Its agent investigates which factors are relevant to the individual, verifies important information, and applies defined rules to assess potential dietary concerns. When relevant, it can also consider food-medicine context.
+
+The final result is presented through a simple **Suitable**, **Use Caution**, or **Not Recommended** indicator, accompanied by a clear explanation of why the result was reached and supporting evidence or sources. An activity timeline can also show how the agent reached its assessment.
+
+NutriAI is designed to make nutrition information **personalized, transparent, and easy to understand**, while keeping the user involved in confirming extracted medical and food data.
+
+**NutriAI: Know your health. Understand your food. Make informed choices.**
