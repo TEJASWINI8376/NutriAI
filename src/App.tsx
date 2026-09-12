@@ -27,6 +27,7 @@ import { ClinicalInfoModal } from './components/ClinicalInfoModal';
 import { ImagePreviewModal } from './components/ImagePreviewModal';
 import { PatientProfileModal } from './components/PatientProfileModal';
 import { DecisionResultModal } from './components/DecisionResultModal';
+import { AuthScreen } from '../loginpage/src/components/AuthScreen';
 import { InspectionProduct, NutritionField, PatientProfile, DecisionResult } from './types';
 
 export default function App() {
@@ -272,21 +273,13 @@ export default function App() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-[#faf8ff] text-[#131b2e] flex items-center justify-center px-4">
-        <form onSubmit={handleLogin} className="w-full max-w-md bg-white border border-[#eaedff] rounded-2xl p-7 shadow-sm">
-          <div className="w-12 h-12 rounded-2xl bg-[#006948] text-white flex items-center justify-center mb-5">
-            <HeartPulse className="w-6 h-6" />
-          </div>
-          <p className="text-xs font-bold tracking-[0.18em] uppercase text-[#006948]">NutriAI</p>
-          <h1 className="text-3xl font-bold mt-2">Welcome back</h1>
-          <p className="text-sm text-[#3d4a42] mt-2 mb-7">Sign in to your private health workspace.</p>
-          <label className="block text-sm font-semibold mb-2" htmlFor="login-email">Email</label>
-          <input id="login-email" type="email" required value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} className="w-full h-11 px-3 rounded-xl border border-[#dfe5e1] mb-4 outline-none focus:border-[#006948]" />
-          <label className="block text-sm font-semibold mb-2" htmlFor="login-password">Password</label>
-          <input id="login-password" type="password" minLength={8} required value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} className="w-full h-11 px-3 rounded-xl border border-[#dfe5e1] mb-6 outline-none focus:border-[#006948]" />
-          <button type="submit" className="w-full h-12 rounded-xl bg-[#006948] text-white font-bold">Continue to NutriAI</button>
-        </form>
-      </div>
+      <AuthScreen
+        onSuccess={(user) => {
+          localStorage.setItem('nutriai.session', user.email);
+          setSession(user.email);
+        }}
+        showToast={(message) => triggerToast(message, 'Clinical gateway updated.')}
+      />
     );
   }
 
