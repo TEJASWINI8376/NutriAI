@@ -1,0 +1,6 @@
+{
+  "name": "NutriAI",
+  "description": "An AI-powered nutrition and clinical health intelligence platform with biometric vitals monitoring, dietary metrics, consultation scheduling, and verified health records.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
