@@ -3,7 +3,6 @@ import path from 'path';
 import { GoogleGenAI, Type } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
 import { runPipeline } from './src/agent/pipeline';
-import { INITIAL_PRODUCTS } from './src/data/mockProducts';
 
 interface NutritionField {
   id: string;
@@ -53,7 +52,7 @@ const PORT = 3000;
 app.use(express.json({ limit: '15mb' }));
 
 // Initial products store (initialized from Open Food Facts verified registry products)
-let productsDatabase: InspectionProduct[] = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+let productsDatabase: InspectionProduct[] = [];
 
 // Lazy Gemini client helper
 let geminiClient: GoogleGenAI | null = null;
@@ -504,7 +503,7 @@ app.put('/api/products/:id/fields/:fieldId', (req, res) => {
 // Real AI Scan endpoint using Open Food Facts as primary source and Gemini Vision as fallback
 app.post('/api/scan', async (req, res) => {
   try {
-    const { imageBase64, panelType, samplePreset, barcode } = req.body;
+    const { imageBase64, panelType, barcode } = req.body;
 
     // 1. Direct Barcode lookup via Open Food Facts (Primary Source)
     if (barcode) {
@@ -520,44 +519,6 @@ app.post('/api/scan', async (req, res) => {
         });
       }
       // If barcode not found in OFF registry, continue down to OCR fallback if image provided
-    }
-
-    // 2. Handle sample presets quickly if requested
-    if (samplePreset === 'granola_bar') {
-      const existing = productsDatabase.find((p) => p.id === 'prod-granola-bar-01');
-      return res.json({ product: existing, source: 'gemini_ocr' });
-    }
-
-    if (samplePreset === 'greek_yogurt') {
-      const existing = productsDatabase.find((p) => p.id === 'prod-greek-yogurt-02');
-      return res.json({ product: existing, source: 'open_food_facts' });
-    }
-
-    if (samplePreset === 'cheerios') {
-      const offProduct = await fetchOpenFoodFactsProduct('016000275270');
-      if (offProduct) {
-        const product = mapOpenFoodFactsToProduct(offProduct);
-        productsDatabase.unshift(product);
-        return res.json({ product, source: 'open_food_facts' });
-      }
-    }
-
-    if (samplePreset === 'nutella') {
-      const offProduct = await fetchOpenFoodFactsProduct('3017620422003');
-      if (offProduct) {
-        const product = mapOpenFoodFactsToProduct(offProduct);
-        productsDatabase.unshift(product);
-        return res.json({ product, source: 'open_food_facts' });
-      }
-    }
-
-    if (samplePreset === 'oat_milk') {
-      const offProduct = await fetchOpenFoodFactsProduct('7340055300057');
-      if (offProduct) {
-        const product = mapOpenFoodFactsToProduct(offProduct);
-        productsDatabase.unshift(product);
-        return res.json({ product, source: 'open_food_facts' });
-      }
     }
 
     const ai = getGeminiClient();
@@ -831,157 +792,10 @@ Extract:
       return res.json({ product: newProduct, source: 'gemini_ocr' });
     }
 
-    // 4. High quality intelligent mock if image provided without API key or offline demo
-    const demoId = `prod-scan-${Date.now()}`;
-    const generatedProduct: InspectionProduct = {
-      id: demoId,
-      title: 'Artisan Multi-Seed Oat Crisp',
-      brand: 'Harvest Roots',
-      categorySubtitle: 'Baked Whole Grain Snack',
-      captureSource: 'Captured from camera live scan (Diagnostic Demo)',
-      dataSource: 'mock',
-      imageThumbnail:
-        imageBase64 ||
-        'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80',
-      explanationTitle: 'Review Before We Continue',
-      explanationDescription:
-        'Label scan processed with NutriAI optical diagnostic pipeline across all 8 nutrients.',
-      alertTitle: '1 Item Needs Confirmation',
-      alertBadge: 'Low Confidence',
-      alertDescription:
-        'OCR confidence below 90% due to package label curve around sodium specification.',
-      fields: [
-        {
-          id: `f-title-${demoId}`,
-          key: 'title',
-          label: 'PRODUCT TITLE',
-          value: 'Harvest Roots Artisan Multi-Seed Oat Crisp',
-          confidence: 99,
-          confirmed: true,
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-        {
-          id: `f-serving-${demoId}`,
-          key: 'serving_size',
-          label: 'SERVING SIZE',
-          value: '2 Crisps (32g)',
-          confidence: 97,
-          confirmed: true,
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-        {
-          id: `f-calories-${demoId}`,
-          key: 'calories',
-          label: 'ENERGY / CALORIES',
-          value: '130 kcal',
-          subValue: 'Per serving (32g)',
-          confidence: 98,
-          confirmed: true,
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-        {
-          id: `f-sugars-${demoId}`,
-          key: 'sugars',
-          label: 'SUGARS PROFILE',
-          value: '2.0g Total Sugars',
-          subValue: 'Includes 1.0g Added Sugars (2% DV)',
-          confidence: 99,
-          confirmed: true,
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-        {
-          id: `f-sodium-${demoId}`,
-          key: 'sodium',
-          label: 'ACTION REQUIRED: SODIUM CONTENT',
-          value: '95',
-          unit: 'mg',
-          confidence: 84,
-          confirmed: false,
-          isActionRequired: true,
-          actionBadge: 'Verify with Label',
-          detectedRawString: '“Sodlum 95mg”',
-          matchExplanation: 'Matches “Sodium 95mg 4% DV” in scanned table',
-          autoCleanApplied: true,
-          source: 'uncertain',
-          sourceBadge: 'OCR Needs Review',
-        },
-        {
-          id: `f-fat-${demoId}`,
-          key: 'fat',
-          label: 'TOTAL FAT',
-          value: '4.5g',
-          confidence: 96,
-          confirmed: true,
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-        {
-          id: `f-satfat-${demoId}`,
-          key: 'saturated_fat',
-          label: 'SATURATED FAT',
-          value: '0.5g',
-          confidence: 96,
-          confirmed: true,
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-        {
-          id: `f-carbs-${demoId}`,
-          key: 'carbohydrates',
-          label: 'TOTAL CARBOHYDRATES',
-          value: '19.0g',
-          confidence: 97,
-          confirmed: true,
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-        {
-          id: `f-protein-${demoId}`,
-          key: 'protein',
-          label: 'PROTEIN CONTENT',
-          value: '4.0g',
-          confidence: 97,
-          confirmed: true,
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-        {
-          id: `f-allergens-${demoId}`,
-          key: 'allergens',
-          label: 'ALLERGEN WARNING',
-          value: 'Contains',
-          confidence: 98,
-          confirmed: true,
-          tags: ['Sesame', 'Oats'],
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-        {
-          id: `f-ingredients-${demoId}`,
-          key: 'ingredients',
-          label: 'COMPLETE INGREDIENT LIST',
-          value:
-            'Whole grain rolled oats, organic whole sesame seeds, expeller pressed sunflower oil, brown rice flour, sea salt, organic cane sugar, rosemary extract.',
-          confidence: 97,
-          confirmed: true,
-          source: 'gemini_ocr',
-          sourceBadge: 'Gemini Vision OCR',
-        },
-      ],
-      ingredientsText:
-        'Whole grain rolled oats, organic whole sesame seeds, expeller pressed sunflower oil, brown rice flour, sea salt, organic cane sugar, rosemary extract.',
-      aggregateScore: 93.8,
-      scoreLabel: 'high fidelity',
-      nutriScore: 'A',
-      status: 'pending_review',
-    };
+    return res.status(503).json({
+      error: 'Food scanning requires a Gemini API key or a barcode found in Open Food Facts.',
+    });
 
-    productsDatabase.unshift(generatedProduct);
-    res.json({ product: generatedProduct, source: 'mock' });
   } catch (error: any) {
     console.error('Scan processing error:', error);
     res.status(500).json({ error: error.message || 'Failed to process image scan' });

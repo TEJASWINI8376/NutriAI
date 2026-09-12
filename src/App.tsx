@@ -27,19 +27,22 @@ import { ClinicalInfoModal } from './components/ClinicalInfoModal';
 import { ImagePreviewModal } from './components/ImagePreviewModal';
 import { PatientProfileModal } from './components/PatientProfileModal';
 import { DecisionResultModal } from './components/DecisionResultModal';
-import { INITIAL_PRODUCTS } from './data/mockProducts';
 import { InspectionProduct, NutritionField, PatientProfile, DecisionResult } from './types';
 
 export default function App() {
-  const [products, setProducts] = useState<InspectionProduct[]>(INITIAL_PRODUCTS);
-  const [activeProduct, setActiveProduct] = useState<InspectionProduct>(INITIAL_PRODUCTS[0]);
+  const [products, setProducts] = useState<InspectionProduct[]>([]);
+  const [activeProduct, setActiveProduct] = useState<InspectionProduct | null>(null);
+  const [session, setSession] = useState(() => localStorage.getItem('nutriai.session'));
+  const [hasProfile, setHasProfile] = useState(() => localStorage.getItem('nutriai.profile') === 'complete');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [editingField, setEditingField] = useState<NutritionField | null>(null);
 
   // Patient Health Profile state
   const [patientProfile, setPatientProfile] = useState<PatientProfile>({
-    conditions: ['Hypertension'],
-    medicines: ['Lisinopril'],
-    dietaryRestrictions: ['Low Sodium'],
+    conditions: [],
+    medicines: [],
+    dietaryRestrictions: [],
   });
 
   // Agent Decision state
@@ -73,7 +76,7 @@ export default function App() {
         if (data.products && data.products.length > 0) {
           setProducts(data.products);
           // Find matching active product or set first
-          const found = data.products.find((p: InspectionProduct) => p.id === activeProduct.id);
+          const found = data.products.find((p: InspectionProduct) => p.id === activeProduct?.id);
           if (found) setActiveProduct(found);
           else setActiveProduct(data.products[0]);
         }
@@ -92,6 +95,7 @@ export default function App() {
 
   // Verify Sodium Field handler
   const handleVerifySodium = async (verifiedValue: string) => {
+    if (!activeProduct) return;
     const sodiumField = activeProduct.fields.find((f) => f.key === 'sodium');
     if (!sodiumField) return;
 
@@ -139,6 +143,7 @@ export default function App() {
 
   // Save edited field handler
   const handleSaveField = async (fieldId: string, updates: Partial<NutritionField>) => {
+    if (!activeProduct) return;
     const updatedFields = activeProduct.fields.map((f) => {
       if (f.id === fieldId) {
         return { ...f, ...updates };
@@ -168,6 +173,7 @@ export default function App() {
 
   // Confirm entire food inspection
   const handleConfirmAll = async () => {
+    if (!activeProduct) return;
     // Mark all fields confirmed
     const updatedFields = activeProduct.fields.map((f) => ({
       ...f,
@@ -211,6 +217,7 @@ export default function App() {
 
   // Run Agentic AI Decision
   const handleRunAgentDecision = async () => {
+    if (!activeProduct) return;
     setIsAnalyzingDecision(true);
     try {
       const res = await fetch('/api/can-i-eat', {
@@ -242,6 +249,79 @@ export default function App() {
     setDecisionResult(null); // invalidate previous decision since patient profile changed
     triggerToast('Profile Updated', 'Health context updated for agent analysis.');
   };
+
+  const handleLogin = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!loginEmail.trim() || loginPassword.length < 8) return;
+    localStorage.setItem('nutriai.session', loginEmail.trim().toLowerCase());
+    setSession(loginEmail.trim().toLowerCase());
+  };
+
+  const handleProfileSetup = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const updatedProfile: PatientProfile = {
+      conditions: String(formData.get('conditions') || '').split(',').map((item) => item.trim()).filter(Boolean),
+      medicines: String(formData.get('medicines') || '').split(',').map((item) => item.trim()).filter(Boolean),
+      dietaryRestrictions: String(formData.get('restrictions') || '').split(',').map((item) => item.trim()).filter(Boolean),
+    };
+    setPatientProfile(updatedProfile);
+    localStorage.setItem('nutriai.profile', 'complete');
+    setHasProfile(true);
+  };
+
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-[#faf8ff] text-[#131b2e] flex items-center justify-center px-4">
+        <form onSubmit={handleLogin} className="w-full max-w-md bg-white border border-[#eaedff] rounded-2xl p-7 shadow-sm">
+          <div className="w-12 h-12 rounded-2xl bg-[#006948] text-white flex items-center justify-center mb-5">
+            <HeartPulse className="w-6 h-6" />
+          </div>
+          <p className="text-xs font-bold tracking-[0.18em] uppercase text-[#006948]">NutriAI</p>
+          <h1 className="text-3xl font-bold mt-2">Welcome back</h1>
+          <p className="text-sm text-[#3d4a42] mt-2 mb-7">Sign in to your private health workspace.</p>
+          <label className="block text-sm font-semibold mb-2" htmlFor="login-email">Email</label>
+          <input id="login-email" type="email" required value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} className="w-full h-11 px-3 rounded-xl border border-[#dfe5e1] mb-4 outline-none focus:border-[#006948]" />
+          <label className="block text-sm font-semibold mb-2" htmlFor="login-password">Password</label>
+          <input id="login-password" type="password" minLength={8} required value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} className="w-full h-11 px-3 rounded-xl border border-[#dfe5e1] mb-6 outline-none focus:border-[#006948]" />
+          <button type="submit" className="w-full h-12 rounded-xl bg-[#006948] text-white font-bold">Continue to NutriAI</button>
+        </form>
+      </div>
+    );
+  }
+
+  if (!hasProfile) {
+    return (
+      <div className="min-h-screen bg-[#faf8ff] text-[#131b2e] flex items-center justify-center px-4">
+        <form onSubmit={handleProfileSetup} className="w-full max-w-lg bg-white border border-[#eaedff] rounded-2xl p-7 shadow-sm">
+          <p className="text-xs font-bold tracking-[0.18em] uppercase text-[#006948]">Step 2 of 2</p>
+          <h1 className="text-3xl font-bold mt-2">Create your health profile</h1>
+          <p className="text-sm text-[#3d4a42] mt-2 mb-7">Add only information you want NutriAI to use for personalized food decisions.</p>
+          <label className="block text-sm font-semibold mb-2" htmlFor="conditions">Conditions</label>
+          <input id="conditions" name="conditions" placeholder="For example: diabetes, hypertension" className="w-full h-11 px-3 rounded-xl border border-[#dfe5e1] mb-4 outline-none focus:border-[#006948]" />
+          <label className="block text-sm font-semibold mb-2" htmlFor="medicines">Medicines</label>
+          <input id="medicines" name="medicines" placeholder="For example: metformin" className="w-full h-11 px-3 rounded-xl border border-[#dfe5e1] mb-4 outline-none focus:border-[#006948]" />
+          <label className="block text-sm font-semibold mb-2" htmlFor="restrictions">Dietary restrictions</label>
+          <input id="restrictions" name="restrictions" placeholder="For example: low sodium, low sugar" className="w-full h-11 px-3 rounded-xl border border-[#dfe5e1] mb-6 outline-none focus:border-[#006948]" />
+          <button type="submit" className="w-full h-12 rounded-xl bg-[#006948] text-white font-bold">Open dashboard</button>
+        </form>
+      </div>
+    );
+  }
+
+  if (!activeProduct) {
+    return (
+      <div className="min-h-screen bg-[#faf8ff] text-[#131b2e] flex items-center justify-center px-4">
+        <div className="w-full max-w-lg bg-white border border-[#eaedff] rounded-2xl p-8 text-center shadow-sm">
+          <HeartPulse className="w-10 h-10 text-[#006948] mx-auto mb-4" />
+          <h1 className="text-2xl font-bold">Your dashboard is ready</h1>
+          <p className="text-sm text-[#3d4a42] mt-2 mb-6">Scan a food label to begin your first personalized analysis. No sample products are loaded.</p>
+          <button type="button" onClick={() => setIsRetakeOpen(true)} className="h-12 px-6 rounded-xl bg-[#006948] text-white font-bold">Scan a food label</button>
+          <RetakeModal isOpen={isRetakeOpen} onClose={() => setIsRetakeOpen(false)} onProductScanned={handleProductScanned} />
+        </div>
+      </div>
+    );
+  }
 
   const hasUnconfirmedItems = activeProduct.fields.some((f) => !f.confirmed);
 
