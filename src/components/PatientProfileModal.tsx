@@ -127,7 +127,7 @@ export const PatientProfileModal: React.FC<PatientProfileModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
       <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-[#eaedff] flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between bg-[#faf8ff]">
+        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between bg-[#faf8ff] shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-[#006948]/10 text-[#006948] flex items-center justify-center">
               <HeartPulse className="w-5 h-5 text-[#006948]" />
@@ -150,7 +150,7 @@ export const PatientProfileModal: React.FC<PatientProfileModalProps> = ({
         </div>
 
         {/* Body */}
-        <div className="p-5 flex flex-col gap-5 overflow-y-auto">
+        <div className="p-5 flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-5 modal-scroll">
           {/* Quick Presets */}
           <div>
             <div className="flex items-center gap-1.5 mb-2">
@@ -351,7 +351,7 @@ export const PatientProfileModal: React.FC<PatientProfileModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-[#eaedff] bg-[#faf8ff] flex items-center justify-end gap-2">
+        <div className="p-4 border-t border-[#eaedff] bg-[#faf8ff] flex items-center justify-end gap-2 shrink-0">
           <button
             type="button"
             onClick={onClose}

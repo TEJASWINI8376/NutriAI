@@ -22,7 +22,7 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden border border-[#eaedff] flex flex-col max-h-[85vh]">
-        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between shrink-0">
           <div>
             <h3 className="font-semibold text-[18px] text-[#131b2e]">
               Inspection Vault ({products.length})
@@ -39,7 +39,7 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
           </button>
         </div>
 
-        <div className="p-4 flex flex-col gap-2.5 overflow-y-auto">
+        <div className="p-4 flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-2.5 modal-scroll">
           {products.map((p) => {
             const isSelected = p.id === activeProductId;
             const isConfirmed = p.status === 'confirmed';

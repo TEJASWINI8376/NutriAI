@@ -96,8 +96,8 @@ export const ContextCard: React.FC<ContextCardProps> = ({
             {dataSource === 'open_food_facts' ? (
               <>
                 <Database className="w-2.5 h-2.5 text-[#006948]" />
-                <span className="font-bold text-[10px] leading-[14px] tracking-wider text-[#006948]">
-                  API
+                <span className="font-bold text-[9px] leading-[14px] tracking-wider text-[#006948]">
+                  VERIFIED
                 </span>
               </>
             ) : (
@@ -117,7 +117,7 @@ export const ContextCard: React.FC<ContextCardProps> = ({
               <CheckCircle2 className="w-3 h-3 text-[#006948]" />
             </span>
             <span className="font-semibold text-[12px] leading-[16px] text-[#006948] truncate">
-              {dataSource === 'open_food_facts' ? 'API Record Verified' : 'Label Scan Complete'}
+              {dataSource === 'open_food_facts' ? 'Food Record Verified' : 'Label Scan Complete'}
             </span>
           </div>
 
