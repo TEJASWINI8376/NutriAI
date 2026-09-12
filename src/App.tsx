@@ -5,6 +5,14 @@ import {
   CheckCircle,
   RefreshCw,
   Sparkles,
+  HeartPulse,
+  Pill,
+  Activity,
+  Loader2,
+  ChevronRight,
+  ShieldCheck,
+  AlertTriangle,
+  AlertOctagon,
 } from 'lucide-react';
 import { Header } from './components/Header';
 import { ContextCard } from './components/ContextCard';
@@ -17,19 +25,34 @@ import { RetakeModal } from './components/RetakeModal';
 import { HistoryModal } from './components/HistoryModal';
 import { ClinicalInfoModal } from './components/ClinicalInfoModal';
 import { ImagePreviewModal } from './components/ImagePreviewModal';
+import { PatientProfileModal } from './components/PatientProfileModal';
+import { DecisionResultModal } from './components/DecisionResultModal';
 import { INITIAL_PRODUCTS } from './data/mockProducts';
-import { InspectionProduct, NutritionField } from './types';
+import { InspectionProduct, NutritionField, PatientProfile, DecisionResult } from './types';
 
 export default function App() {
   const [products, setProducts] = useState<InspectionProduct[]>(INITIAL_PRODUCTS);
   const [activeProduct, setActiveProduct] = useState<InspectionProduct>(INITIAL_PRODUCTS[0]);
   const [editingField, setEditingField] = useState<NutritionField | null>(null);
 
+  // Patient Health Profile state
+  const [patientProfile, setPatientProfile] = useState<PatientProfile>({
+    conditions: ['Hypertension'],
+    medicines: ['Lisinopril'],
+    dietaryRestrictions: ['Low Sodium'],
+  });
+
+  // Agent Decision state
+  const [decisionResult, setDecisionResult] = useState<DecisionResult | null>(null);
+  const [isAnalyzingDecision, setIsAnalyzingDecision] = useState(false);
+
   // Modals state
   const [isRetakeOpen, setIsRetakeOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isClinicalInfoOpen, setIsClinicalInfoOpen] = useState(false);
   const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isDecisionOpen, setIsDecisionOpen] = useState(false);
 
   // Toast state
   const [toast, setToast] = useState<{
@@ -182,7 +205,42 @@ export default function App() {
   const handleProductScanned = (scannedProduct: InspectionProduct) => {
     setProducts((prev) => [scannedProduct, ...prev.filter((p) => p.id !== scannedProduct.id)]);
     setActiveProduct(scannedProduct);
+    setDecisionResult(null);
     triggerToast('New Panel Scanned', `Processed ${scannedProduct.title} via OCR`);
+  };
+
+  // Run Agentic AI Decision
+  const handleRunAgentDecision = async () => {
+    setIsAnalyzingDecision(true);
+    try {
+      const res = await fetch('/api/can-i-eat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: activeProduct.id,
+          patient: patientProfile,
+        }),
+      });
+      const data = await res.json();
+      if (data.result) {
+        setDecisionResult(data.result);
+        setIsDecisionOpen(true);
+        triggerToast('Agent Analysis Complete', `Decision: ${data.result.decision.replace(/_/g, ' ')}`);
+      } else {
+        triggerToast('Analysis Failed', data.error || 'Please try again.');
+      }
+    } catch (err: any) {
+      console.error('Agent decision fetch failed:', err);
+      triggerToast('Network Error', 'Could not complete agent analysis.');
+    } finally {
+      setIsAnalyzingDecision(false);
+    }
+  };
+
+  const handleSaveProfile = (updated: PatientProfile) => {
+    setPatientProfile(updated);
+    setDecisionResult(null); // invalidate previous decision since patient profile changed
+    triggerToast('Profile Updated', 'Health context updated for agent analysis.');
   };
 
   const hasUnconfirmedItems = activeProduct.fields.some((f) => !f.confirmed);
@@ -196,11 +254,55 @@ export default function App() {
         }}
         onOpenHistory={() => setIsHistoryOpen(true)}
         historyCount={products.length}
+        onOpenProfile={() => setIsProfileOpen(true)}
+        profileConditionsCount={patientProfile.conditions.length}
       />
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col relative w-full pt-16 pb-12 bg-[#faf8ff]">
         <div className="flex flex-col w-full max-w-xl mx-auto px-4 pb-12">
+          {/* Active Patient Health Profile Bar */}
+          <div className="mb-4 mt-2 p-3.5 bg-white rounded-2xl border border-[#eaedff] shadow-xs flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-[#006948]/10 text-[#006948] flex items-center justify-center shrink-0">
+                <HeartPulse className="w-5 h-5 text-[#006948]" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[12px] font-bold text-[#131b2e]">Patient Profile:</span>
+                  {patientProfile.conditions.map((c) => (
+                    <span
+                      key={c}
+                      className="px-2 py-0.5 rounded-md bg-[#ba1a1a]/10 text-[#ba1a1a] text-[11px] font-semibold border border-[#ba1a1a]/20"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                  {patientProfile.medicines.map((m) => (
+                    <span
+                      key={m}
+                      className="px-2 py-0.5 rounded-md bg-[#006948]/10 text-[#006948] text-[11px] font-semibold border border-[#006948]/20 flex items-center gap-1"
+                    >
+                      <Pill className="w-3 h-3" />
+                      {m}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-[11px] text-[#3d4a42] truncate mt-0.5">
+                  Restrictions: {patientProfile.dietaryRestrictions.join(', ') || 'None'}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              id="editProfileBtn"
+              onClick={() => setIsProfileOpen(true)}
+              className="px-3 py-1.5 text-[11px] font-bold text-[#006948] bg-[#f2f3ff] hover:bg-[#e2e7ff] rounded-xl transition-all border border-[#eaedff] shrink-0 cursor-pointer"
+            >
+              Edit Profile
+            </button>
+          </div>
+
           {/* Interactive Context Card with Thumbnail */}
           <ContextCard
             imageThumbnail={activeProduct.imageThumbnail}
@@ -276,21 +378,78 @@ export default function App() {
           />
 
           {/* Mobile Action Deck */}
-          <div className="mt-8 flex flex-col gap-2.5">
+          <div className="mt-8 flex flex-col gap-3">
+            {/* Primary Agentic AI Decision Button */}
+            <button
+              id="canIEatBtn"
+              onClick={handleRunAgentDecision}
+              disabled={isAnalyzingDecision}
+              className="w-full h-14 bg-gradient-to-r from-[#006948] to-[#005137] text-white font-bold text-[17px] rounded-xl shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-75"
+              type="button"
+            >
+              {isAnalyzingDecision ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin text-white" />
+                  <span>Agent Evaluating Food & Medicine Context...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5 text-emerald-200" />
+                  <span>Can I Eat This? (AI Agent Assessment)</span>
+                </>
+              )}
+            </button>
+
+            {/* Quick Result Summary if already evaluated */}
+            {decisionResult && (
+              <div
+                onClick={() => setIsDecisionOpen(true)}
+                className={`p-3.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
+                  decisionResult.decision === 'GENERALLY_SUITABLE'
+                    ? 'bg-[#e8f5e9] border-[#006948]/30 text-[#006948]'
+                    : decisionResult.decision === 'CONSUME_WITH_CAUTION'
+                    ? 'bg-[#fff8e1] border-[#7c5800]/30 text-[#7c5800]'
+                    : 'bg-[#ffebee] border-[#ba1a1a]/30 text-[#ba1a1a]'
+                }`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  {decisionResult.decision === 'GENERALLY_SUITABLE' ? (
+                    <CheckCircle className="w-5 h-5 shrink-0" />
+                  ) : decisionResult.decision === 'CONSUME_WITH_CAUTION' ? (
+                    <AlertTriangle className="w-5 h-5 shrink-0" />
+                  ) : (
+                    <AlertOctagon className="w-5 h-5 shrink-0" />
+                  )}
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-bold text-[12px] uppercase tracking-wide">
+                      Decision: {decisionResult.decision.replace(/_/g, ' ')}
+                    </span>
+                    <span className="text-[12px] opacity-90 truncate max-w-[280px]">
+                      {decisionResult.decisionText}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 text-[11px] font-bold shrink-0">
+                  <span>View Details</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </div>
+              </div>
+            )}
+
             <button
               id="confirmFoodInfoBtn"
               onClick={handleConfirmAll}
-              className="w-full h-14 bg-[#006948] text-white font-semibold text-[18px] rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-[0.98] hover:bg-[#005137] transition-all cursor-pointer"
+              className="w-full h-12 bg-white text-[#131b2e] font-semibold text-[15px] rounded-xl shadow-xs border border-[#eaedff] flex items-center justify-center gap-2 active:scale-[0.98] hover:bg-[#f2f3ff] transition-all cursor-pointer"
               type="button"
             >
               <span>Confirm Food Information</span>
-              <CheckCircle2 className="w-5 h-5 text-white" />
+              <CheckCircle2 className="w-4 h-4 text-[#006948]" />
             </button>
 
             <button
               id="retakePanelBtn"
               onClick={() => setIsRetakeOpen(true)}
-              className="w-full h-12 bg-white text-[#131b2e] font-semibold text-[14px] rounded-xl shadow-xs border border-[#eaedff] flex items-center justify-center gap-2 hover:bg-[#f2f3ff] active:scale-[0.99] transition-all cursor-pointer"
+              className="w-full h-11 bg-[#faf8ff] text-[#3d4a42] font-semibold text-[13px] rounded-xl border border-[#eaedff] flex items-center justify-center gap-2 hover:bg-[#f2f3ff] active:scale-[0.99] transition-all cursor-pointer"
               type="button"
             >
               <Crop className="w-4 h-4 text-[#3d4a42]" />
@@ -339,7 +498,10 @@ export default function App() {
         onClose={() => setIsHistoryOpen(false)}
         products={products}
         activeProductId={activeProduct.id}
-        onSelectProduct={(p) => setActiveProduct(p)}
+        onSelectProduct={(p) => {
+          setActiveProduct(p);
+          setDecisionResult(null);
+        }}
       />
 
       <ClinicalInfoModal
@@ -353,6 +515,21 @@ export default function App() {
         onClose={() => setIsImagePreviewOpen(false)}
         imageUrl={activeProduct.imageThumbnail}
         title={activeProduct.title}
+      />
+
+      <PatientProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        profile={patientProfile}
+        onSave={handleSaveProfile}
+      />
+
+      <DecisionResultModal
+        isOpen={isDecisionOpen}
+        onClose={() => setIsDecisionOpen(false)}
+        result={decisionResult}
+        patientConditions={patientProfile.conditions}
+        patientMedicines={patientProfile.medicines}
       />
     </div>
   );

@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import { GoogleGenAI, Type } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
+import { runPipeline } from './src/agent/pipeline';
 
 interface NutritionField {
   id: string;
@@ -236,6 +237,104 @@ app.post('/api/products/confirm', (req, res) => {
   prod.aggregateScore = Math.max(prod.aggregateScore, 98.5);
 
   res.json({ success: true, product: prod });
+});
+
+// =================== AGENT DECISION ENGINE ===================
+// Integrates Person 2's food analysis with Person 3's agentic decision pipeline
+app.post('/api/can-i-eat', (req, res) => {
+  try {
+    const { patient, productId, food } = req.body;
+
+    const patientInput = {
+      conditions: patient?.conditions || ['Hypertension'],
+      medicines: patient?.medicines || [],
+      dietary_restrictions:
+        patient?.dietaryRestrictions || patient?.dietary_restrictions || ['Low Sodium'],
+      test_values: patient?.test_values || {},
+    };
+
+    let foodInput;
+
+    if (productId) {
+      const product = productsDatabase.find((p) => p.id === productId);
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+
+      const sodiumField = product.fields.find((f) => f.key === 'sodium');
+      const sugarsField = product.fields.find((f) => f.key === 'sugars');
+      const fatField = product.fields.find((f) => f.key === 'fat');
+      const proteinField = product.fields.find((f) => f.key === 'protein');
+      const caloriesField = product.fields.find((f) => f.key === 'calories');
+      const servingField = product.fields.find((f) => f.key === 'serving_size');
+      const allergenField = product.fields.find((f) => f.key === 'allergens');
+
+      const parseNum = (val?: string) => {
+        if (!val) return 0;
+        const match = val.match(/([\d.]+)/);
+        return match ? parseFloat(match[1]) : 0;
+      };
+
+      const sodiumVal = parseNum(sodiumField?.value);
+      const sugarVal = parseNum(sugarsField?.value);
+      const fatVal = parseNum(fatField?.value);
+      const proteinVal = parseNum(proteinField?.value);
+      const caloriesVal = parseNum(caloriesField?.value);
+
+      // Low confidence or unconfirmed action flag triggers agent's cross-verification step
+      const isSodiumUncertain =
+        sodiumField &&
+        (!sodiumField.confirmed ||
+          sodiumField.isActionRequired ||
+          (sodiumField.confidence || 100) < 85);
+
+      const sodiumConf = isSodiumUncertain ? 0.75 : (sodiumField?.confidence || 95) / 100;
+      const sugarConf = (sugarsField?.confidence || 98) / 100;
+
+      const ingredients: string[] = [
+        ...(allergenField?.tags || []),
+        ...(product.title ? product.title.split(' ') : []),
+      ];
+
+      foodInput = {
+        product_name: product.title,
+        nutrition: {
+          sodium: sodiumVal,
+          sugar: sugarVal,
+          fat: fatVal,
+          saturated_fat: Math.round(fatVal * 0.4),
+          protein: proteinVal,
+          calories: caloriesVal,
+        },
+        ingredients,
+        serving_size: servingField?.value || '1 serving',
+        confidence: {
+          sodium: sodiumConf,
+          sugar: sugarConf,
+        },
+      };
+    } else if (food) {
+      foodInput = {
+        product_name: food.product_name || food.title || 'Food Product',
+        nutrition: food.nutrition || {},
+        ingredients: food.ingredients || [],
+        serving_size: food.serving_size || food.servingSize || '1 serving',
+        confidence: food.confidence || { sodium: 0.95, sugar: 0.95 },
+      };
+    } else {
+      return res.status(400).json({ error: 'Either productId or food data must be provided' });
+    }
+
+    const decisionResult = runPipeline(patientInput, foodInput);
+
+    return res.json({
+      success: true,
+      result: decisionResult,
+    });
+  } catch (error: any) {
+    console.error('Agent decision error:', error);
+    return res.status(500).json({ error: error.message || 'Agent decision pipeline failed' });
+  }
 });
 
 // Update a specific field

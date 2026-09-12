@@ -39,3 +39,40 @@ export interface ScanRequest {
   panelType?: 'rear_nutrition' | 'front_packaging' | 'allergen_statement';
   sampleId?: string;
 }
+
+// =================== Patient Profile ===================
+
+export interface PatientProfile {
+  conditions: string[];
+  medicines: string[];
+  dietaryRestrictions: string[];
+}
+
+// =================== Decision Result ===================
+
+export interface AgentTimelineStep {
+  step: string;
+  status: string;
+  details: string[];
+}
+
+export interface EvidenceItem {
+  rule: string;
+  title: string;
+  source: string;
+  url: string;
+  description: string;
+}
+
+export interface DecisionResult {
+  food: string;
+  decision: 'GENERALLY_SUITABLE' | 'CONSUME_WITH_CAUTION' | 'HIGHER_CONCERN';
+  decisionText: string;
+  reasons: string[];
+  rulesApplied: string[];
+  verificationNotes: string[];
+  medicineNotes: string[];
+  evidence: EvidenceItem[];
+  agentTimeline: AgentTimelineStep[];
+  disclaimer: string;
+}
