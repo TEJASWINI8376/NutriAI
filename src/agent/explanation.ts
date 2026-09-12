@@ -18,6 +18,8 @@ export interface DecisionExplanation {
     url: string;
     description: string;
   }>;
+  healthierAlternatives?: string[];
+  uncertaintyWarnings?: string[];
   disclaimer: string;
 }
 
@@ -34,7 +36,13 @@ export function generateExplanation(
   ruleResult: RuleResult,
   medicineResult?: MedicineResult | null,
 ): DecisionExplanation {
-  const { decision, concerns, rulesApplied } = ruleResult;
+  const { decision, concerns, rulesApplied: baseRules } = ruleResult;
+  const rulesApplied = [...baseRules];
+
+  // If verified against Open Food Facts, include evidence rule
+  if (verification.sourceApi?.status === 'found' && !rulesApplied.includes('open_food_facts_verification')) {
+    rulesApplied.push('open_food_facts_verification');
+  }
 
   // Build reasons
   const reasons: string[] = [];
@@ -58,10 +66,25 @@ export function generateExplanation(
 
   // Verification notes
   const verificationNotes: string[] = [];
+
+  if (verification.sourceApi?.status === 'found') {
+    verificationNotes.push(
+      `Cross-verified with Open Food Facts global registry (${verification.sourceApi.barcode || 'Barcode record'}).`,
+    );
+  }
+
   for (const conflict of verification.conflicts) {
     verificationNotes.push(
-      `${conflict.field} was uncertain in OCR. Original value: ${conflict.ocrValue}; verified value: ${conflict.verifiedValue}.`,
+      `${conflict.field} OCR value (${conflict.ocrValue}) conflicted with registry data. Agent adapted by substituting verified value (${conflict.verifiedValue}).`,
     );
+  }
+
+  for (const warning of verification.uncertaintyWarnings) {
+    verificationNotes.push(warning);
+  }
+
+  if (verificationNotes.length === 0) {
+    verificationNotes.push('All nutrient values passed OCR confidence thresholds and verification checks.');
   }
 
   // Medicine notes
@@ -77,6 +100,31 @@ export function generateExplanation(
     );
   }
 
+  // Healthier alternatives recommendations (Optional Person 3 requirement)
+  const healthierAlternatives: string[] = [];
+  for (const concern of concerns) {
+    if (concern.type === 'sugar') {
+      healthierAlternatives.push(
+        'Lower-Sugar Alternative: Consider minimally processed whole-grain options (e.g. plain steel-cut oats, unsweetened yogurt with fresh fruit) with <5g added sugar per serving.',
+      );
+    }
+    if (concern.type === 'sodium') {
+      healthierAlternatives.push(
+        'Lower-Sodium Alternative: Choose FDA-defined low-sodium foods (<140mg per serving), unsalted nut butter, or fresh produce to assist with blood pressure control.',
+      );
+    }
+    if (concern.type === 'saturated_fat') {
+      healthierAlternatives.push(
+        'Heart-Healthy Alternative: Replace high-saturated-fat items with foods containing monounsaturated or polyunsaturated fats (e.g., chia seeds, walnuts, olive oil).',
+      );
+    }
+    if (concern.type === 'medicine_food_interaction') {
+      healthierAlternatives.push(
+        'Medication Spacing: Speak with your pharmacist about timing intervals between food consumption and prescription doses.',
+      );
+    }
+  }
+
   return {
     food: (food.product_name as string) || 'Unknown food',
     decision,
@@ -86,6 +134,8 @@ export function generateExplanation(
     verificationNotes,
     medicineNotes,
     evidence,
+    healthierAlternatives: healthierAlternatives.length > 0 ? healthierAlternatives : undefined,
+    uncertaintyWarnings: verification.uncertaintyWarnings.length > 0 ? verification.uncertaintyWarnings : undefined,
     disclaimer:
       'This is dietary decision support and does not diagnose disease or replace advice from a healthcare professional.',
   };

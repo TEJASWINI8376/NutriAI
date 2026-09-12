@@ -24,18 +24,19 @@ interface PatientInput {
 
 interface FoodInput {
   product_name: string;
+  barcode?: string;
   nutrition: Record<string, number>;
   ingredients: string[];
   serving_size?: string;
   confidence: Record<string, number>;
 }
 
-export function runPipeline(patient: PatientInput, food: FoodInput): PipelineResult {
+export async function runPipeline(patient: PatientInput, food: FoodInput): Promise<PipelineResult> {
   // STEP 1 — Agent Investigation
   const investigation: InvestigationResult = investigate(patient, food);
 
-  // STEP 2 — Verification
-  const verification: VerificationResult = verify(food, investigation);
+  // STEP 2 — Verification (Tool Call: Open Food Facts + Uncertainty Fallback)
+  const verification: VerificationResult = await verify(food, investigation);
 
   // STEP 3 — Medicine Context
   const medicineResult: MedicineResult = checkMedicineContext(

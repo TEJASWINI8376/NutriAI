@@ -225,6 +225,7 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           productId: activeProduct.id,
+          barcode: activeProduct.barcode,
           patient: patientProfile,
         }),
       });

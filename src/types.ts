@@ -94,5 +94,7 @@ export interface DecisionResult {
   medicineNotes: string[];
   evidence: EvidenceItem[];
   agentTimeline: AgentTimelineStep[];
+  healthierAlternatives?: string[];
+  uncertaintyWarnings?: string[];
   disclaimer: string;
 }

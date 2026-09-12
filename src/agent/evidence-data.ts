@@ -37,4 +37,12 @@ export const EVIDENCE: Record<string, EvidenceEntry> = {
     description:
       'Certain foods can interact with medicines, affecting how the medicine works or increasing side effects.',
   },
+
+  open_food_facts_verification: {
+    title: 'Open Food Facts Global Product Registry',
+    source: 'Open Food Facts (Public Collaborative Registry)',
+    url: 'https://world.openfoodfacts.org',
+    description:
+      'Authoritative food composition and ingredient statements verified against the Open Food Facts global database.',
+  },
 };
