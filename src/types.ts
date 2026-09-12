@@ -1,6 +1,20 @@
+export type NutritionFieldKey =
+  | 'title'
+  | 'serving_size'
+  | 'calories'
+  | 'sugars'
+  | 'sodium'
+  | 'fat'
+  | 'saturated_fat'
+  | 'carbohydrates'
+  | 'protein'
+  | 'allergens'
+  | 'ingredients'
+  | 'custom';
+
 export interface NutritionField {
   id: string;
-  key: 'title' | 'serving_size' | 'sodium' | 'allergens' | 'sugars' | 'calories' | 'protein' | 'fat' | 'custom';
+  key: NutritionFieldKey;
   label: string;
   value: string;
   unit?: string;
@@ -13,13 +27,18 @@ export interface NutritionField {
   autoCleanApplied?: boolean;
   subValue?: string;
   tags?: string[];
+  source?: 'open_food_facts' | 'gemini_ocr' | 'user_manual' | 'uncertain';
+  sourceBadge?: string;
 }
 
 export interface InspectionProduct {
   id: string;
   title: string;
+  brand?: string;
+  barcode?: string;
   categorySubtitle: string;
   captureSource: string;
+  dataSource?: 'open_food_facts' | 'gemini_ocr' | 'hybrid' | 'mock';
   imageThumbnail: string;
   explanationTitle: string;
   explanationDescription: string;
@@ -27,6 +46,7 @@ export interface InspectionProduct {
   alertBadge?: string;
   alertDescription?: string;
   fields: NutritionField[];
+  ingredientsText?: string;
   aggregateScore: number;
   scoreLabel: string;
   nutriScore?: 'A' | 'B' | 'C' | 'D' | 'E';

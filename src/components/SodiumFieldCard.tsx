@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScanText, Check, Wand2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { ScanText, Check, Wand2, AlertCircle, CheckCircle2, Database, Sparkles } from 'lucide-react';
 import { NutritionField } from '../types';
 
 interface SodiumFieldCardProps {
@@ -33,8 +33,8 @@ export const SodiumFieldCard: React.FC<SodiumFieldCardProps> = ({
           : 'bg-gradient-to-b from-white to-[#f2f3ff] shadow-md border border-[#ffdad6]'
       }`}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between flex-wrap gap-1.5">
+        <div className="flex items-center gap-2 flex-wrap">
           <span
             className={`w-2 h-2 rounded-full ${
               isVerified ? 'bg-[#006948]' : 'bg-[#ba1a1a] animate-pulse'
@@ -47,6 +47,17 @@ export const SodiumFieldCard: React.FC<SodiumFieldCardProps> = ({
           >
             {isVerified ? 'SODIUM CONTENT' : 'ACTION REQUIRED: SODIUM CONTENT'}
           </span>
+          {field.source === 'open_food_facts' ? (
+            <span className="inline-flex items-center gap-1 bg-[#006948]/10 text-[#006948] text-[10px] font-bold px-2 py-0.5 rounded-full border border-[#006948]/20">
+              <Database className="w-3 h-3 text-[#006948]" />
+              <span>Open Food Facts (Verified)</span>
+            </span>
+          ) : field.source === 'gemini_ocr' ? (
+            <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-purple-200">
+              <Sparkles className="w-3 h-3 text-purple-600" />
+              <span>Gemini Vision OCR</span>
+            </span>
+          ) : null}
         </div>
 
         {isVerified ? (

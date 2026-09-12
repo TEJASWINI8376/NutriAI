@@ -311,6 +311,8 @@ export default function App() {
             captureSource={activeProduct.captureSource}
             explanationTitle={activeProduct.explanationTitle}
             explanationDescription={activeProduct.explanationDescription}
+            barcode={activeProduct.barcode}
+            dataSource={activeProduct.dataSource}
             onPreviewImage={() => setIsImagePreviewOpen(true)}
           />
 

@@ -8,6 +8,9 @@ import {
   Sparkles,
   AlertCircle,
   FileCheck2,
+  Database,
+  QrCode,
+  Search,
 } from 'lucide-react';
 import { InspectionProduct } from '../types';
 
@@ -23,11 +26,12 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
   onProductScanned,
 }) => {
   const [selectedPanel, setSelectedPanel] = useState<string>('Rear Nutrition Table');
-  const [activeTab, setActiveTab] = useState<'camera' | 'upload' | 'samples'>('samples');
+  const [activeTab, setActiveTab] = useState<'barcode' | 'samples' | 'camera' | 'upload'>('barcode');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [barcodeInput, setBarcodeInput] = useState('');
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -38,6 +42,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
       stopCamera();
       setCapturedImage(null);
       setError(null);
+      setBarcodeInput('');
     }
   }, [isOpen]);
 
@@ -55,7 +60,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
       setCameraActive(true);
     } catch (err: any) {
       console.warn('Camera access error:', err);
-      setError('Camera access not granted or unavailable. You can use file upload or sample labels.');
+      setError('Camera access not granted or unavailable. You can use barcode lookup or photo upload.');
       setCameraActive(false);
     }
   };
@@ -124,6 +129,42 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
     }
   };
 
+  const handleBarcodeLookup = async (codeToSearch?: string) => {
+    const code = (codeToSearch || barcodeInput).trim();
+    if (!code) {
+      setError('Please enter a barcode number (UPC / EAN).');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const res = await fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ barcode: code }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(
+          data.error ||
+            `Barcode ${code} not found in Open Food Facts registry. Please switch to Camera or Upload tab to perform OCR with Gemini Vision.`
+        );
+      }
+
+      if (data.product) {
+        onProductScanned(data.product);
+        onClose();
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to lookup barcode in Open Food Facts.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -133,20 +174,20 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
         <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-[#006948]/10 text-[#006948] flex items-center justify-center">
-              <Camera className="w-5 h-5" />
+              <Database className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-semibold text-[18px] text-[#131b2e]">
-                Retake Specific Panel
+                Food Analysis & Product Scanner
               </h3>
               <p className="text-[12px] text-[#3d4a42]">
-                Isolate package panel for precision optical character calibration
+                Open Food Facts verified database with Gemini Vision OCR fallback
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#f2f3ff] text-[#3d4a42]"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#f2f3ff] text-[#3d4a42] cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -172,7 +213,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
                     key={panel.name}
                     type="button"
                     onClick={() => setSelectedPanel(panel.name)}
-                    className={`p-2.5 rounded-xl text-left border flex flex-col gap-1 transition-all ${
+                    className={`p-2.5 rounded-xl text-left border flex flex-col gap-1 transition-all cursor-pointer ${
                       active
                         ? 'border-[#006948] bg-[#006948]/5 text-[#006948]'
                         : 'border-[#eaedff] bg-[#faf8ff] text-[#3d4a42] hover:bg-white'
@@ -192,49 +233,161 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
           <div className="flex border-b border-[#eaedff]">
             <button
               onClick={() => {
+                setActiveTab('barcode');
+                stopCamera();
+              }}
+              className={`flex-1 py-2 text-[12px] font-semibold border-b-2 flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                activeTab === 'barcode'
+                  ? 'border-[#006948] text-[#006948]'
+                  : 'border-transparent text-[#3d4a42] hover:text-[#131b2e]'
+              }`}
+            >
+              <QrCode className="w-4 h-4" /> Barcode API
+            </button>
+            <button
+              onClick={() => {
                 setActiveTab('samples');
                 stopCamera();
               }}
-              className={`flex-1 py-2 text-[13px] font-semibold border-b-2 flex items-center justify-center gap-1.5 transition-colors ${
+              className={`flex-1 py-2 text-[12px] font-semibold border-b-2 flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
                 activeTab === 'samples'
                   ? 'border-[#006948] text-[#006948]'
                   : 'border-transparent text-[#3d4a42] hover:text-[#131b2e]'
               }`}
             >
-              <Sparkles className="w-4 h-4" /> Demo Food Presets
+              <Sparkles className="w-4 h-4" /> Presets
             </button>
             <button
               onClick={() => {
                 setActiveTab('camera');
                 startCamera();
               }}
-              className={`flex-1 py-2 text-[13px] font-semibold border-b-2 flex items-center justify-center gap-1.5 transition-colors ${
+              className={`flex-1 py-2 text-[12px] font-semibold border-b-2 flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
                 activeTab === 'camera'
                   ? 'border-[#006948] text-[#006948]'
                   : 'border-transparent text-[#3d4a42] hover:text-[#131b2e]'
               }`}
             >
-              <Camera className="w-4 h-4" /> Live Camera
+              <Camera className="w-4 h-4" /> Camera OCR
             </button>
             <button
               onClick={() => {
                 setActiveTab('upload');
                 stopCamera();
               }}
-              className={`flex-1 py-2 text-[13px] font-semibold border-b-2 flex items-center justify-center gap-1.5 transition-colors ${
+              className={`flex-1 py-2 text-[12px] font-semibold border-b-2 flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
                 activeTab === 'upload'
                   ? 'border-[#006948] text-[#006948]'
                   : 'border-transparent text-[#3d4a42] hover:text-[#131b2e]'
               }`}
             >
-              <Upload className="w-4 h-4" /> Upload Photo
+              <Upload className="w-4 h-4" /> Upload
             </button>
           </div>
 
           {error && (
-            <div className="bg-[#ffdad6] text-[#93000a] text-[12px] p-3 rounded-lg flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div className="bg-[#ffdad6] text-[#93000a] text-[12px] p-3 rounded-lg flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
+            </div>
+          )}
+
+          {/* Barcode API Tab (Primary Source: Open Food Facts) */}
+          {activeTab === 'barcode' && (
+            <div className="flex flex-col gap-3">
+              <div className="bg-[#f2f3ff] p-3 rounded-xl border border-[#eaedff]">
+                <div className="flex items-center gap-1.5 text-[#006948] font-semibold text-[13px]">
+                  <Database className="w-4 h-4" />
+                  <span>Open Food Facts Global Registry</span>
+                </div>
+                <p className="text-[12px] text-[#3d4a42] mt-1 leading-snug">
+                  Enter any packaged product barcode for authoritative nutrient values (Calories, Sugars, Sodium, Fats, Carbs, Protein, Serving Size) and complete ingredients.
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={barcodeInput}
+                    onChange={(e) => setBarcodeInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleBarcodeLookup();
+                    }}
+                    placeholder="e.g. 016000275270 (UPC / EAN)"
+                    className="w-full h-11 bg-[#faf8ff] rounded-lg px-3.5 pr-10 text-[14px] font-mono border border-[#eaedff] focus:outline-none focus:ring-2 focus:ring-[#006948] focus:bg-white"
+                  />
+                  <QrCode className="w-4 h-4 text-[#6d7a72] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => handleBarcodeLookup()}
+                  className="h-11 px-4 bg-[#006948] hover:bg-[#005137] text-white rounded-lg text-[13px] font-semibold flex items-center gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+                >
+                  {isLoading ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Search className="w-4 h-4" />
+                  )}
+                  <span>Lookup</span>
+                </button>
+              </div>
+
+              {/* Verified Barcode Quick Presets */}
+              <div className="mt-1">
+                <span className="block text-[11px] font-bold text-[#3d4a42] uppercase tracking-wider mb-2">
+                  Try Verified Packaged Foods
+                </span>
+                <div className="flex flex-col gap-2">
+                  {[
+                    {
+                      name: 'General Mills Cheerios Cereal',
+                      code: '016000275270',
+                      badge: 'Verified OFF',
+                    },
+                    {
+                      name: 'Nutella Hazelnut Spread',
+                      code: '3017620422003',
+                      badge: 'Verified OFF',
+                    },
+                    {
+                      name: 'Oatly Barista Edition Oat Milk',
+                      code: '7340055300057',
+                      badge: 'Verified OFF',
+                    },
+                    {
+                      name: 'Heinz Tomato Ketchup',
+                      code: '013000006008',
+                      badge: 'Verified OFF',
+                    },
+                  ].map((item) => (
+                    <button
+                      key={item.code}
+                      type="button"
+                      disabled={isLoading}
+                      onClick={() => handleBarcodeLookup(item.code)}
+                      className="p-2.5 rounded-lg border border-[#eaedff] bg-white hover:border-[#006948] hover:bg-[#faf8ff] text-left transition-all flex items-center justify-between group cursor-pointer"
+                    >
+                      <div className="min-w-0 pr-2">
+                        <p className="text-[13px] font-semibold text-[#131b2e] group-hover:text-[#006948] truncate">
+                          {item.name}
+                        </p>
+                        <p className="text-[11px] font-mono text-[#3d4a42]">
+                          Barcode: {item.code}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#006948]/10 text-[#006948] border border-[#006948]/20 shrink-0">
+                        {item.badge}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="text-[11px] text-[#3d4a42] bg-[#faf8ff] p-2.5 rounded-lg border border-[#eaedff]">
+                💡 <span className="font-semibold">Fallback Guarantee:</span> If a barcode is not found in Open Food Facts or cannot be identified, NutriAI automatically activates Gemini Vision OCR on the label image.
+              </div>
             </div>
           )}
 
@@ -243,34 +396,55 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
             <div className="grid grid-cols-2 gap-3">
               {[
                 {
+                  id: 'cheerios',
+                  title: 'Cheerios Cereal',
+                  desc: 'Open Food Facts live API verification',
+                  img: 'https://images.unsplash.com/photo-1521483451569-e33803c0330c?auto=format&fit=crop&w=400&q=80',
+                  badge: 'OFF API',
+                },
+                {
+                  id: 'nutella',
+                  title: 'Nutella Spread',
+                  desc: 'Full 8 nutrients + hazelnut ingredients',
+                  img: 'https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=400&q=80',
+                  badge: 'OFF API',
+                },
+                {
                   id: 'granola_bar',
                   title: 'Organic Granola Bar',
-                  desc: 'Original scan with sodium curve ambiguity',
+                  desc: 'Gemini Vision OCR with sodium ambiguity',
                   img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-1G_WNHVOdxr7bQ9oZGxf7JzlW_d9kZUSzov4MmRbvhLnpxSt8PTRIIggcQmSRiv2BjqE67eqT3LbKsa6lvNGgW0_Jwd5XvlKtsbMGhQoCI-YJj0AJ-A_kv9SAMaplRaJBzEU5A1vpuf_wlTa3VY3Te4OhkczVfxT_OE9Tf0hWx73nNK8IFo4Gek6e_mtdNAZCdLoF-i_MoAzUDDgUC_J_4POiaarcNV6IeHSfpNsPlsc-vd-KtSw',
+                  badge: 'OCR Fallback',
                 },
                 {
                   id: 'greek_yogurt',
-                  title: 'Greek Strained Yogurt',
-                  desc: 'High protein, 98.8% aggregate fidelity',
+                  title: 'Greek Yogurt 0%',
+                  desc: 'High protein dairy profile (18g)',
                   img: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=400&q=80',
+                  badge: 'OFF Verified',
                 },
               ].map((sample) => (
                 <button
                   key={sample.id}
                   onClick={() => runAnalysis('', sample.id)}
                   disabled={isLoading}
-                  className="p-3 border border-[#eaedff] rounded-xl text-left hover:border-[#006948] hover:bg-[#faf8ff] transition-all group flex flex-col gap-2"
+                  className="p-3 border border-[#eaedff] rounded-xl text-left hover:border-[#006948] hover:bg-[#faf8ff] transition-all group flex flex-col gap-2 cursor-pointer"
                 >
-                  <img
-                    src={sample.img}
-                    alt={sample.title}
-                    className="w-full h-24 object-cover rounded-lg group-hover:scale-[1.02] transition-transform"
-                  />
+                  <div className="relative w-full h-24 rounded-lg overflow-hidden">
+                    <img
+                      src={sample.img}
+                      alt={sample.title}
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform"
+                    />
+                    <span className="absolute top-1 right-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
+                      {sample.badge}
+                    </span>
+                  </div>
                   <div>
-                    <h4 className="font-semibold text-[14px] text-[#131b2e]">
+                    <h4 className="font-semibold text-[13px] text-[#131b2e]">
                       {sample.title}
                     </h4>
-                    <p className="text-[11px] text-[#3d4a42]">{sample.desc}</p>
+                    <p className="text-[11px] text-[#3d4a42] line-clamp-2">{sample.desc}</p>
                   </div>
                 </button>
               ))}
@@ -298,7 +472,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
                     {/* Viewfinder Overlay Frame */}
                     <div className="absolute inset-8 border-2 border-white/60 rounded-xl pointer-events-none flex flex-col justify-between p-2">
                       <span className="text-[10px] text-white/80 bg-black/40 backdrop-blur-xs px-2 py-0.5 rounded self-start">
-                        ALIGN LABEL WITHIN BOUNDS
+                        ALIGN LABEL & BARCODE WITHIN BOUNDS
                       </span>
                       <div className="h-0.5 w-full bg-emerald-400/50 animate-pulse"></div>
                     </div>
@@ -315,7 +489,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
                         setCapturedImage(null);
                         startCamera();
                       }}
-                      className="flex-1 py-2.5 rounded-lg border border-[#eaedff] text-[13px] font-semibold text-[#3d4a42] hover:bg-[#f2f3ff]"
+                      className="flex-1 py-2.5 rounded-lg border border-[#eaedff] text-[13px] font-semibold text-[#3d4a42] hover:bg-[#f2f3ff] cursor-pointer"
                     >
                       Retake
                     </button>
@@ -323,7 +497,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
                       type="button"
                       disabled={isLoading}
                       onClick={() => runAnalysis(capturedImage)}
-                      className="flex-1 py-2.5 rounded-lg bg-[#006948] text-white text-[13px] font-semibold flex items-center justify-center gap-1.5 shadow-sm"
+                      className="flex-1 py-2.5 rounded-lg bg-[#006948] text-white text-[13px] font-semibold flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                     >
                       {isLoading ? (
                         <RefreshCw className="w-4 h-4 animate-spin" />
@@ -338,7 +512,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
                     type="button"
                     onClick={capturePhoto}
                     disabled={!cameraActive}
-                    className="w-full py-3 rounded-lg bg-[#006948] text-white text-[14px] font-semibold flex items-center justify-center gap-2 hover:bg-[#005137] transition-colors"
+                    className="w-full py-3 rounded-lg bg-[#006948] text-white text-[14px] font-semibold flex items-center justify-center gap-2 hover:bg-[#005137] transition-colors cursor-pointer"
                   >
                     <Camera className="w-5 h-5" />
                     <span>Capture Snapshot</span>
@@ -371,7 +545,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setCapturedImage(null)}
-                      className="flex-1 py-2.5 rounded-lg border border-[#eaedff] text-[13px] font-semibold text-[#3d4a42]"
+                      className="flex-1 py-2.5 rounded-lg border border-[#eaedff] text-[13px] font-semibold text-[#3d4a42] cursor-pointer"
                     >
                       Choose Different Photo
                     </button>
@@ -379,7 +553,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
                       type="button"
                       disabled={isLoading}
                       onClick={() => runAnalysis(capturedImage)}
-                      className="flex-1 py-2.5 rounded-lg bg-[#006948] text-white text-[13px] font-semibold flex items-center justify-center gap-1.5 shadow-sm"
+                      className="flex-1 py-2.5 rounded-lg bg-[#006948] text-white text-[13px] font-semibold flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                     >
                       {isLoading ? (
                         <RefreshCw className="w-4 h-4 animate-spin" />

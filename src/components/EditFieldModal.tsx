@@ -75,13 +75,23 @@ export const EditFieldModal: React.FC<EditFieldModalProps> = ({
             <label className="block text-[12px] font-semibold text-[#3d4a42] mb-1">
               Primary Value
             </label>
-            <input
-              type="text"
-              className="w-full h-11 px-3 rounded-lg bg-[#f2f3ff] border border-[#eaedff] text-[#131b2e] font-semibold text-[15px] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#006948]"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="e.g. 1 Bar (40g)"
-            />
+            {field.key === 'ingredients' ? (
+              <textarea
+                rows={4}
+                className="w-full p-3 rounded-lg bg-[#f2f3ff] border border-[#eaedff] text-[#131b2e] font-normal text-[13px] leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#006948]"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="Enter complete ingredients list..."
+              />
+            ) : (
+              <input
+                type="text"
+                className="w-full h-11 px-3 rounded-lg bg-[#f2f3ff] border border-[#eaedff] text-[#131b2e] font-semibold text-[15px] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#006948]"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="e.g. 1 Bar (40g)"
+              />
+            )}
           </div>
 
           {field.key === 'allergens' ? (
