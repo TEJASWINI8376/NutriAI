@@ -1,215 +1,359 @@
-import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  ArrowRight,
-  Bell,
-  Camera,
-  Check,
-  ChevronRight,
+  CheckCircle2,
   Crop,
-  FlaskConical,
-  GalleryHorizontalEnd,
-  Home,
-  Image as ImageIcon,
-  Lightbulb,
-  LoaderCircle,
-  ScanLine,
-  ShieldCheck,
+  CheckCircle,
+  RefreshCw,
   Sparkles,
-  UserRound,
-  Verified,
-  X,
 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { Header } from './components/Header';
+import { ContextCard } from './components/ContextCard';
+import { AlertBanner } from './components/AlertBanner';
+import { SodiumFieldCard } from './components/SodiumFieldCard';
+import { FieldCard } from './components/FieldCard';
+import { OcrScoreCard } from './components/OcrScoreCard';
+import { EditFieldModal } from './components/EditFieldModal';
+import { RetakeModal } from './components/RetakeModal';
+import { HistoryModal } from './components/HistoryModal';
+import { ClinicalInfoModal } from './components/ClinicalInfoModal';
+import { ImagePreviewModal } from './components/ImagePreviewModal';
+import { INITIAL_PRODUCTS } from './data/mockProducts';
+import { InspectionProduct, NutritionField } from './types';
 
-type Scan = {
-  id: string;
-  product_name: string;
-  brand: string;
-  grade: string;
-  health_score: number;
-  image_url: string;
-  scanned_at: string;
-};
+export default function App() {
+  const [products, setProducts] = useState<InspectionProduct[]>(INITIAL_PRODUCTS);
+  const [activeProduct, setActiveProduct] = useState<InspectionProduct>(INITIAL_PRODUCTS[0]);
+  const [editingField, setEditingField] = useState<NutritionField | null>(null);
 
-const productImages = {
-  almond: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCkTH-6uwTAvqzxPC88AESbmfAodcajEQNSLc2AryRSUcUaKMydtr5HsvRznxJ_09iYM4dqqGL9UM6ERuS23w1q41nkq4MSKtJhi9mrvUSu5PmV1vfWIlfnMQEDLJA5lMx5ErGpb9HHiMUtWUHLQ3mqtz1vOZ1x9_Mr7W4R-d5ggOq5lLvGEFVwSWAb7v66_3jXOxGYOvxfJ7AfSNH9f04nJdC4ZMBaMTTOfk5X_hDTqs1YFyX9f8mh',
-  cacao: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD3VBhM_9KDAjYLMoT_8ENmAU6OY3GvrjYuTYIwwyas8_Fj3POLNRVzfTCU0pqkRc-QIKP-9SxhqCF7vZVaax-tezV-oVSxyoTY9WitEi8S6or-yDVwGQ9YFmQd68ZHCkGKriOT-Vibsuyyj0kYmmMZCKlzqaGJYeyeZ4t6cwB7osRiVV-98yfPbi19PguuHTGhBgETbGuSwxWJZEuZVZFJmMRMjZX9wQQgM_tMnMD8_9OGhcWq8lwe',
-  scanner: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD8qrIUT3WVDy9EZ96WHG1xvqTHvKu5Ue_rQxbfCgQFo_SBFJrIg_CRZlXi62B0frsV3CnKAv2OVZdt5HMlvLtSI_Mxms2JCqxH65QPDhK1s-07FD_93ep2ez0AEDWuq-gGr7Kuh4-ZCh-TJNPjQDcCyNe4T7rFaPFDi8q6zhwtONPb8PSpWQyhmHwXJmzqXiDpIG8-3R20BREOsz3uXMIzVdO0B2wmfiP8NeaViVTOw6va3gl2EJ6j',
-};
+  // Modals state
+  const [isRetakeOpen, setIsRetakeOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isClinicalInfoOpen, setIsClinicalInfoOpen] = useState(false);
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
 
-const starterScans: Scan[] = [
-  { id: 'starter-almond', product_name: 'Pure Almond Silk Drink', brand: 'Earth Pure Co.', grade: 'Grade A', health_score: 94, image_url: productImages.almond, scanned_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
-  { id: 'starter-cacao', product_name: 'Dark Cacao Super-Bar', brand: 'BioHarvest', grade: 'Grade B+', health_score: 82, image_url: productImages.cacao, scanned_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() },
-];
+  // Toast state
+  const [toast, setToast] = useState<{
+    show: boolean;
+    title: string;
+    subtitle: string;
+  }>({
+    show: false,
+    title: 'Verification Stored',
+    subtitle: 'Updating health analysis profile...',
+  });
 
-function formatAge(date: string): string {
-  const hours = Math.floor((Date.now() - new Date(date).getTime()) / 3600000);
-  if (hours < 1) return 'Just now';
-  if (hours < 24) return `${hours}h ago`;
-  if (hours < 48) return 'Yesterday';
-  return `${Math.floor(hours / 24)}d ago`;
-}
-
-function App() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const [scans, setScans] = useState<Scan[]>([]);
-  const [loadingScans, setLoadingScans] = useState(true);
-  const [busy, setBusy] = useState<'camera' | 'gallery' | null>(null);
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [error, setError] = useState('');
-
+  // Fetch initial products from backend API
   useEffect(() => {
-    async function loadScans(): Promise<void> {
-      const { data, error: fetchError } = await supabase
-        .from('scan_history')
-        .select('*')
-        .order('scanned_at', { ascending: false })
-        .limit(8);
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.products && data.products.length > 0) {
+          setProducts(data.products);
+          // Find matching active product or set first
+          const found = data.products.find((p: InspectionProduct) => p.id === activeProduct.id);
+          if (found) setActiveProduct(found);
+          else setActiveProduct(data.products[0]);
+        }
+      })
+      .catch((err) => {
+        console.log('Using local products cache:', err);
+      });
+  }, []);
 
-      if (fetchError) {
-        setError('Your recent scans are temporarily unavailable.');
-        setScans(starterScans);
-      } else if (data?.length) {
-        setScans(data as Scan[]);
-      } else {
-        setScans(starterScans);
-        await supabase.from('scan_history').insert(starterScans.map((scan) => ({
-          product_name: scan.product_name,
-          brand: scan.brand,
-          grade: scan.grade,
-          health_score: scan.health_score,
-          image_url: scan.image_url,
-          scanned_at: scan.scanned_at,
-        })));
+  const triggerToast = (title = 'Verification Stored', subtitle = 'Updating health analysis profile...') => {
+    setToast({ show: true, title, subtitle });
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, show: false }));
+    }, 3500);
+  };
+
+  // Verify Sodium Field handler
+  const handleVerifySodium = async (verifiedValue: string) => {
+    const sodiumField = activeProduct.fields.find((f) => f.key === 'sodium');
+    if (!sodiumField) return;
+
+    // Optimistic UI update
+    const updatedFields = activeProduct.fields.map((f) => {
+      if (f.id === sodiumField.id) {
+        return {
+          ...f,
+          value: verifiedValue,
+          confirmed: true,
+          isActionRequired: false,
+          confidence: 99,
+        };
       }
-      setLoadingScans(false);
-    }
-    void loadScans();
-  }, []);
+      return f;
+    });
 
-  useEffect(() => () => {
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-  }, []);
-
-  async function openCamera(): Promise<void> {
-    setError('');
-    setBusy('camera');
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-      streamRef.current = stream;
-      setCameraOpen(true);
-      setTimeout(() => {
-        if (videoRef.current) videoRef.current.srcObject = stream;
-      }, 0);
-    } catch {
-      setError('Camera access was not available. You can still choose a photo from your gallery.');
-    } finally {
-      setBusy(null);
-    }
-  }
-
-  function closeCamera(): void {
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-    setCameraOpen(false);
-  }
-
-  async function handleGallery(event: ChangeEvent<HTMLInputElement>): Promise<void> {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setError('');
-    setBusy('gallery');
-    const imageUrl = URL.createObjectURL(file);
-    const scan: Omit<Scan, 'id'> = {
-      product_name: file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ') || 'New food scan',
-      brand: 'Personal scan',
-      grade: 'Pending',
-      health_score: 0,
-      image_url: imageUrl,
-      scanned_at: new Date().toISOString(),
+    const updatedProduct: InspectionProduct = {
+      ...activeProduct,
+      fields: updatedFields,
+      alertTitle: undefined,
+      alertBadge: undefined,
+      alertDescription: undefined,
+      aggregateScore: 98.6,
     };
-    const { data, error: insertError } = await supabase.from('scan_history').insert(scan).select().maybeSingle();
-    if (insertError) {
-      setError('This scan could not be saved. Please try again.');
-    } else if (data) {
-      setScans((current) => [data as Scan, ...current].slice(0, 8));
+
+    setActiveProduct(updatedProduct);
+    setProducts((prev) => prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)));
+    triggerToast('Sodium Verified', `Reconciled as ${verifiedValue}mg (optimal confidence)`);
+
+    // Sync with backend API
+    try {
+      await fetch(`/api/products/${activeProduct.id}/fields/${sodiumField.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          value: verifiedValue,
+          confirmed: true,
+        }),
+      });
+    } catch (err) {
+      console.warn('Backend sync deferred:', err);
     }
-    setBusy(null);
-    event.target.value = '';
-  }
+  };
+
+  // Save edited field handler
+  const handleSaveField = async (fieldId: string, updates: Partial<NutritionField>) => {
+    const updatedFields = activeProduct.fields.map((f) => {
+      if (f.id === fieldId) {
+        return { ...f, ...updates };
+      }
+      return f;
+    });
+
+    const updatedProduct = {
+      ...activeProduct,
+      fields: updatedFields,
+    };
+
+    setActiveProduct(updatedProduct);
+    setProducts((prev) => prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)));
+    triggerToast('Field Updated', 'Clinical data manually recalibrated.');
+
+    try {
+      await fetch(`/api/products/${activeProduct.id}/fields/${fieldId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+    } catch (err) {
+      console.warn('Field update error:', err);
+    }
+  };
+
+  // Confirm entire food inspection
+  const handleConfirmAll = async () => {
+    // Mark all fields confirmed
+    const updatedFields = activeProduct.fields.map((f) => ({
+      ...f,
+      confirmed: true,
+      isActionRequired: false,
+    }));
+
+    const updatedProduct: InspectionProduct = {
+      ...activeProduct,
+      fields: updatedFields,
+      status: 'confirmed',
+      confirmedAt: new Date().toISOString(),
+      alertTitle: undefined,
+      alertBadge: undefined,
+      alertDescription: undefined,
+      aggregateScore: Math.max(activeProduct.aggregateScore, 98.5),
+    };
+
+    setActiveProduct(updatedProduct);
+    setProducts((prev) => prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)));
+    triggerToast('Verification Stored', 'Updating health analysis profile...');
+
+    try {
+      await fetch('/api/products/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: activeProduct.id }),
+      });
+    } catch (err) {
+      console.warn('Confirm sync error:', err);
+    }
+  };
+
+  // New product scanned from camera/upload
+  const handleProductScanned = (scannedProduct: InspectionProduct) => {
+    setProducts((prev) => [scannedProduct, ...prev.filter((p) => p.id !== scannedProduct.id)]);
+    setActiveProduct(scannedProduct);
+    triggerToast('New Panel Scanned', `Processed ${scannedProduct.title} via OCR`);
+  };
+
+  const hasUnconfirmedItems = activeProduct.fields.some((f) => !f.confirmed);
 
   return (
-    <div className="app-shell">
-      <header className="topbar">
-        <div className="brand-lockup">
-          <div className="brand-mark"><ScanLine size={21} strokeWidth={2.5} /></div>
-          <div>
-            <div className="brand-name">NutriAI</div>
-            <div className="ready-state"><span /> Scanner ready</div>
+    <div className="bg-[#faf8ff] text-[#131b2e] min-h-screen flex flex-col antialiased">
+      {/* Top Header */}
+      <Header
+        onBack={() => {
+          setIsHistoryOpen(true);
+        }}
+        onOpenHistory={() => setIsHistoryOpen(true)}
+        historyCount={products.length}
+      />
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col relative w-full pt-16 pb-12 bg-[#faf8ff]">
+        <div className="flex flex-col w-full max-w-xl mx-auto px-4 pb-12">
+          {/* Interactive Context Card with Thumbnail */}
+          <ContextCard
+            imageThumbnail={activeProduct.imageThumbnail}
+            categorySubtitle={activeProduct.categorySubtitle}
+            title={activeProduct.title}
+            captureSource={activeProduct.captureSource}
+            explanationTitle={activeProduct.explanationTitle}
+            explanationDescription={activeProduct.explanationDescription}
+            onPreviewImage={() => setIsImagePreviewOpen(true)}
+          />
+
+          {/* Attention / Low Confidence Alert Banner */}
+          <AlertBanner
+            title={activeProduct.alertTitle}
+            badge={activeProduct.alertBadge}
+            description={activeProduct.alertDescription}
+            isResolved={!hasUnconfirmedItems}
+          />
+
+          {/* Fields List Section Header */}
+          <section className="mt-4 flex flex-col gap-3">
+            <div className="flex items-center justify-between px-1">
+              <span className="font-semibold text-[14px] text-[#131b2e]">
+                Detected Nutrition Fields ({activeProduct.fields.length})
+              </span>
+              <span className="font-bold text-[10px] text-[#006948] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#006948] animate-pulse"></span>
+                Ready to sync
+              </span>
+            </div>
+
+            {/* List of Detected Nutrition Fields */}
+            <div className="flex flex-col gap-3">
+              {activeProduct.fields.map((field) => {
+                // If it is the active sodium field needing verification, render the specialized card
+                if (field.key === 'sodium' && field.isActionRequired && !field.confirmed) {
+                  return (
+                    <SodiumFieldCard
+                      key={field.id}
+                      field={field}
+                      onVerify={handleVerifySodium}
+                    />
+                  );
+                }
+
+                // If sodium is already verified, render the clean FieldCard or verified card
+                if (field.key === 'sodium' && field.confirmed) {
+                  return (
+                    <SodiumFieldCard
+                      key={field.id}
+                      field={field}
+                      onVerify={handleVerifySodium}
+                    />
+                  );
+                }
+
+                return (
+                  <FieldCard
+                    key={field.id}
+                    field={field}
+                    onEdit={(f) => setEditingField(f)}
+                  />
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Confidence Summary Card & Clinical Integrity Statement */}
+          <OcrScoreCard
+            score={activeProduct.aggregateScore}
+            scoreLabel={activeProduct.scoreLabel}
+            onOpenDetails={() => setIsClinicalInfoOpen(true)}
+          />
+
+          {/* Mobile Action Deck */}
+          <div className="mt-8 flex flex-col gap-2.5">
+            <button
+              id="confirmFoodInfoBtn"
+              onClick={handleConfirmAll}
+              className="w-full h-14 bg-[#006948] text-white font-semibold text-[18px] rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-[0.98] hover:bg-[#005137] transition-all cursor-pointer"
+              type="button"
+            >
+              <span>Confirm Food Information</span>
+              <CheckCircle2 className="w-5 h-5 text-white" />
+            </button>
+
+            <button
+              id="retakePanelBtn"
+              onClick={() => setIsRetakeOpen(true)}
+              className="w-full h-12 bg-white text-[#131b2e] font-semibold text-[14px] rounded-xl shadow-xs border border-[#eaedff] flex items-center justify-center gap-2 hover:bg-[#f2f3ff] active:scale-[0.99] transition-all cursor-pointer"
+              type="button"
+            >
+              <Crop className="w-4 h-4 text-[#3d4a42]" />
+              <span>Retake Specific Panel</span>
+            </button>
           </div>
         </div>
-        <div className="top-actions">
-          <button className="icon-button" aria-label="Notifications"><Bell size={23} /></button>
-          <button className="profile-avatar" aria-label="Open profile"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYTePcv1xZgqSPswYzQhP8HyU44HZG_Th9s_IBGOy7M_SRfVSP5K3HaTWugilzl9yn8Qcqw64YfNUc5-IVTwfPpkNT26kkhLEvbz6N_mGff78MdnUPLznEdkXcMR0xMeL0Xl_qfibhiNIHxttYm2mIbqmsGsOYPOfjSS0H4LkVhmGGeUNJibVFF4lqYFjytQntE257bQXNv_Hl2Bv9Jl5DrDXxdGGVRQM459SS16ZOY63dVkRm-5Mi" alt="Profile" /></button>
-        </div>
-      </header>
-
-      <main className="content">
-        <section className="intro">
-          <div className="eyebrow"><span className="eyebrow-icon"><ScanLine size={15} /></span> Bio-intelligence vision</div>
-          <h1>Scan your food</h1>
-          <p>Scan a food label to instantly decode ingredients, additives, and clinical nutritional health ratings.</p>
-        </section>
-
-        {error && <div className="error-banner" role="alert">{error}<button onClick={() => setError('')} aria-label="Dismiss"><X size={16} /></button></div>}
-
-        <section className="action-stack">
-          <article className="action-card camera-card">
-            <div className="card-title-row">
-              <div className="action-icon mint"><Camera size={28} /></div>
-              <div><div className="action-title">Scan with camera <span className="live-pill">LIVE</span></div><p>Point at the barcode or ingredient label</p></div>
-            </div>
-            <div className="scanner-preview">
-              <img src={productImages.scanner} alt="Food nutrition label preview" />
-              <div className="viewfinder"><div className="align-row"><Crop size={15} /><span>Auto-align</span><Crop size={15} /></div><div className="scan-line" /><span className="capture-copy">Ready for capture</span></div>
-            </div>
-            <button className="primary-button" onClick={() => void openCamera()} disabled={busy !== null}><Camera size={20} />{busy === 'camera' ? 'Initializing lens...' : 'Open camera scanner'}</button>
-          </article>
-
-          <article className="action-card gallery-card">
-            <div className="card-title-row"><div className="action-icon blue"><GalleryHorizontalEnd size={28} /></div><div><div className="action-title">Upload from gallery</div><p>Select a clear screenshot or saved receipt</p></div></div>
-            <div className="gallery-footer"><div className="support-copy"><ImageIcon size={18} /><span>Supports JPG, PNG,<br /> HEIC</span></div><button className="secondary-button" onClick={() => fileInputRef.current?.click()} disabled={busy !== null}>{busy === 'gallery' ? <LoaderCircle className="spin" size={18} /> : null}<span>{busy === 'gallery' ? 'Analyzing...' : 'Browse photos'}</span><ArrowRight size={19} /></button></div>
-            <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={(event) => void handleGallery(event)} />
-          </article>
-        </section>
-
-        <section className="tip-card"><div className="tip-icon"><Lightbulb size={20} /></div><div><div className="tip-title">Scanning tip <span>•</span></div><p>For 99.8% precision, flatten any foil glare and frame the complete ingredients panel along with the nutritional values.</p></div></section>
-
-        <section className="standards"><div className="section-kicker">NutriAI verification standard <ShieldCheck size={17} /></div><div className="standard-grid"><Standard icon={<Check size={18} />} tone="mint" title="Zero jargon" copy="Plain talk" /><Standard icon={<FlaskConical size={18} />} tone="blue" title="Additive lab" copy="E-code safety" /><Standard icon={<ShieldCheck size={18} />} tone="amber" title="Allergen fit" copy="Tailored alerts" /></div></section>
-
-        <section className="recent"><div className="section-heading"><div><h2>Recent scans <span>{scans.length}</span></h2></div><button>View all <ChevronRight size={16} /></button></div>{loadingScans ? <div className="loading-row"><LoaderCircle className="spin" size={22} /> Loading scan history</div> : scans.map((scan) => <ScanRow key={scan.id} scan={scan} />)}</section>
       </main>
 
-      <nav className="bottom-nav"><NavItem icon={<Home size={22} />} label="Home" /><div className="scan-nav"><button onClick={() => void openCamera()} aria-label="Scan"><Camera size={27} /></button><span>Scan</span></div><NavItem icon={<GalleryHorizontalEnd size={22} />} label="History" /><NavItem icon={<UserRound size={22} />} label="Profile" /></nav>
+      {/* Micro-interaction Success Toast */}
+      {toast.show && (
+        <div
+          id="confirmationToast"
+          className="fixed bottom-6 inset-x-4 max-w-sm mx-auto z-50 bg-[#283044] text-[#eef0ff] rounded-xl p-3.5 shadow-2xl flex items-center gap-3 transition-all duration-300 animate-in fade-in slide-in-from-bottom-3"
+        >
+          <div className="w-8 h-8 rounded-full bg-[#006948] text-white flex items-center justify-center shrink-0">
+            <CheckCircle className="w-5 h-5" />
+          </div>
+          <div className="flex flex-col min-w-0 flex-1">
+            <p className="font-semibold text-[14px] text-white leading-tight">
+              {toast.title}
+            </p>
+            <p className="font-normal text-[12px] text-[#eef0ff]/80">
+              {toast.subtitle}
+            </p>
+          </div>
+        </div>
+      )}
 
-      {cameraOpen && <div className="camera-modal" role="dialog" aria-modal="true"><div className="modal-panel"><button className="close-modal" onClick={closeCamera} aria-label="Close camera"><X size={21} /></button><div className="modal-heading"><Sparkles size={18} /> Live scanner</div><div className="live-view"><video ref={videoRef} autoPlay playsInline muted /><div className="modal-frame"><span /><span /><span /><span /></div><div className="modal-label">Center the ingredients panel</div></div><button className="primary-button" onClick={closeCamera}><Check size={19} /> Done scanning</button></div></div>}
+      {/* Modals */}
+      <EditFieldModal
+        field={editingField}
+        isOpen={Boolean(editingField)}
+        onClose={() => setEditingField(null)}
+        onSave={handleSaveField}
+      />
+
+      <RetakeModal
+        isOpen={isRetakeOpen}
+        onClose={() => setIsRetakeOpen(false)}
+        onProductScanned={handleProductScanned}
+      />
+
+      <HistoryModal
+        isOpen={isHistoryOpen}
+        onClose={() => setIsHistoryOpen(false)}
+        products={products}
+        activeProductId={activeProduct.id}
+        onSelectProduct={(p) => setActiveProduct(p)}
+      />
+
+      <ClinicalInfoModal
+        isOpen={isClinicalInfoOpen}
+        onClose={() => setIsClinicalInfoOpen(false)}
+        product={activeProduct}
+      />
+
+      <ImagePreviewModal
+        isOpen={isImagePreviewOpen}
+        onClose={() => setIsImagePreviewOpen(false)}
+        imageUrl={activeProduct.imageThumbnail}
+        title={activeProduct.title}
+      />
     </div>
   );
 }
-
-function Standard({ icon, tone, title, copy }: { icon: ReactNode; tone: string; title: string; copy: string }) {
-  return <div className="standard-card"><div className={`standard-icon ${tone}`}>{icon}</div><strong>{title}</strong><span>{copy}</span></div>;
-}
-
-function ScanRow({ scan }: { scan: Scan }) {
-  const isPending = scan.grade === 'Pending';
-  return <article className="scan-row"><img src={scan.image_url} alt="" /><div className="scan-info"><div className="scan-name">{scan.product_name} {!isPending && <Verified size={16} />}</div><div className="scan-meta">{scan.brand}<i /> {formatAge(scan.scanned_at)}</div></div><div className="scan-score"><span className={`grade ${isPending ? 'pending' : scan.grade.startsWith('A') ? 'green' : 'blue'}`}><b />{scan.grade}</span><small>{isPending ? 'Analysis queued' : `${scan.health_score}/100 Health`}</small></div></article>;
-}
-
-function NavItem({ icon, label }: { icon: ReactNode; label: string }) {
-  return <button className="nav-item">{icon}<span>{label}</span></button>;
-}
-
-export default App;

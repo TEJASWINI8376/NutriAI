@@ -7,238 +7,215 @@
     }
   </style>
   </head><body class="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen antialiased"><header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter-mobile flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="NutriAI Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnYvgsvVrIbKMYWwMm-OHiQxDEn8Ijzg0TsD-j_c0BlRaNTVttMHLF94qvqoUp166EceRlePJJtHFZbirPi_iVb8dyDyU98eS6WzQ-1ITTUzsPeBzRZ428utVRPxGJg7m04pT8V6CrjhDQp-jI6_hygkWIgU5c4mCwDKabhSfO46enxK25YPbX8oHanM3NLm7HrBrTPyOWH2iBHB7SfoVgM8SfCMJDSJWG9hvB2EyCY90NNZnPij2A"/><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">NutriAI</span><span class="font-label-md text-label-md text-on-surface-variant font-normal hidden">Camera Scanner</span></div><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Scanner Ready</span></div></div></div><div class="flex items-center gap-space-sm"><button aria-label="Notifications" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span></button><a class="w-11 h-11 flex items-center justify-center" data-path="profile" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-[0_2px_6px_rgba(0,0,0,0.08)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYTePcv1xZgqSPswYzQhP8HyU44HZG_Th9s_IBGOy7M_SRfVSP5K3HaTWugilzl9yn8Qcqw64YfNUc5-IVTwfPpkNT26kkhLEvbz6N_mGff78MdnUPLznEdkXcMR0xMeL0Xl_qfibhiNIHxttYm2mIbqmsGsOYPOfjSS0H4LkVhmGGeUNJibVFF4lqYFjytQntE257bQXNv_Hl2Bv9Jl5DrDXxdGGVRQM459SS16ZOY63dVkRm-5Mi"/></a></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface"><div class="flex flex-col w-full px-margin-mobile pb-space-2xl">
-<!-- Top Intro Section -->
-<div class="pt-space-lg pb-space-base flex flex-col gap-space-xs">
-<div class="flex items-center gap-space-xs">
-<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary-fixed text-primary">
-<span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
-</span>
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary">Bio-Intelligence Vision</span>
+<!-- Top Progress & Status Pill -->
+<div class="flex items-center justify-between py-space-sm">
+<div class="flex items-center gap-space-xs px-space-md py-1 bg-surface-container rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="font-label-md text-label-md text-primary font-bold">Neural Engine v2.4</span>
 </div>
-<h1 class="font-headline-xl-mobile text-headline-xl-mobile text-on-surface tracking-tight">Scan Your Food</h1>
-<p class="font-body-md text-body-md text-on-surface-variant max-w-sm">
-      Scan a food label to instantly decode ingredients, additives, and clinical nutritional health ratings.
-    </p>
-</div>
-<!-- Primary Scanning Launchers Grid -->
-<div class="flex flex-col gap-space-base mt-space-xs">
-<!-- Camera Action Card -->
-<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-md transition-all duration-300 hover:shadow-xl active:scale-[0.99] group">
-<!-- Glow ambient backdrop -->
-<div class="absolute -right-8 -top-8 w-36 h-36 bg-primary-fixed/30 rounded-full blur-2xl pointer-events-none transition-transform group-hover:scale-125"></div>
-<div class="relative z-10 flex flex-col gap-space-md">
-<div class="flex items-start justify-between">
-<div class="flex items-center gap-space-md">
-<div class="w-13 h-13 w-[52px] h-[52px] rounded-xl bg-primary-fixed/40 flex items-center justify-center text-primary shadow-sm">
-<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
-</div>
-<div>
-<div class="flex items-center gap-space-xs">
-<span class="font-headline-sm text-headline-sm text-on-surface">Scan with Camera</span>
-<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">LIVE</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Point at the barcode or ingredient label</p>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Encrypted Analysis</span>
 </div>
 </div>
-</div>
-<!-- Scanner Simulation Viewfinder Graphic -->
-<div class="relative w-full h-32 rounded-lg bg-surface-container-low overflow-hidden flex items-center justify-center">
-<img class="absolute inset-0 w-full h-full object-cover opacity-35 filter blur-[0.5px]" data-alt="Close up view of healthy organic whole grain cereal box nutrition label with clean typography, well lit in natural soft kitchen daylight, sharp laboratory clarity, emerald green accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8qrIUT3WVDy9EZ96WHG1xvqTHvKu5Ue_rQxbfCgQFo_SBFJrIg_CRZlXi62B0frsV3CnKAv2OVZdt5HMlvLtSI_Mxms2JCqxH65QPDhK1s-07FD_93ep2ez0AEDWuq-gGr7Kuh4-ZCh-TJNPjQDcCyNe4T7rFaPFDi8q6zhwtONPb8PSpWQyhmHwXJmzqXiDpIG8-3R20BREOsz3uXMIzVdO0B2wmfiP8NeaViVTOw6va3gl2EJ6j"/>
-<!-- Scanner Target Frame Overlay -->
-<div class="relative z-10 w-44 h-20 rounded-md bg-surface-container-lowest/80 backdrop-blur-sm flex flex-col items-center justify-center p-space-xs shadow-sm">
-<div class="w-full flex items-center justify-between text-primary px-1">
-<span class="material-symbols-outlined text-[14px]">crop_free</span>
-<span class="font-label-sm text-label-sm text-primary font-semibold tracking-wider animate-pulse">AUTO-ALIGN</span>
-<span class="material-symbols-outlined text-[14px]">crop_free</span>
-</div>
-<div class="w-full h-0.5 bg-primary/40 mt-1 relative overflow-hidden rounded-full">
-<div class="absolute inset-y-0 left-0 w-1/3 bg-primary animate-[moveScan_1.8s_ease-in-out_infinite]"></div>
-</div>
-<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] mt-1">Ready for capture</span>
-</div>
-</div>
-<button class="w-full py-3.5 px-space-base rounded-xl bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-space-xs shadow-[0_4px_16px_rgba(0,105,72,0.25)] hover:bg-primary-container active:scale-[0.98] transition-all" id="btn-open-camera" type="button">
-<span class="material-symbols-outlined text-[20px]">center_focus_strong</span>
-<span>Open Camera Scanner</span>
-</button>
-</div>
-</div>
-<!-- Gallery Action Card -->
-<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.99] group">
-<div class="flex items-start justify-between">
-<div class="flex items-center gap-space-md">
-<div class="w-[52px] h-[52px] rounded-xl bg-secondary-fixed/50 flex items-center justify-center text-secondary shadow-sm">
-<span class="material-symbols-outlined text-[28px]">photo_library</span>
-</div>
-<div>
-<span class="font-headline-sm text-headline-sm text-on-surface">Upload from Gallery</span>
-<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Select a clear screenshot or saved receipt</p>
+<!-- Hero Analysis Visualizer Bento -->
+<div class="mt-space-md w-full rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+<!-- Ambient Bio-Glow Background Spotlights -->
+<div class="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-secondary-container/20 blur-2xl pointer-events-none"></div>
+<div class="absolute -bottom-10 -left-10 w-44 h-44 rounded-full bg-primary-fixed/30 blur-2xl pointer-events-none"></div>
+<!-- Central Interactive Scanner Hub -->
+<div class="relative flex items-center justify-center my-space-md">
+<!-- Animated Orbiting Pulses -->
+<div class="absolute w-36 h-36 rounded-full bg-primary-fixed/20 animate-pulse"></div>
+<div class="absolute w-44 h-44 rounded-full bg-secondary-fixed/30 animate-spin" style="animation-duration: 9s;"></div>
+<!-- Center Hex/Ring Optical Container -->
+<div class="relative z-10 w-28 h-28 rounded-full bg-surface-container-low p-1.5 shadow-md flex items-center justify-center">
+<!-- Scanned Thumbnail with Medical Scanning Grid Overlay -->
+<div class="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Close up crisp macro photo of an artisan organic oat milk nutrition facts carton label being scanned, illuminated with clean medical laboratory cool lighting and subtle green laser optical grid lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDihowygc4oLvf529R26eQLyz9xxaKCS1AnW5geKK_GaVZea1cbVdgSGOQXeAn3l_h2bPwTcTlTaisF0PsydL1x2xxCTrfIHeFaYwLB2CQe-sFK-e4ScztOK6rFG-BbNmYR_bOUNMUEo5Yb0UQvL6iymd2S9KHoKZnmdCV5Ll1f-UazqaUB6jTJydKRg7jkFRgBJ7gIXv_8yHAtrpWzLJjLVdgzdlK41nG40dpZHMnc10_L2379k8tL"/>
+<!-- Translucent Digital Scanning Grid Overlay -->
+<div class="absolute inset-0 bg-primary/20 backdrop-blur-[1px] flex flex-col justify-between p-1.5">
+<div class="w-full h-0.5 bg-primary-fixed shadow-[0_0_8px_#68dba9] animate-bounce"></div>
+<div class="flex justify-between items-end opacity-80">
+<span class="font-label-sm text-label-sm text-on-primary font-bold">OCR: 99.4%</span>
+<span class="material-symbols-outlined text-on-primary text-[14px]">graphic_eq</span>
 </div>
 </div>
 </div>
-<div class="mt-space-md pt-space-xs flex items-center justify-between">
-<div class="flex items-center gap-space-xs text-on-surface-variant">
-<span class="material-symbols-outlined text-[18px] text-secondary">image</span>
-<span class="font-label-md text-label-md">Supports JPG, PNG, HEIC</span>
-</div>
-<button class="py-2.5 px-space-lg rounded-xl bg-surface-container-high text-on-surface font-label-lg text-label-lg hover:bg-surface-container-highest active:scale-95 transition-all flex items-center gap-1.5" id="btn-upload-gallery" type="button">
-<span>Browse Photos</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
+<!-- Floating Target Badge -->
+<div class="absolute -bottom-2 right-0 bg-primary text-on-primary p-1.5 rounded-full shadow-md flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">biotech</span>
 </div>
 </div>
 </div>
-<!-- Smart Bio Tip Card -->
-<div class="mt-space-base rounded-xl bg-surface-container-low p-space-base flex gap-space-md items-start">
-<div class="w-9 h-9 rounded-full bg-tertiary-fixed/60 flex items-center justify-center text-tertiary shrink-0">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+<!-- Progress Percentage & Sub-status -->
+<div class="mt-space-sm flex flex-col items-center">
+<div class="flex items-baseline gap-1">
+<span class="font-metric-numeral text-metric-numeral text-primary">68%</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant font-medium">Complete</span>
 </div>
-<div class="flex flex-col gap-0.5">
-<div class="flex items-center gap-1.5">
-<span class="font-label-md text-label-md text-on-surface font-semibold">Scanning Tip</span>
-<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<div class="w-56 h-2 bg-surface-container rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-700 ease-out" style="width: 68%;"></div>
 </div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">
-        For 99.8% precision, flatten any foil glare and frame the complete ingredients panel along with the nutritional values.
+</div>
+<!-- Header Copy -->
+<div class="mt-space-md">
+<h2 class="font-headline-md text-headline-md text-on-surface">Understanding Your Food…</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 max-w-xs">
+        Our AI is analyzing label text, translating additives, and breaking down nutrients in real time.
       </p>
 </div>
 </div>
-<!-- Clinical Pillars / Guarantees -->
-<div class="mt-space-lg flex flex-col gap-space-sm">
-<div class="flex items-center justify-between px-space-xs">
-<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold">NutriAI Verification Standard</span>
-<span class="material-symbols-outlined text-[16px] text-primary">verified_user</span>
+<!-- Real-Time Processing Sequence Card -->
+<div class="mt-space-lg w-full rounded-xl bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="flex items-center justify-between mb-space-base">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-bold">Clinical Extraction Steps</span>
+<span class="font-label-sm text-label-sm text-secondary bg-surface-container-high px-2 py-0.5 rounded-full font-bold">Step 3 of 6</span>
 </div>
-<div class="grid grid-cols-3 gap-space-xs">
-<!-- Pillar 1 -->
-<div class="rounded-xl bg-surface-container-lowest p-space-sm flex flex-col items-center text-center shadow-sm">
-<div class="w-8 h-8 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary mb-1">
-<span class="material-symbols-outlined text-[18px]">spellcheck</span>
+<!-- Processing Pipeline Items -->
+<div class="flex flex-col gap-space-md">
+<!-- Step 1: Completed -->
+<div class="flex items-start gap-space-md">
+<div class="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">check</span>
 </div>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Zero Jargon</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] leading-tight mt-0.5">Plain talk</span>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold truncate">Reading food label</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Done</span>
 </div>
-<!-- Pillar 2 -->
-<div class="rounded-xl bg-surface-container-lowest p-space-sm flex flex-col items-center text-center shadow-sm">
-<div class="w-8 h-8 rounded-full bg-secondary-fixed/50 flex items-center justify-center text-secondary mb-1">
-<span class="material-symbols-outlined text-[18px]">biotech</span>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Additive Lab</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] leading-tight mt-0.5">E-code safety</span>
-</div>
-<!-- Pillar 3 -->
-<div class="rounded-xl bg-surface-container-lowest p-space-sm flex flex-col items-center text-center shadow-sm">
-<div class="w-8 h-8 rounded-full bg-tertiary-fixed/60 flex items-center justify-center text-tertiary mb-1">
-<span class="material-symbols-outlined text-[18px]">health_and_safety</span>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface font-bold">Allergen Fit</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant text-[11px] leading-tight mt-0.5">Tailored alerts</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Parsed 28 textual lines across packaging bounding boxes.</span>
 </div>
 </div>
+<!-- Step 2: Completed -->
+<div class="flex items-start gap-space-md">
+<div class="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">check</span>
 </div>
-<!-- Recent Scan Shortcuts / Instant Re-inspect -->
-<div class="mt-space-lg flex flex-col gap-space-sm">
-<div class="flex items-center justify-between px-space-xs">
-<div class="flex items-center gap-space-xs">
-<span class="font-headline-sm text-headline-sm text-on-surface">Recent Scans</span>
-<span class="w-5 h-5 rounded-full bg-surface-container-high text-on-surface text-[11px] flex items-center justify-center font-bold">2</span>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold truncate">Extracting ingredients</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Done</span>
 </div>
-<button class="text-primary font-label-md text-label-md hover:underline flex items-center" type="button">
-<span>View all</span>
-<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Isolated 14 distinct raw components &amp; binder ratios.</span>
+</div>
+</div>
+<!-- Step 3: In Progress (Active Pulse) -->
+<div class="flex items-start gap-space-md p-space-sm bg-surface-container-low rounded-lg">
+<div class="w-7 h-7 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0 mt-0.5 animate-spin" style="animation-duration: 3s;">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-secondary font-bold truncate">Identifying additives</span>
+<span class="font-label-sm text-label-sm bg-secondary text-on-secondary px-2 py-0.5 rounded-full font-bold">Active</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Cross-matching E322, Xanthan Gum, and Dipotassium Phosphate...</span>
+</div>
+</div>
+<!-- Step 4: Upcoming -->
+<div class="flex items-start gap-space-md opacity-60">
+<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant shrink-0 mt-0.5">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-normal truncate">Analyzing nutrition</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Waiting</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Bioavailability, macronutrients, and glycemic forecast.</span>
+</div>
+</div>
+<!-- Step 5: Upcoming -->
+<div class="flex items-start gap-space-md opacity-60">
+<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant shrink-0 mt-0.5">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-normal truncate">Simplifying technical terms</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Waiting</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Generating everyday plain-language ingredient cards.</span>
+</div>
+</div>
+<!-- Step 6: Upcoming -->
+<div class="flex items-start gap-space-md opacity-60">
+<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant shrink-0 mt-0.5">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-normal truncate">Checking information</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Waiting</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Double-checking allergy warnings with your profile.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Scientific Transparency Trust Notice -->
+<div class="mt-space-md w-full rounded-xl bg-surface-container-high p-space-md flex items-start gap-space-sm shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[22px] shrink-0 mt-0.5">verified_user</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Evidence-Based Integrity</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-relaxed">
+        Chemical names are cross-referenced with peer-reviewed medical food databases without commercial or brand bias.
+      </p>
+</div>
+</div>
+<!-- Live Micro Metrics Preview -->
+<div class="mt-space-md grid grid-cols-2 gap-space-sm">
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">nutrition</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Detected Items</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">14 Active</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">format_image_left</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Allergen Scan</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold">Clear So Far</span>
+</div>
+</div>
+</div>
+<!-- User Control Action Bottom Zone -->
+<div class="mt-space-xl flex flex-col gap-space-sm w-full">
+<button class="w-full py-3.5 px-space-lg rounded-xl bg-surface-container-high text-on-surface font-label-lg text-label-lg flex items-center justify-center gap-space-xs active:scale-98 transition-all" id="pause-scan-btn" type="button">
+<span class="material-symbols-outlined text-[20px]">pause_circle</span>
+<span id="pause-btn-text">Pause Analysis</span>
+</button>
+<button class="w-full py-2 px-space-lg text-error font-label-md text-label-md flex items-center justify-center gap-1 active:opacity-70 transition-opacity" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span>Cancel Scan</span>
 </button>
 </div>
-<!-- Product Mini Card 1 -->
-<div class="w-full rounded-xl bg-surface-container-lowest p-space-md flex items-center justify-between shadow-sm transition-transform active:scale-[0.99] cursor-pointer">
-<div class="flex items-center gap-space-md min-w-0">
-<div class="w-12 h-12 rounded-lg bg-surface-container-low overflow-hidden relative shrink-0">
-<img class="w-full h-full object-cover" data-alt="Packaged artisanal almond milk bottle clean modern bio packaging on bright clinical studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkTH-6uwTAvqzxPC88AESbmfAodcajEQNSLc2AryRSUcUaKMydtr5HsvRznxJ_09iYM4dqqGL9UM6ERuS23w1q41nkq4MSKtJhi9mrvUSu5PmV1vfWIlfnMQEDLJA5lMx5ErGpb9HHiMUtWUHLQ3mqtz1vOZ1x9_Mr7W4R-d5ggOq5lLvGEFVwSWAb7v66_3jXOxGYOvxfJ7AfSNH9f04nJdC4ZMBaMTTOfk5X_hDTqs1YFyX9f8mh"/>
 </div>
-<div class="flex flex-col min-w-0">
-<div class="flex items-center gap-1.5">
-<span class="font-label-lg text-label-lg text-on-surface truncate">Pure Almond Silk Drink</span>
-<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
-</div>
-<div class="flex items-center gap-space-xs mt-0.5">
-<span class="font-body-sm text-body-sm text-on-surface-variant">Earth Pure Co.</span>
-<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">2h ago</span>
-</div>
-</div>
-</div>
-<div class="flex flex-col items-end shrink-0 pl-space-sm">
-<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed">
-<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-<span class="font-label-sm text-label-sm font-bold">Grade A</span>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface-variant text-[11px] mt-1">94/100 Health</span>
-</div>
-</div>
-<!-- Product Mini Card 2 -->
-<div class="w-full rounded-xl bg-surface-container-lowest p-space-md flex items-center justify-between shadow-sm transition-transform active:scale-[0.99] cursor-pointer">
-<div class="flex items-center gap-space-md min-w-0">
-<div class="w-12 h-12 rounded-lg bg-surface-container-low overflow-hidden relative shrink-0">
-<img class="w-full h-full object-cover" data-alt="Granola bar healthy organic trail snack in minimalist eco packaging on bright pure white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3VBhM_9KDAjYLMoT_8ENmAU6OY3GvrjYuTYIwwyas8_Fj3POLNRVzfTCU0pqkRc-QIKP-9SxhqCF7vZVaax-tezV-oVSxyoTY9WitEi8S6or-yDVwGQ9YFmQd68ZHCkGKriOT-Vibsuyyj0kYmmMZCKlzqaGJYeyeZ4t6cwB7osRiVV-98yfPbi19PguuHTGhBgETbGuSwxWJZEuZVZFJmMRMjZX9wQQgM_tMnMD8_9OGhcWq8lwe"/>
-</div>
-<div class="flex flex-col min-w-0">
-<div class="flex items-center gap-1.5">
-<span class="font-label-lg text-label-lg text-on-surface truncate">Dark Cacao Super-Bar</span>
-<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
-</div>
-<div class="flex items-center gap-space-xs mt-0.5">
-<span class="font-body-sm text-body-sm text-on-surface-variant">BioHarvest</span>
-<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Yesterday</span>
-</div>
-</div>
-</div>
-<div class="flex flex-col items-end shrink-0 pl-space-sm">
-<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-<span class="font-label-sm text-label-sm font-bold">Grade B+</span>
-</div>
-<span class="font-label-sm text-label-sm text-on-surface-variant text-[11px] mt-1">82/100 Health</span>
-</div>
-</div>
-</div>
-<!-- Hidden File Input for Gallery Flow Simulation -->
-<input accept="image/*" class="hidden" id="scanner-file-input" type="file"/>
-<!-- Inline Micro-Interaction Script -->
 <script>
-    (function() {
-      const openCamBtn = document.getElementById('btn-open-camera');
-      const uploadGalBtn = document.getElementById('btn-upload-gallery');
-      const fileInput = document.getElementById('scanner-file-input');
+  (function() {
+    const pauseBtn = document.getElementById('pause-scan-btn');
+    const pauseText = document.getElementById('pause-btn-text');
+    let isPaused = false;
 
-      if (openCamBtn) {
-        openCamBtn.addEventListener('click', function() {
-          const originalText = openCamBtn.innerHTML;
-          openCamBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">refresh</span><span>Initializing Lens...</span>';
-          openCamBtn.classList.add('opacity-90');
-          setTimeout(() => {
-            openCamBtn.innerHTML = originalText;
-            openCamBtn.classList.remove('opacity-90');
-            // Navigate or simulate viewfinder trigger
-            const camLink = document.querySelector('a[data-path="camera-scanner"]');
-            if (camLink) camLink.click();
-          }, 600);
-        });
-      }
-
-      if (uploadGalBtn && fileInput) {
-        uploadGalBtn.addEventListener('click', function() {
-          fileInput.click();
-        });
-
-        fileInput.addEventListener('change', function(e) {
-          if (e.target.files && e.target.files[0]) {
-            uploadGalBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-primary animate-pulse">sync</span><span>Analyzing...</span>';
-            setTimeout(() => {
-              uploadGalBtn.innerHTML = '<span>Browse Photos</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>';
-            }, 1200);
-          }
-        });
-      }
-    })();
-  </script>
-</div></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/95 backdrop-blur-xl shadow-[0_-4px_16px_rgba(0,0,0,0.04)]" data-active-classes="text-primary font-bold"><div class="relative flex items-center justify-around h-16 px-gutter-mobile"><a class="flex flex-col items-center justify-center w-14 h-14 text-on-surface-variant transition-colors" data-path="home-dashboard" href="#"><span class="material-symbols-outlined text-[24px]">home</span><span class="font-label-sm text-label-sm mt-0.5">Home</span></a><div class="relative -top-5 flex flex-col items-center"><a aria-current="page" class="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-[0_8px_20px_rgba(0,105,72,0.35)] transition-transform active:scale-95 text-primary font-bold" data-path="camera-scanner" href="#"><span class="material-symbols-outlined text-[28px]">photo_camera</span></a><span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Scan</span></div><a class="flex flex-col items-center justify-center w-14 h-14 text-on-surface-variant transition-colors" data-path="scan-history" href="#"><span class="material-symbols-outlined text-[24px]">receipt_long</span><span class="font-label-sm text-label-sm mt-0.5">History</span></a><a class="flex flex-col items-center justify-center w-14 h-14 text-on-surface-variant transition-colors" data-path="user-profile" href="#"><span class="material-symbols-outlined text-[24px]">person</span><span class="font-label-sm text-label-sm mt-0.5">Profile</span></a></div><div class="w-full flex justify-center pb-1"><div class="w-32 h-1 bg-outline-variant/60 rounded-full"></div></div></nav></body></html>
+    if (pauseBtn && pauseText) {
+      pauseBtn.addEventListener('click', function() {
+        isPaused = !isPaused;
+        if (isPaused) {
+          pauseText.textContent = 'Resume Analysis';
+          pauseBtn.classList.replace('bg-surface-container-high', 'bg-primary');
+          pauseBtn.classList.replace('text-on-surface', 'text-on-primary');
+        } else {
+          pauseText.textContent = 'Pause Analysis';
+          pauseBtn.classList.replace('bg-primary', 'bg-surface-container-high');
+          pauseBtn.classList.replace('text-on-primary', 'text-on-surface');
+        }
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface/95 backdrop-blur-xl shadow-[0_-4px_16px_rgba(0,0,0,0.04)]" data-active-classes="text-primary font-bold"><div class="relative flex items-center justify-around h-16 px-gutter-mobile"><a class="flex flex-col items-center justify-center w-14 h-14 text-on-surface-variant transition-colors" data-path="home-dashboard" href="#"><span class="material-symbols-outlined text-[24px]">home</span><span class="font-label-sm text-label-sm mt-0.5">Home</span></a><div class="relative -top-5 flex flex-col items-center"><a aria-current="page" class="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-[0_8px_20px_rgba(0,105,72,0.35)] transition-transform active:scale-95 text-primary font-bold" data-path="camera-scanner" href="#"><span class="material-symbols-outlined text-[28px]">photo_camera</span></a><span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Scan</span></div><a class="flex flex-col items-center justify-center w-14 h-14 text-on-surface-variant transition-colors" data-path="scan-history" href="#"><span class="material-symbols-outlined text-[24px]">receipt_long</span><span class="font-label-sm text-label-sm mt-0.5">History</span></a><a class="flex flex-col items-center justify-center w-14 h-14 text-on-surface-variant transition-colors" data-path="user-profile" href="#"><span class="material-symbols-outlined text-[24px]">person</span><span class="font-label-sm text-label-sm mt-0.5">Profile</span></a></div><div class="w-full flex justify-center pb-1"><div class="w-32 h-1 bg-outline-variant/60 rounded-full"></div></div></nav></body></html>

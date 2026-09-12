@@ -1,22 +1,24 @@
-# NutriAI
-### 🌿 NutriAI — Your Personalized Food & Health Intelligence
+# Pixel Perfect App
 
-**NutriAI** is an AI-powered personalized nutrition assistant designed to help users make more informed food choices based on their individual health information. Instead of giving generic dietary advice, NutriAI connects **patient health data with real-world food information** to provide a personalized and explainable **“Can I Eat This?”** assessment.
+Build a real, functional full-stack web app from the public HTML reference at https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzAwMDY1YWNmMDNlM2UxZDgwMzZjNzk1ZDI1MGRjZmRjEgsSBxD24Ijojh0YAZIBIwoKcHJvamVjdF9pZBIVQhM2NDI3MjEzNjMyMDE2OTUxNzMy&filename=&opi=89354086. Read and use that HTML as the primary visual and product reference; hotlink its referenced public images if useful. Implement the matching frontend plus the necessary Lovable Cloud backend so the core interface works for real, including persistent data and interactions indicated by the reference. Enable Lovable Cloud first if needed. Use sensible product decisions where the reference leaves behavior unspecified.
 
-The app works through three integrated components.
+This project was built with [Lovable](https://lovable.dev).
 
-**👤 Patient & Medical:** Users create a health profile and can upload medical reports and prescriptions through their camera, gallery, or PDF. Medical OCR extracts relevant information, which is displayed for user verification. Only after confirmation is the information added to the user's verified health profile.
+## Build with Lovable
 
-**📷 Food Analysis:** Users can scan a food product or upload an image of its label. Food OCR extracts ingredients, serving size, and nutritional information such as calories, sugar, sodium, fat, saturated fat, carbohydrates, and protein. Uncertain or low-confidence information is identified and can undergo basic verification.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/90f8a65a-aae7-41df-a85c-14d63342c34d).
 
-**🤖 Agent & Decision:** NutriAI's decision layer combines the verified patient profile with the analyzed food information. Its agent investigates which factors are relevant to the individual, verifies important information, and applies defined rules to assess potential dietary concerns. When relevant, it can also consider food–medicine context.
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
-The final result is presented through a simple **🟢 Suitable, 🟡 Use Caution, or 🔴 Not Recommended** indicator, accompanied by a clear explanation of **why** the result was reached and supporting evidence or sources. An activity timeline can also show how the agent reached its assessment.
+## Development
 
-NutriAI is designed to make nutrition information **personalized, transparent, and easy to understand**, while keeping the user involved in confirming extracted medical and food data.
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-**NutriAI: Know your health. Understand your food. Make informed choices.**
-
-## Food Scanner
-
-The integrated food-scanner application provides the food label analysis workflow described above.
+```sh
+git clone <this-repository-url>
+cd <repository-name>
+npm i
+npm run dev
+```
