@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Edit2, Database, Sparkles, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Edit2 } from 'lucide-react';
 import { NutritionField } from '../types';
 
 interface FieldCardProps {
@@ -8,58 +8,16 @@ interface FieldCardProps {
 }
 
 export const FieldCard: React.FC<FieldCardProps> = ({ field, onEdit }) => {
-  const renderSourceBadge = () => {
-    if (!field.source && !field.sourceBadge) return null;
-
-    if (field.source === 'open_food_facts' || field.sourceBadge?.includes('Open Food Facts')) {
-      return (
-        <span
-          title="Authoritative nutrition verified against Open Food Facts global database"
-          className="inline-flex items-center gap-1 bg-[#006948]/10 text-[#006948] text-[10px] font-bold px-2 py-0.5 rounded-full border border-[#006948]/20"
-        >
-          <Database className="w-3 h-3 text-[#006948]" />
-          <span>Open Food Facts (Verified)</span>
-        </span>
-      );
-    }
-
-    if (field.source === 'uncertain' || field.sourceBadge?.includes('Needs Review')) {
-      return (
-        <span
-          title="Manual check recommended due to package curvature or low optical confidence"
-          className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-200"
-        >
-          <AlertCircle className="w-3 h-3 text-amber-600" />
-          <span>OCR Needs Review</span>
-        </span>
-      );
-    }
-
-    // Default or Gemini Vision OCR
-    return (
-      <span
-        title="Extracted via Gemini Vision optical neural pipeline"
-        className="inline-flex items-center gap-1 bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-purple-200"
-      >
-        <Sparkles className="w-3 h-3 text-purple-600" />
-        <span>Gemini Vision OCR</span>
-      </span>
-    );
-  };
-
   return (
     <div
       id={`fieldCard-${field.id}`}
       className="bg-white rounded-xl p-4 shadow-sm flex flex-col gap-1 border border-[#eaedff] transition-all hover:border-[#bccac0]"
     >
-      {/* Header: Label, Source Origin Badge, Confidence */}
-      <div className="flex items-center justify-between flex-wrap gap-1.5">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-bold text-[10px] leading-[14px] text-[#3d4a42] uppercase tracking-wider">
-            {field.label}
-          </span>
-          {renderSourceBadge()}
-        </div>
+      {/* Header: Label & Confidence */}
+      <div className="flex items-center justify-between">
+        <span className="font-bold text-[10px] leading-[14px] text-[#3d4a42] uppercase tracking-wider">
+          {field.label}
+        </span>
 
         <div className="flex items-center gap-1 bg-[#006948]/10 text-[#006948] px-2 py-0.5 rounded-full shrink-0">
           <CheckCircle2 className="w-3.5 h-3.5 text-[#006948]" />

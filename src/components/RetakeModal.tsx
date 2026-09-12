@@ -171,7 +171,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
       <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-[#eaedff] flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-[#006948]/10 text-[#006948] flex items-center justify-center">
               <Database className="w-5 h-5" />
@@ -194,7 +194,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
         </div>
 
         {/* Content Body */}
-        <div className="p-5 flex flex-col gap-4 overflow-y-auto">
+        <div className="p-5 flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-4 modal-scroll">
           {/* Panel Selector */}
           <div>
             <label className="block text-[12px] font-bold text-[#3d4a42] uppercase tracking-wider mb-1.5">
@@ -242,7 +242,7 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
                   : 'border-transparent text-[#3d4a42] hover:text-[#131b2e]'
               }`}
             >
-              <QrCode className="w-4 h-4" /> Barcode API
+              <QrCode className="w-4 h-4" /> Barcode Search
             </button>
             <button
               onClick={() => {

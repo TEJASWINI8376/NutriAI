@@ -18,7 +18,7 @@ export const ClinicalInfoModal: React.FC<ClinicalInfoModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
       <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-[#eaedff] flex flex-col max-h-[85vh]">
-        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between bg-[#faf8ff]">
+        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between bg-[#faf8ff] shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-[#006948]/10 text-[#006948] flex items-center justify-center">
               <ShieldCheck className="w-5 h-5 text-[#006948]" />
@@ -40,7 +40,7 @@ export const ClinicalInfoModal: React.FC<ClinicalInfoModalProps> = ({
           </button>
         </div>
 
-        <div className="p-5 flex flex-col gap-4 overflow-y-auto">
+        <div className="p-5 flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-4 modal-scroll">
           {/* Main Statement */}
           <div className="bg-[#f2f3ff] rounded-xl p-4 border border-[#eaedff]">
             <h4 className="font-semibold text-[14px] text-[#131b2e] mb-1">
@@ -125,7 +125,7 @@ export const ClinicalInfoModal: React.FC<ClinicalInfoModalProps> = ({
           </div>
         </div>
 
-        <div className="p-4 border-t border-[#eaedff] bg-[#faf8ff] flex justify-end">
+        <div className="p-4 border-t border-[#eaedff] bg-[#faf8ff] flex justify-end shrink-0">
           <button
             type="button"
             onClick={onClose}

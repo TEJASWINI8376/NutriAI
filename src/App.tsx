@@ -310,7 +310,7 @@ export default function App() {
                 Select Inspected Food Product
               </span>
               <span className="text-[11px] font-semibold text-[#006948]">
-                Open Food Facts API Verified
+                Verified Food Database
               </span>
             </div>
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
@@ -338,7 +338,7 @@ export default function App() {
                           isSelected ? 'bg-white/20 text-white' : 'bg-[#006948]/10 text-[#006948]'
                         }`}
                       >
-                        OFF API
+                        Verified
                       </span>
                     ) : (
                       <span
@@ -346,7 +346,7 @@ export default function App() {
                           isSelected ? 'bg-white/20 text-white' : 'bg-purple-100 text-purple-700'
                         }`}
                       >
-                        OCR Demo
+                        OCR Scan
                       </span>
                     )}
                   </button>

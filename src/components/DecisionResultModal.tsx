@@ -63,9 +63,9 @@ export const DecisionResultModal: React.FC<DecisionResultModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border border-[#eaedff] flex flex-col max-h-[92vh]">
+      <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border border-[#eaedff] flex flex-col max-h-[88vh] my-auto">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between bg-[#faf8ff]">
+        <div className="px-5 py-4 border-b border-[#eaedff] flex items-center justify-between bg-[#faf8ff] shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-[#006948]/10 flex items-center justify-center">
               <Activity className="w-5 h-5 text-[#006948]" />
@@ -88,7 +88,7 @@ export const DecisionResultModal: React.FC<DecisionResultModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-5 flex flex-col gap-4 overflow-y-auto">
+        <div className="p-5 flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col gap-4 modal-scroll">
           {/* Decision Hero Banner */}
           <div
             className={`p-4 rounded-2xl border ${badgeTheme.containerBg} border-[#eaedff] flex items-start gap-3.5`}
@@ -310,7 +310,7 @@ export const DecisionResultModal: React.FC<DecisionResultModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-[#eaedff] bg-[#faf8ff] flex items-center justify-end">
+        <div className="p-4 border-t border-[#eaedff] bg-[#faf8ff] flex items-center justify-end shrink-0">
           <button
             type="button"
             onClick={onClose}

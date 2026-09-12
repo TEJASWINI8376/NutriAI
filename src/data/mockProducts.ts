@@ -7,7 +7,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
     brand: 'General Mills',
     barcode: '016000275270',
     categorySubtitle: 'Whole Grain Oat Cereal',
-    captureSource: 'Verified via Open Food Facts API (Barcode: 016000275270)',
+    captureSource: 'Verified Food Database (Barcode: 016000275270)',
     dataSource: 'open_food_facts',
     imageThumbnail:
       'https://images.unsplash.com/photo-1521483451569-e33803c0330c?auto=format&fit=crop&w=400&q=80',
@@ -25,7 +25,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-serving-cheerios',
@@ -35,7 +35,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-calories-cheerios',
@@ -46,7 +46,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-sugars-cheerios',
@@ -57,7 +57,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-sodium-cheerios',
@@ -68,7 +68,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-fat-cheerios',
@@ -78,7 +78,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-satfat-cheerios',
@@ -88,7 +88,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-carbs-cheerios',
@@ -98,7 +98,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-protein-cheerios',
@@ -108,7 +108,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-allergens-cheerios',
@@ -119,7 +119,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confirmed: true,
         tags: ['Almonds'],
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-ingredients-cheerios',
@@ -130,7 +130,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
     ],
     aggregateScore: 99.6,
@@ -163,7 +163,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-serving-2',
@@ -173,7 +173,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-calories-2',
@@ -184,7 +184,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-sugars-2',
@@ -195,7 +195,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-sodium-2',
@@ -206,7 +206,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-fat-2',
@@ -216,7 +216,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-satfat-2',
@@ -226,7 +226,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-carbs-2',
@@ -236,7 +236,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-protein-2',
@@ -247,7 +247,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-allergens-2',
@@ -258,7 +258,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confirmed: true,
         tags: ['Milk'],
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-ingredients-2',
@@ -269,7 +269,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
     ],
     aggregateScore: 99.2,
@@ -284,7 +284,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
     brand: 'Ferrero',
     barcode: '3017620422003',
     categorySubtitle: 'Hazelnut & Cocoa Spread',
-    captureSource: 'Verified via Open Food Facts API (Barcode: 3017620422003)',
+    captureSource: 'Verified Food Database (Barcode: 3017620422003)',
     dataSource: 'open_food_facts',
     imageThumbnail:
       'https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=400&q=80',
@@ -302,7 +302,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-serving-nutella',
@@ -312,7 +312,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-calories-nutella',
@@ -323,7 +323,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-sugars-nutella',
@@ -334,7 +334,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-sodium-nutella',
@@ -345,7 +345,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-fat-nutella',
@@ -355,7 +355,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-satfat-nutella',
@@ -365,7 +365,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-carbs-nutella',
@@ -375,7 +375,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-protein-nutella',
@@ -385,7 +385,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-allergens-nutella',
@@ -396,7 +396,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confirmed: true,
         tags: ['Hazelnuts', 'Milk', 'Soy'],
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-ingredients-nutella',
@@ -407,7 +407,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
     ],
     aggregateScore: 99.2,
@@ -440,7 +440,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-serving-3',
@@ -450,7 +450,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-calories-3',
@@ -461,7 +461,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-sugars-3',
@@ -472,7 +472,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-sodium-3',
@@ -483,7 +483,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-fat-3',
@@ -493,7 +493,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-satfat-3',
@@ -503,7 +503,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-carbs-3',
@@ -513,7 +513,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-protein-3',
@@ -523,7 +523,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-allergens-3',
@@ -534,7 +534,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confirmed: true,
         tags: ['Gluten (Oats)'],
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
       {
         id: 'f-ingredients-3',
@@ -545,7 +545,7 @@ export const INITIAL_PRODUCTS: InspectionProduct[] = [
         confidence: 100,
         confirmed: true,
         source: 'open_food_facts',
-        sourceBadge: 'Open Food Facts (Verified API)',
+        sourceBadge: 'Open Food Facts (Verified)',
       },
     ],
     aggregateScore: 98.4,

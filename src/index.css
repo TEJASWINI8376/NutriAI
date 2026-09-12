@@ -68,3 +68,29 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Custom scrollbar utility for scrollable modals and containers */
+.modal-scroll {
+  scrollbar-width: thin !important;
+  scrollbar-color: #bccac0 transparent !important;
+  -ms-overflow-style: auto !important;
+}
+
+.modal-scroll::-webkit-scrollbar {
+  display: block !important;
+  width: 6px !important;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+  background-color: #bccac0 !important;
+  border-radius: 9999px !important;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #6d7a72 !important;
+}
+
