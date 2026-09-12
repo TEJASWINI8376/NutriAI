@@ -1,3 +1,3 @@
-import app from '../server.ts';
+import serverModule from '../dist/server.cjs';
 
-export default app;
+export default serverModule.default ?? serverModule;
