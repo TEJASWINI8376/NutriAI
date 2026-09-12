@@ -461,7 +461,7 @@ app.post('/api/products/confirm', (req, res) => {
 
 // =================== AGENT DECISION ENGINE ===================
 // Integrates Person 2's food analysis with Person 3's agentic decision pipeline
-app.post('/api/can-i-eat', (req, res) => {
+app.post('/api/can-i-eat', async (req, res) => {
   try {
     const { patient, productId, food } = req.body;
 
@@ -535,6 +535,7 @@ app.post('/api/can-i-eat', (req, res) => {
 
       foodInput = {
         product_name: product.title,
+        barcode: product.barcode || req.body.barcode || req.body.food?.barcode,
         nutrition: {
           sodium: sodiumVal,
           sugar: sugarVal,
@@ -554,6 +555,7 @@ app.post('/api/can-i-eat', (req, res) => {
     } else if (food) {
       foodInput = {
         product_name: food.product_name || food.title || 'Food Product',
+        barcode: food.barcode || req.body.barcode,
         nutrition: food.nutrition || {},
         ingredients: food.ingredients || [],
         serving_size: food.serving_size || food.servingSize || '1 serving',
@@ -563,7 +565,7 @@ app.post('/api/can-i-eat', (req, res) => {
       return res.status(400).json({ error: 'Either productId or food data must be provided' });
     }
 
-    const decisionResult = runPipeline(patientInput, foodInput);
+    const decisionResult = await runPipeline(patientInput, foodInput);
 
     return res.json({
       success: true,

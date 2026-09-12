@@ -13,6 +13,7 @@ import {
   BookOpen,
   Activity,
   CheckCircle,
+  Sparkles,
 } from 'lucide-react';
 import { DecisionResult } from '../types';
 
@@ -190,6 +191,44 @@ export const DecisionResultModal: React.FC<DecisionResultModalProps> = ({
                   >
                     <CheckCircle className="w-3.5 h-3.5 text-[#006948] shrink-0 mt-0.5" />
                     <span>{note}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Uncertainty & Fallback Warnings */}
+          {result.uncertaintyWarnings && result.uncertaintyWarnings.length > 0 && (
+            <div className="bg-[#fff8e1]/70 rounded-xl p-3.5 border border-[#ffdea3]">
+              <h4 className="font-bold text-[12px] text-[#7c5800] mb-1.5 flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 text-[#7c5800]" />
+                Unresolved Field Advisory
+              </h4>
+              <ul className="flex flex-col gap-1">
+                {result.uncertaintyWarnings.map((warn, idx) => (
+                  <li key={idx} className="text-[11px] text-[#7c5800] leading-snug">
+                    • {warn}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Healthier Dietary Alternatives (Person 3 Feature) */}
+          {result.healthierAlternatives && result.healthierAlternatives.length > 0 && (
+            <div className="bg-[#e8f5e9]/50 rounded-xl p-4 border border-[#88f8c4]/50">
+              <h4 className="font-bold text-[13px] text-[#006948] mb-2 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#006948]" />
+                Healthier Dietary Alternatives
+              </h4>
+              <ul className="flex flex-col gap-2">
+                {result.healthierAlternatives.map((alt, idx) => (
+                  <li
+                    key={idx}
+                    className="text-[12px] text-[#006948] flex items-start gap-2 leading-relaxed font-medium"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#006948] shrink-0 mt-1.5" />
+                    <span>{alt}</span>
                   </li>
                 ))}
               </ul>
