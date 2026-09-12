@@ -1,0 +1,6 @@
+{
+  "name": "NutriAI",
+  "description": "Clinical-grade AI nutrition intelligence, biometric vitals tracking, medication schedule, and metabolic health platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

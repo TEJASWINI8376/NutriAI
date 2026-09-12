@@ -1,0 +1,398 @@
+{
+  "users": [
+    {
+      "id": "demo-patient-001",
+      "name": "Eleanor Vance",
+      "email": "eleanor.vance@example.com",
+      "phone": "+1 (555) 234-5678",
+      "role": "patient",
+      "avatarUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&auto=format&fit=crop&q=80",
+      "mrn": "CP-849201",
+      "dateOfBirth": "1988-05-14",
+      "bloodType": "A+",
+      "allergies": [
+        "Penicillin",
+        "Sulfa drugs"
+      ],
+      "createdAt": "2026-09-12T17:12:45.955Z",
+      "passwordHash": "10720b915df4a5b459e6de15b5f67f8ad5e84247fb6026d8b50ff0d95aa2e1b235f73a0bd51de36faf609178e7a66e3bf10717eccfcb4544871f150b4a15efbf",
+      "passwordSalt": "4ab2697f4a3aace4334b94680801cd38"
+    }
+  ],
+  "sessions": [
+    {
+      "token": "cp_tok_6410ffc32c1eefa71f4fdfbce586284a5ca1aabace210007f28274c629945317",
+      "userId": "demo-patient-001",
+      "createdAt": "2026-09-12T17:12:49.976Z",
+      "expiresAt": "2026-10-12T17:12:49.976Z"
+    }
+  ],
+  "vitals": [
+    {
+      "id": "a55aa5b2-6193-46cf-acc0-6d1481f84857",
+      "userId": "demo-patient-001",
+      "type": "heartRate",
+      "label": "Heart Rate (Resting)",
+      "value": "72",
+      "numericValue": 72,
+      "unit": "bpm",
+      "status": "optimal",
+      "recordedAt": "12 mins ago",
+      "trend": "stable",
+      "history": [
+        {
+          "time": "06:00",
+          "value": 68
+        },
+        {
+          "time": "09:00",
+          "value": 74
+        },
+        {
+          "time": "12:00",
+          "value": 76
+        },
+        {
+          "time": "15:00",
+          "value": 71
+        },
+        {
+          "time": "18:00",
+          "value": 72
+        }
+      ]
+    },
+    {
+      "id": "df56fe6c-8825-4dd2-a316-d879ab170047",
+      "userId": "demo-patient-001",
+      "type": "bloodPressure",
+      "label": "Blood Pressure",
+      "value": "118/76",
+      "numericValue": 118,
+      "unit": "mmHg",
+      "status": "optimal",
+      "recordedAt": "2 hours ago",
+      "trend": "down",
+      "history": [
+        {
+          "time": "Mon",
+          "value": 122
+        },
+        {
+          "time": "Tue",
+          "value": 120
+        },
+        {
+          "time": "Wed",
+          "value": 124
+        },
+        {
+          "time": "Thu",
+          "value": 119
+        },
+        {
+          "time": "Today",
+          "value": 118
+        }
+      ]
+    },
+    {
+      "id": "ebb049a4-7a91-4666-97bc-de68112b9a2a",
+      "userId": "demo-patient-001",
+      "type": "oxygen",
+      "label": "Blood Oxygen (SpO2)",
+      "value": "99",
+      "numericValue": 99,
+      "unit": "%",
+      "status": "optimal",
+      "recordedAt": "2 hours ago",
+      "trend": "stable",
+      "history": [
+        {
+          "time": "06:00",
+          "value": 98
+        },
+        {
+          "time": "10:00",
+          "value": 99
+        },
+        {
+          "time": "14:00",
+          "value": 99
+        },
+        {
+          "time": "18:00",
+          "value": 99
+        }
+      ]
+    },
+    {
+      "id": "2aa6888a-8595-4baf-87bc-e87b0237216d",
+      "userId": "demo-patient-001",
+      "type": "glucose",
+      "label": "Fasting Blood Glucose",
+      "value": "92",
+      "numericValue": 92,
+      "unit": "mg/dL",
+      "status": "normal",
+      "recordedAt": "This Morning",
+      "trend": "stable",
+      "history": [
+        {
+          "time": "Day 1",
+          "value": 95
+        },
+        {
+          "time": "Day 2",
+          "value": 93
+        },
+        {
+          "time": "Day 3",
+          "value": 94
+        },
+        {
+          "time": "Today",
+          "value": 92
+        }
+      ]
+    }
+  ],
+  "appointments": [
+    {
+      "id": "c68f9ffa-a562-49bb-9d85-b74a495be9b7",
+      "userId": "demo-patient-001",
+      "doctorName": "Dr. Sarah Jenkins, MD",
+      "doctorRole": "Cardiologist",
+      "doctorAvatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBgok82iLZmBm92-YmTHYPi-QN_60LyvTHBSNS-OIpktHH2mZgcJnfGhrd9J3bJEnnO9tXE2HFIeEnhko558DqvpahUre2heWL4ydeetViirU9zYJ4hinN3jLSPWCKmwUK0hpDIlqLJzmRjd834Zzf_FBFgKfUFvLSXU6aW7KooiUBFFgXqIFNBb_bg8Xbhd5k38m_Ju7FWXMDtWgpk2gwlMOpCuVzKjls0cGMUnIYsoOTTU2CY5rJx",
+      "department": "Cardiology Clinic • Suite 402",
+      "date": "Tomorrow",
+      "time": "10:30 AM",
+      "type": "In-Clinic",
+      "status": "confirmed",
+      "location": "CarePulse Main Tower, Room 402",
+      "notes": "Routine 6-month cardiovascular checkup and ECG review."
+    },
+    {
+      "id": "c76e1a5d-af6e-4f92-8c55-7da906cf7ddc",
+      "userId": "demo-patient-001",
+      "doctorName": "Dr. Marcus Vance, MD",
+      "doctorRole": "Internal Medicine",
+      "doctorAvatar": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300&auto=format&fit=crop&q=80",
+      "department": "Annual Wellness Review",
+      "date": "Oct 24, 2026",
+      "time": "02:15 PM",
+      "type": "Telehealth Video",
+      "status": "confirmed",
+      "location": "CarePulse Encrypted Video Bridge",
+      "notes": "Review recent comprehensive metabolic blood panel results."
+    }
+  ],
+  "medicalRecords": [
+    {
+      "id": "326f68cf-16d7-4fb3-b7a3-3668cd085be2",
+      "userId": "demo-patient-001",
+      "title": "Comprehensive Metabolic Panel (CMP-14)",
+      "category": "Laboratory",
+      "facility": "CarePulse Core Diagnostic Lab",
+      "doctorName": "Dr. Marcus Vance, MD",
+      "date": "Sept 04, 2026",
+      "verificationStatus": "Verified",
+      "verificationHash": "0x8f3c...b19e (SHA-256 Validated)",
+      "summary": "All electrolytes, kidney functions, and liver enzymes within optimal reference boundaries.",
+      "metrics": [
+        {
+          "name": "Glucose (Fasting)",
+          "value": "92 mg/dL",
+          "normalRange": "70 - 99 mg/dL",
+          "status": "normal"
+        },
+        {
+          "name": "Calcium",
+          "value": "9.4 mg/dL",
+          "normalRange": "8.5 - 10.2 mg/dL",
+          "status": "normal"
+        },
+        {
+          "name": "Sodium",
+          "value": "140 mEq/L",
+          "normalRange": "135 - 145 mEq/L",
+          "status": "normal"
+        },
+        {
+          "name": "eGFR",
+          "value": "> 90 mL/min",
+          "normalRange": "> 60 mL/min",
+          "status": "normal"
+        }
+      ]
+    },
+    {
+      "id": "cf73a915-1f65-4b2f-af66-72aafd93edce",
+      "userId": "demo-patient-001",
+      "title": "12-Lead Resting Electrocardiogram (ECG)",
+      "category": "Cardiology",
+      "facility": "Heart & Vascular Institute",
+      "doctorName": "Dr. Sarah Jenkins, MD",
+      "date": "Aug 18, 2026",
+      "verificationStatus": "Verified",
+      "verificationHash": "0x2a99...4d71 (SHA-256 Validated)",
+      "summary": "Normal sinus rhythm at 72 bpm. Normal PR and QTc intervals. No evidence of ischemia or conduction disturbance.",
+      "metrics": [
+        {
+          "name": "Rhythm",
+          "value": "Normal Sinus",
+          "normalRange": "Normal Sinus",
+          "status": "normal"
+        },
+        {
+          "name": "PR Interval",
+          "value": "148 ms",
+          "normalRange": "120 - 200 ms",
+          "status": "normal"
+        },
+        {
+          "name": "QRS Duration",
+          "value": "88 ms",
+          "normalRange": "80 - 120 ms",
+          "status": "normal"
+        }
+      ]
+    },
+    {
+      "id": "2d1b7ab9-99f9-4bec-a422-a56b8259a8f1",
+      "userId": "demo-patient-001",
+      "title": "Lipid & Apolipoprotein Cardiovascular Assessment",
+      "category": "Laboratory",
+      "facility": "CarePulse Core Diagnostic Lab",
+      "doctorName": "Dr. Sarah Jenkins, MD",
+      "date": "Jul 29, 2026",
+      "verificationStatus": "Verified",
+      "verificationHash": "0x7e12...99ca (SHA-256 Validated)",
+      "summary": "Favorable lipid partition with elevated HDL protective ratio and low triglycerides.",
+      "metrics": [
+        {
+          "name": "Total Cholesterol",
+          "value": "178 mg/dL",
+          "normalRange": "< 200 mg/dL",
+          "status": "normal"
+        },
+        {
+          "name": "HDL (Protective)",
+          "value": "62 mg/dL",
+          "normalRange": "> 50 mg/dL",
+          "status": "normal"
+        },
+        {
+          "name": "LDL Calculated",
+          "value": "98 mg/dL",
+          "normalRange": "< 100 mg/dL",
+          "status": "normal"
+        },
+        {
+          "name": "Triglycerides",
+          "value": "89 mg/dL",
+          "normalRange": "< 150 mg/dL",
+          "status": "normal"
+        }
+      ]
+    }
+  ],
+  "medications": [
+    {
+      "id": "329a5984-fa79-474b-a4c4-130c1de677f7",
+      "userId": "demo-patient-001",
+      "name": "Atorvastatin Calcium",
+      "dosage": "10 mg Oral Tablet",
+      "frequency": "Once Daily at Bedtime",
+      "times": [
+        "09:00 PM"
+      ],
+      "instructions": "Take with or without food. Avoid grapefruit juice.",
+      "doctorName": "Dr. Sarah Jenkins, MD",
+      "refillsRemaining": 3,
+      "adherenceToday": {
+        "09:00 PM": false
+      }
+    },
+    {
+      "id": "78c1143a-af42-490d-9ae0-191b9fedb167",
+      "userId": "demo-patient-001",
+      "name": "Omega-3 Acid Ethyl Esters",
+      "dosage": "1000 mg Softgel",
+      "frequency": "Twice Daily with Meals",
+      "times": [
+        "08:00 AM",
+        "07:00 PM"
+      ],
+      "instructions": "Take with breakfast and dinner to support heart health.",
+      "doctorName": "Dr. Marcus Vance, MD",
+      "refillsRemaining": 5,
+      "adherenceToday": {
+        "08:00 AM": true,
+        "07:00 PM": false
+      }
+    },
+    {
+      "id": "03980352-2925-4a82-a805-7bb0399e28d8",
+      "userId": "demo-patient-001",
+      "name": "CoQ10 (Ubiquinol)",
+      "dosage": "100 mg Capsule",
+      "frequency": "Once Daily Morning",
+      "times": [
+        "08:00 AM"
+      ],
+      "instructions": "Dietary co-factor for cardiovascular mitochondria.",
+      "doctorName": "Dr. Sarah Jenkins, MD",
+      "refillsRemaining": 2,
+      "adherenceToday": {
+        "08:00 AM": true
+      }
+    }
+  ],
+  "careTeam": [
+    {
+      "id": "doc-1",
+      "name": "Dr. Sarah Jenkins, MD",
+      "title": "Chief of Cardiology & Preventive Medicine",
+      "department": "Cardiovascular Health",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBgok82iLZmBm92-YmTHYPi-QN_60LyvTHBSNS-OIpktHH2mZgcJnfGhrd9J3bJEnnO9tXE2HFIeEnhko558DqvpahUre2heWL4ydeetViirU9zYJ4hinN3jLSPWCKmwUK0hpDIlqLJzmRjd834Zzf_FBFgKfUFvLSXU6aW7KooiUBFFgXqIFNBb_bg8Xbhd5k38m_Ju7FWXMDtWgpk2gwlMOpCuVzKjls0cGMUnIYsoOTTU2CY5rJx",
+      "isOnline": true,
+      "hospital": "CarePulse Academic Medical Center",
+      "quote": "Your medical records are synchronized in real-time."
+    },
+    {
+      "id": "doc-2",
+      "name": "Dr. Marcus Vance, MD",
+      "title": "Senior Attending Internist",
+      "department": "Internal Medicine & Primary Care",
+      "avatar": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300&auto=format&fit=crop&q=80",
+      "isOnline": true,
+      "hospital": "CarePulse Pavilion Suite 4B",
+      "quote": "Proactive surveillance ensures longevity and peace of mind."
+    },
+    {
+      "id": "doc-3",
+      "name": "Elena Chen, NP-C",
+      "title": "Lead Clinical Nurse Practitioner",
+      "department": "Patient Care Coordination",
+      "avatar": "https://images.unsplash.com/photo-1594824813589-9a77f9e8a8e1?w=300&auto=format&fit=crop&q=80",
+      "isOnline": false,
+      "hospital": "CarePulse Telehealth Hub",
+      "quote": "Always available for prescription titrations and triage questions."
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "71081f7a-41dd-4428-904f-1d6a516fad7a",
+      "userId": "demo-patient-001",
+      "action": "System initialized with verified FHIR HIPAA baseline",
+      "timestamp": "2026-09-12T17:12:45.956Z"
+    },
+    {
+      "id": "316a1888-093e-4ba3-abd9-df567b9731f1",
+      "userId": "demo-patient-001",
+      "action": "Authenticated via Clinical Gateway",
+      "timestamp": "2026-09-12T17:12:49.976Z"
+    }
+  ]
+}
