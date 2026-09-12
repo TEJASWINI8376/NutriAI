@@ -303,6 +303,58 @@ export default function App() {
             </button>
           </div>
 
+          {/* Quick Product Switcher Bar */}
+          <div className="flex flex-col gap-1.5 mb-1">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[11px] font-bold text-[#3d4a42] uppercase tracking-wider">
+                Select Inspected Food Product
+              </span>
+              <span className="text-[11px] font-semibold text-[#006948]">
+                Open Food Facts API Verified
+              </span>
+            </div>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+              {products.map((p) => {
+                const isSelected = p.id === activeProduct.id;
+                const isOff = p.dataSource === 'open_food_facts';
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveProduct(p);
+                      setDecisionResult(null);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-[12px] font-semibold flex items-center gap-1.5 shrink-0 transition-all border cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#006948] text-white border-[#006948] shadow-sm ring-2 ring-[#006948]/20'
+                        : 'bg-white text-[#131b2e] border-[#eaedff] hover:bg-[#faf8ff] hover:border-[#bccac0]'
+                    }`}
+                  >
+                    <span>{p.title.split(' ').slice(0, 3).join(' ')}</span>
+                    {isOff ? (
+                      <span
+                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                          isSelected ? 'bg-white/20 text-white' : 'bg-[#006948]/10 text-[#006948]'
+                        }`}
+                      >
+                        OFF API
+                      </span>
+                    ) : (
+                      <span
+                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                          isSelected ? 'bg-white/20 text-white' : 'bg-purple-100 text-purple-700'
+                        }`}
+                      >
+                        OCR Demo
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Interactive Context Card with Thumbnail */}
           <ContextCard
             imageThumbnail={activeProduct.imageThumbnail}
