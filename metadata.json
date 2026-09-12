@@ -1,0 +1,6 @@
+{
+  "name": "NutriAI - Product Inspection Details",
+  "description": "Clinical food label inspection, AI-powered OCR verification, and dietary diagnostics with Gemini vision.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

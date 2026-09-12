@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "ESNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": ["server.ts", "vite.config.ts", "src/**/*"],
+  "exclude": [
+    "src/routes/**/*",
+    "src/integrations/**/*",
+    "src/components/ui/**/*",
+    "src/components/AppHeader.tsx",
+    "src/lib/**/*",
+    "src/server.ts",
+    "src/start.ts",
+    "src/router.tsx",
+    "src/routeTree.gen.ts"
+  ]
+}
