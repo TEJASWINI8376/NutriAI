@@ -397,7 +397,7 @@ export default function App() {
               ) : (
                 <>
                   <Sparkles className="w-5 h-5 text-emerald-200" />
-                  <span>Can I Eat This? (AI Agent Assessment)</span>
+                  <span>Can I Eat This?</span>
                 </>
               )}
             </button>
