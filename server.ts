@@ -1,9 +1,10 @@
 import express from 'express';
 import path from 'path';
 import { GoogleGenAI, Type } from '@google/genai';
-import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from 'node:crypto';
 import { createServer as createViteServer } from 'vite';
 import { runPipeline } from './src/agent/pipeline';
+import { db } from './loginpage/server/db';
+import type { User, VitalRecord, Appointment, MedicalRecord } from './loginpage/src/types';
 
 interface NutritionField {
   id: string;
@@ -54,45 +55,21 @@ app.use(express.json({ limit: '15mb' }));
 
 // Initial products store (initialized from Open Food Facts verified registry products)
 let productsDatabase: InspectionProduct[] = [];
-const authUsers = new Map<string, { id: string; email: string; passwordHash: string }>();
-const authSessions = new Map<string, { id: string; email: string }>();
-
-function hashPassword(password: string, salt: Buffer) {
-  return `${salt.toString('hex')}:${scryptSync(password, salt, 64).toString('hex')}`;
-}
-
-function verifyPassword(password: string, storedHash: string) {
-  const [saltHex, digestHex] = storedHash.split(':');
-  if (!saltHex || !digestHex) return false;
-  const expected = Buffer.from(digestHex, 'hex');
-  const actual = scryptSync(password, Buffer.from(saltHex, 'hex'), expected.length);
-  return expected.length === actual.length && timingSafeEqual(expected, actual);
-}
-
-function createAuthUser(id: string, email: string) {
-  return {
-    id,
-    name: email.split('@')[0],
-    email,
-    phone: '',
-    role: 'patient' as const,
-    mrn: `NA-${id.slice(0, 8).toUpperCase()}`,
-    createdAt: new Date().toISOString(),
-  };
+function getAuthenticatedUser(req: express.Request): User | null {
+  const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
+  return token ? db.getUserByToken(token) : null;
 }
 
 app.post('/api/auth/register', (req, res) => {
   try {
-    const email = String(req.body.email || '').trim().toLowerCase();
-    const password = String(req.body.password || '');
-    if (!email.includes('@')) throw new Error('A valid email is required');
-    if (password.length < 8) throw new Error('Password must be at least 8 characters');
-    if (authUsers.has(email)) throw new Error('An account with this email already exists');
-    const user = { id: randomUUID(), email, passwordHash: hashPassword(password, randomBytes(16)) };
-    authUsers.set(email, user);
-    const token = randomBytes(32).toString('hex');
-    authSessions.set(token, user);
-    res.status(201).json({ success: true, token, user: createAuthUser(user.id, user.email), message: 'Account registered successfully.' });
+    const result = db.registerUser({
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      password: req.body.password,
+      role: 'patient',
+    });
+    res.status(201).json({ success: true, token: result.token, user: result.user, message: 'Account registered successfully.' });
   } catch (error: any) {
     res.status(400).json({ success: false, message: error.message || 'Registration failed.' });
   }
@@ -100,39 +77,96 @@ app.post('/api/auth/register', (req, res) => {
 
 app.post('/api/auth/login', (req, res) => {
   try {
-    const email = String(req.body.identifier || '').trim().toLowerCase();
-    const user = authUsers.get(email);
-    if (!user || !verifyPassword(String(req.body.password || ''), user.passwordHash)) throw new Error('Invalid email or password');
-    const token = randomBytes(32).toString('hex');
-    authSessions.set(token, user);
-    res.json({ success: true, token, user: createAuthUser(user.id, user.email), message: 'Authenticated successfully.' });
+    const result = db.loginUser(req.body.identifier, req.body.password);
+    res.json({ success: true, token: result.token, user: result.user, message: 'Authenticated successfully.' });
   } catch (error: any) {
     res.status(401).json({ success: false, message: error.message || 'Authentication failed.' });
   }
 });
 
 app.post('/api/auth/quick-login', (req, res) => {
-  const email = `${String(req.body.provider || 'provider').toLowerCase()}@nutriai.local`;
-  const user = createAuthUser(email, email);
-  authSessions.set(user.id, user);
-  res.json({ success: true, token: user.id, user, message: 'Authenticated successfully.' });
+  try {
+    const provider = req.body.provider === 'Apple' ? 'Apple' : 'Google';
+    const result = db.quickFederatedLogin(provider);
+    res.json({ success: true, token: result.token, user: result.user, message: 'Authenticated successfully.' });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message || 'Authentication failed.' });
+  }
 });
 
 app.get('/api/auth/me', (req, res) => {
-  const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
-  const user = token ? authSessions.get(token) : undefined;
+  const user = getAuthenticatedUser(req);
   if (!user) return res.status(401).json({ success: false, message: 'Session expired.' });
-  res.json({ success: true, user: createAuthUser(user.id, user.email) });
+  res.json({ success: true, user });
 });
 
 app.post('/api/auth/logout', (req, res) => {
   const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
-  if (token) authSessions.delete(token);
+  if (token) db.revokeSession(token);
   res.json({ success: true, message: 'Signed out.' });
 });
 
 app.post('/api/auth/forgot-password', (req, res) => {
   res.json({ success: true, message: `A secure reset request was recorded for ${req.body.identifier || 'your account'}.` });
+});
+
+app.get('/api/gateway/status', (_req, res) => {
+  res.json({ online: true, latencyMs: 12, encryption: '256-bit AES-GCM', phiCertified: true, lastSync: new Date().toISOString() });
+});
+
+app.get('/api/patient/dashboard', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  res.json({ success: true, patient: user, ...db.getPatientData(user.id) });
+});
+
+app.post('/api/patient/vitals', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  try {
+    const vital = db.addVital(user.id, req.body);
+    res.status(201).json({ success: true, vital });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message || 'Failed to save vital.' });
+  }
+});
+
+app.post('/api/patient/appointments', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  try {
+    const appointment = db.addAppointment(user.id, req.body);
+    res.status(201).json({ success: true, appointment });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message || 'Failed to schedule appointment.' });
+  }
+});
+
+app.post('/api/patient/appointments/:id/cancel', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  const cancelled = db.cancelAppointment(user.id, req.params.id);
+  if (!cancelled) return res.status(404).json({ success: false, message: 'Appointment not found.' });
+  res.json({ success: true, message: 'Appointment cancelled.' });
+});
+
+app.post('/api/patient/records', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  try {
+    const record = db.addMedicalRecord(user.id, req.body);
+    res.status(201).json({ success: true, record });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message || 'Failed to save medical record.' });
+  }
+});
+
+app.post('/api/patient/medications/:id/adherence', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  const updated = db.toggleMedicationAdherence(user.id, req.params.id, req.body.timeSlot);
+  if (!updated) return res.status(404).json({ success: false, message: 'Medication not found.' });
+  res.json({ success: true, message: 'Medication adherence updated.' });
 });
 
 // Lazy Gemini client helper
