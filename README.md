@@ -1,6 +1,6 @@
 # 🌿 NutriAgent
 
-**Upgraded Agentic AI Project Plan — Tech Zephyr 4.0**
+
 
 > An agentic AI dietary decision-support system that creates a patient's health profile from existing medical information, analyzes packaged food, verifies uncertain information, and explains whether the food is generally suitable for that patient.
 
