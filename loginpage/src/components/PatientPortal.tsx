@@ -12,9 +12,10 @@ interface PatientPortalProps {
   user: User;
   onLogout: () => void;
   showToast: (msg: string, icon?: string) => void;
+  onOpenFoodAnalysis?: () => void;
 }
 
-export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, showToast }) => {
+export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, showToast, onOpenFoodAnalysis }) => {
   const [activeTab, setActiveTab] = useState<'vitals' | 'appointments' | 'records' | 'medications' | 'careteam'>('vitals');
   const [vitals, setVitals] = useState<VitalRecord[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -131,6 +132,16 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
 
           {/* User Profile & Quick Actions */}
           <div className="flex items-center gap-2.5">
+            {onOpenFoodAnalysis && (
+              <button
+                onClick={onOpenFoodAnalysis}
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-semibold text-[#006947] bg-[#effcf6] hover:bg-[#dff8eb] rounded-xl transition-colors cursor-pointer"
+                title="Open food analysis workspace"
+              >
+                <span className="material-symbols-outlined text-[16px]">restaurant</span>
+                <span>Food Analysis</span>
+              </button>
+            )}
             <button
               onClick={() => setAuditModalOpen(true)}
               className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-semibold text-[#006194] bg-[#eff4ff] hover:bg-[#e0f0fe] rounded-xl transition-colors cursor-pointer"

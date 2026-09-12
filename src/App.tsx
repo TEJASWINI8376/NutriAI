@@ -28,12 +28,29 @@ import { ImagePreviewModal } from './components/ImagePreviewModal';
 import { PatientProfileModal } from './components/PatientProfileModal';
 import { DecisionResultModal } from './components/DecisionResultModal';
 import { AuthScreen } from '../loginpage/src/components/AuthScreen';
+import { PatientPortal } from '../loginpage/src/components/PatientPortal';
+import type { User } from '../loginpage/src/types';
 import { InspectionProduct, NutritionField, PatientProfile, DecisionResult } from './types';
 
 export default function App() {
   const [products, setProducts] = useState<InspectionProduct[]>([]);
   const [activeProduct, setActiveProduct] = useState<InspectionProduct | null>(null);
   const [session, setSession] = useState(() => localStorage.getItem('nutriai.session'));
+  const [authenticatedUser, setAuthenticatedUser] = useState<User | null>(() => {
+    const email = localStorage.getItem('nutriai.session');
+    return email
+      ? {
+          id: email,
+          name: email.split('@')[0],
+          email,
+          phone: '',
+          role: 'patient',
+          mrn: 'NUTRIAI-PATIENT',
+          createdAt: new Date().toISOString(),
+        }
+      : null;
+  });
+  const [showFoodAnalysis, setShowFoodAnalysis] = useState(false);
   const [hasProfile, setHasProfile] = useState(() => localStorage.getItem('nutriai.profile') === 'complete');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
@@ -276,8 +293,25 @@ export default function App() {
       <AuthScreen
         onSuccess={(user) => {
           localStorage.setItem('nutriai.session', user.email);
+          setAuthenticatedUser(user);
           setSession(user.email);
         }}
+        showToast={(message) => triggerToast(message, 'Clinical gateway updated.')}
+      />
+    );
+  }
+
+  if (!showFoodAnalysis && authenticatedUser) {
+    return (
+      <PatientPortal
+        user={authenticatedUser}
+        onLogout={() => {
+          localStorage.removeItem('nutriai.session');
+          localStorage.removeItem('nutriai_auth_token');
+          setAuthenticatedUser(null);
+          setSession(null);
+        }}
+        onOpenFoodAnalysis={() => setShowFoodAnalysis(true)}
         showToast={(message) => triggerToast(message, 'Clinical gateway updated.')}
       />
     );
@@ -323,7 +357,7 @@ export default function App() {
       {/* Top Header */}
       <Header
         onBack={() => {
-          setIsHistoryOpen(true);
+          setShowFoodAnalysis(false);
         }}
         onOpenHistory={() => setIsHistoryOpen(true)}
         historyCount={products.length}
