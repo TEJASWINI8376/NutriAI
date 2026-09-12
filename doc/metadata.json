@@ -1,0 +1,6 @@
+{
+  "name": "CarePulse",
+  "description": "Secure, verified diagnostic records and medical report intelligence with NutriAI authentication and AI biomarker extraction.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
