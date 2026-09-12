@@ -988,6 +988,8 @@ Extract:
   }
 });
 
+export default app;
+
 // Vite middleware & Static Serving
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
@@ -1009,4 +1011,6 @@ async function startServer() {
   });
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
