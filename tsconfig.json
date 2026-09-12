@@ -22,5 +22,17 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "include": ["server.ts", "vite.config.ts", "src/**/*"],
+  "exclude": [
+    "src/routes/**/*",
+    "src/integrations/**/*",
+    "src/components/ui/**/*",
+    "src/components/AppHeader.tsx",
+    "src/lib/**/*",
+    "src/server.ts",
+    "src/start.ts",
+    "src/router.tsx",
+    "src/routeTree.gen.ts"
+  ]
 }
