@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from models.input_models import PatientProfile, FoodInfo
+from models.input_models import PatientProfile, FoodInfo, DecisionResponse
 
 from agent.investigator import AgentInvestigator
 from verification.food_verifier import FoodVerifier
@@ -155,7 +155,7 @@ def home():
     }
 
 
-@app.post("/can-i-eat")
+@app.post("/can-i-eat", response_model=DecisionResponse)
 def can_i_eat(
     patient: PatientProfile,
     food: FoodInfo

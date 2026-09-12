@@ -4,10 +4,25 @@ from pydantic import field_validator
 
 
 class PatientProfile(BaseModel):
-    conditions: List[str] = Field(default_factory=list)
-    medicines: List[str] = Field(default_factory=list)
-    dietary_restrictions: List[str] = Field(default_factory=list)
-    test_values: Dict[str, float] = Field(default_factory=dict)
+    conditions: List[str] = Field(
+        default_factory=list,
+        description="Patient's known health conditions relevant to dietary decisions."
+    )
+
+    medicines: List[str] = Field(
+        default_factory=list,
+        description="Medicines currently taken by the patient."
+    )
+
+    dietary_restrictions: List[str] = Field(
+        default_factory=list,
+        description="Patient's dietary restrictions or preferences relevant to the decision."
+    )
+
+    test_values: Dict[str, float] = Field(
+        default_factory=dict,
+        description="Relevant patient test values provided as name-value pairs."
+    )
 
     @field_validator(
         "conditions",
@@ -23,21 +38,77 @@ class PatientProfile(BaseModel):
 
 
 class NutritionInfo(BaseModel):
-    calories: Optional[float] = Field(None, ge=0)
-    sugar: Optional[float] = Field(None, ge=0)
-    sodium: Optional[float] = Field(None, ge=0)
-    fat: Optional[float] = Field(None, ge=0)
-    saturated_fat: Optional[float] = Field(None, ge=0)
-    carbohydrates: Optional[float] = Field(None, ge=0)
-    protein: Optional[float] = Field(None, ge=0)
+    calories: Optional[float] = Field(
+        None,
+        ge=0,
+        description="Calories per serving."
+    )
+
+    sugar: Optional[float] = Field(
+        None,
+        ge=0,
+        description="Sugar in grams per serving."
+    )
+
+    sodium: Optional[float] = Field(
+        None,
+        ge=0,
+        description="Sodium in milligrams per serving."
+    )
+
+    fat: Optional[float] = Field(
+        None,
+        ge=0,
+        description="Total fat in grams per serving."
+    )
+
+    saturated_fat: Optional[float] = Field(
+        None,
+        ge=0,
+        description="Saturated fat in grams per serving."
+    )
+
+    carbohydrates: Optional[float] = Field(
+        None,
+        ge=0,
+        description="Carbohydrates in grams per serving."
+    )
+
+    protein: Optional[float] = Field(
+        None,
+        ge=0,
+        description="Protein in grams per serving."
+    )
 
 
 class FoodInfo(BaseModel):
-    product_name: str = Field(..., min_length=1)
-    nutrition: NutritionInfo
-    ingredients: List[str] = Field(..., min_length=1)
-    serving_size: Optional[str] = Field( None,min_length=1 )
-    confidence: Dict[str, float] = Field(default_factory=dict)
+    product_name: str = Field(
+        ...,
+        min_length=1,
+        description="Name of the packaged food product."
+    )
+
+    nutrition: NutritionInfo = Field(
+        ...,
+        description="Nutrition values extracted from the food label."
+    )
+
+    ingredients: List[str] = Field(
+        ...,
+        min_length=1,
+        description="List of ingredients extracted from the food label."
+    )
+
+    serving_size: Optional[str] = Field(
+        None,
+        min_length=1,
+        description="Serving size stated on the food label."
+    )
+
+    confidence: Dict[str, float] = Field(
+        default_factory=dict,
+        description="OCR confidence scores for extracted food-label fields, from 0 to 1."
+    )
 
     @field_validator("confidence")
     @classmethod
@@ -52,3 +123,48 @@ class FoodInfo(BaseModel):
                 )
 
         return confidence
+
+class DecisionResponse(BaseModel):
+    food: str
+    decision: str
+    decision_text: str
+
+    reasons: List[str] = Field(
+        default_factory=list,
+        description="Reasons supporting the final food suitability decision."
+    )
+
+    rules_applied: List[str] = Field(
+        default_factory=list,
+        description="Rule-engine rules applied during the assessment."
+    )
+
+    verification_notes: List[str] = Field(
+        default_factory=list,
+        description="Notes about uncertain information and verification actions."
+    )
+
+    medicine_notes: List[str] = Field(
+        default_factory=list,
+        description="Notes about relevant food-medicine interaction checks."
+    )
+
+    evidence: List[Dict] = Field(
+        default_factory=list,
+        description="Evidence and authoritative sources supporting the applied rules."
+    )
+
+    disclaimer: str = Field(
+        default="This is dietary decision support and does not diagnose disease or replace advice from a healthcare professional.",
+        description="Safety disclaimer for the decision-support output."
+    )
+
+    agent_timeline: List[Dict] = Field(
+        default_factory=list,
+        description="Timeline showing the major agent investigation and decision steps."
+    )
+
+    medicine_context: Dict = Field(
+        default_factory=dict,
+        description="Details of the medicine-food interaction check."
+    )
