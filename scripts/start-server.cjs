@@ -21,8 +21,9 @@ if (configuredKey) {
   process.env.GEMINI_API_KEY = configuredKey;
 }
 
-// The GenAI SDK defaults to v1beta. Use the stable v1 API for the server-side
-// generateContent calls used by NutriAI's food and medical OCR flows.
+// Use the stable API and current Flash model. The bundled server still contains
+// legacy model strings, so normalize them at the SDK boundary until the next
+// source rebuild. This keeps every generateContent call on the supported model.
 const Module = require('node:module');
 const originalLoad = Module._load;
 let patchedGenAI = null;
@@ -43,6 +44,16 @@ Module._load = function patchedModuleLoad(request, parent, isMain) {
           apiVersion: 'v1',
         },
       });
+
+      if (this.models && typeof this.models.generateContent === 'function') {
+        const originalGenerateContent = this.models.generateContent.bind(this.models);
+        this.models.generateContent = (requestOptions = {}) => originalGenerateContent({
+          ...requestOptions,
+          model: requestOptions.model === 'gemini-2.5-flash' || requestOptions.model === 'models/gemini-2.5-flash'
+            ? 'gemini-3.6-flash'
+            : requestOptions.model,
+        });
+      }
     }
   }
 
@@ -52,6 +63,7 @@ Module._load = function patchedModuleLoad(request, parent, isMain) {
 
 // Do not print the key. Only expose safe diagnostics for Render logs.
 console.log(`[NutriAI] Gemini API key configured: ${configuredKey ? 'yes' : 'no'}`);
-console.log('[NutriAI] Gemini API version: v1');
+console.log('[NutriAI] Gemini API version: v1`);
+console.log('[NutriAI] Gemini model migration: gemini-2.5-flash -> gemini-3.6-flash');
 
 require('../dist/server.cjs');
