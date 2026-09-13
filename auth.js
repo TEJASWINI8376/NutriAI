@@ -1,10 +1,10 @@
-const {
+import {
   createHash,
   randomBytes,
   randomUUID,
   scryptSync,
   timingSafeEqual,
-} = require('node:crypto');
+} from 'node:crypto';
 
 const DEFAULT_SESSION_TTL_MS = 60 * 60 * 1000;
 const SCRYPT_COST = 14;
@@ -102,4 +102,4 @@ class AuthService {
   }
 }
 
-module.exports = { AuthService };
+export { AuthService };

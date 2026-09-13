@@ -244,6 +244,18 @@ export default function App() {
         body: JSON.stringify({
           productId: activeProduct.id,
           barcode: activeProduct.barcode,
+          food: {
+            product_name: activeProduct.title,
+            barcode: activeProduct.barcode,
+            ingredients: activeProduct.ingredientsText?.split(/[,;]+/).map((item) => item.trim()).filter(Boolean) || [],
+            serving_size: activeProduct.fields.find((field) => field.key === 'serving_size')?.value,
+            nutrition: Object.fromEntries(
+              activeProduct.fields
+                .filter((field) => ['calories', 'sugars', 'sodium', 'fat', 'saturated_fat', 'carbohydrates', 'protein'].includes(field.key))
+                .map((field) => [field.key, Number.parseFloat(field.value) || 0]),
+            ),
+            confidence: Object.fromEntries(activeProduct.fields.map((field) => [field.key, field.confidence / 100])),
+          },
           patient: patientProfile,
         }),
       });

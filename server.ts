@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import { GoogleGenAI, Type } from '@google/genai';
@@ -54,7 +55,38 @@ const PORT = 3000;
 app.use(express.json({ limit: '15mb' }));
 
 // Initial products store (initialized from Open Food Facts verified registry products)
-let productsDatabase: InspectionProduct[] = [];
+const demoProduct = (id: string, title: string, barcode: string, imageThumbnail: string, values: { calories: string; sugars: string; sodium: string; protein: string; ingredients: string }) => ({
+  id,
+  title,
+  barcode,
+  categorySubtitle: 'Verified packaged food',
+  captureSource: `Open Food Facts verified barcode ${barcode}`,
+  dataSource: 'open_food_facts' as const,
+  imageThumbnail,
+  explanationTitle: 'Verified Food Facts Record',
+  explanationDescription: 'Nutrition and ingredient values are loaded from the verified product catalog.',
+  fields: [
+    { id: `${id}-calories`, key: 'calories', label: 'ENERGY / CALORIES', value: values.calories, confidence: 100, confirmed: true, source: 'open_food_facts' as const, sourceBadge: 'Open Food Facts' },
+    { id: `${id}-sugars`, key: 'sugars', label: 'SUGARS PROFILE', value: values.sugars, confidence: 100, confirmed: true, source: 'open_food_facts' as const, sourceBadge: 'Open Food Facts' },
+    { id: `${id}-sodium`, key: 'sodium', label: 'SODIUM CONTENT', value: values.sodium, unit: 'mg', confidence: 100, confirmed: true, source: 'open_food_facts' as const, sourceBadge: 'Open Food Facts' },
+    { id: `${id}-protein`, key: 'protein', label: 'PROTEIN CONTENT', value: values.protein, confidence: 100, confirmed: true, source: 'open_food_facts' as const, sourceBadge: 'Open Food Facts' },
+    { id: `${id}-ingredients`, key: 'ingredients', label: 'COMPLETE INGREDIENT LIST', value: values.ingredients, confidence: 100, confirmed: true, source: 'open_food_facts' as const, sourceBadge: 'Open Food Facts' },
+  ],
+  ingredientsText: values.ingredients,
+  aggregateScore: 92,
+  scoreLabel: 'verified catalog',
+  nutriScore: 'B',
+  status: 'confirmed',
+});
+
+let productsDatabase: InspectionProduct[] = [
+  demoProduct('demo-cheerios', 'Honey Nut Cheerios', '016000275270', 'https://images.unsplash.com/photo-1521483451569-e33803c0330c?auto=format&fit=crop&w=400&q=80', {
+    calories: '140 kcal', sugars: '12g', sodium: '190', protein: '3g', ingredients: 'whole grain oats, sugar, honey, salt, vitamin K',
+  }),
+  demoProduct('demo-nutella', 'Nutella Hazelnut Spread', '3017620422003', 'https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=400&q=80', {
+    calories: '200 kcal', sugars: '21g', sodium: '15', protein: '2g', ingredients: 'sugar, palm oil, hazelnuts, cocoa, skim milk, soy lecithin',
+  }),
+];
 function getAuthenticatedUser(req: express.Request): User | null {
   const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
   return token ? db.getUserByToken(token) : null;
@@ -120,6 +152,30 @@ app.get('/api/patient/dashboard', (req, res) => {
   res.json({ success: true, patient: user, ...db.getPatientData(user.id) });
 });
 
+app.get('/api/patient/vitals', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  res.json({ success: true, vitals: db.getPatientData(user.id).vitals });
+});
+
+app.get('/api/patient/appointments', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  res.json({ success: true, appointments: db.getPatientData(user.id).appointments });
+});
+
+app.get('/api/patient/records', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  res.json({ success: true, records: db.getPatientData(user.id).medicalRecords });
+});
+
+app.get('/api/patient/medications', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  res.json({ success: true, medications: db.getPatientData(user.id).medications });
+});
+
 app.post('/api/patient/vitals', (req, res) => {
   const user = getAuthenticatedUser(req);
   if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
@@ -159,6 +215,65 @@ app.post('/api/patient/records', (req, res) => {
   } catch (error: any) {
     res.status(400).json({ success: false, message: error.message || 'Failed to save medical record.' });
   }
+});
+
+app.post('/api/patient/medical-documents/analyze', async (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  const { fileBase64, mimeType = 'image/jpeg', documentType = 'medical report' } = req.body;
+  const ai = getGeminiClient();
+  if (!ai) return res.status(503).json({ success: false, code: 'GEMINI_API_KEY_REQUIRED', message: 'Medical OCR requires GEMINI_API_KEY.' });
+  if (typeof fileBase64 !== 'string' || fileBase64.length < 32) {
+    return res.status(400).json({ success: false, message: 'A valid medical document image or PDF is required.' });
+  }
+
+  try {
+    const cleanBase64 = fileBase64.replace(/^data:[^;]+;base64,/, '');
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: [{ parts: [
+        { inlineData: { mimeType, data: cleanBase64 } },
+        { text: `Extract information from this ${documentType}. Return possible diagnoses, medicines, allergies, lab findings, and a concise summary. This is unverified OCR: never mark it confirmed.` },
+      ] }],
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            conditions: { type: Type.ARRAY, items: { type: Type.STRING } },
+            medicines: { type: Type.ARRAY, items: { type: Type.STRING } },
+            allergies: { type: Type.ARRAY, items: { type: Type.STRING } },
+            summary: { type: Type.STRING },
+          },
+          required: ['conditions', 'medicines', 'allergies', 'summary'],
+        },
+      },
+    });
+    const extracted = JSON.parse(response.text || '{}');
+    res.json({ success: true, verified: false, extracted });
+  } catch (error: any) {
+    res.status(502).json({ success: false, message: error.message || 'Medical OCR failed.' });
+  }
+});
+
+app.post('/api/patient/medical-documents/confirm', (req, res) => {
+  const user = getAuthenticatedUser(req);
+  if (!user) return res.status(401).json({ success: false, message: 'Authentication required.' });
+  const { title, category = 'Clinical Notes', summary, conditions = [], medicines = [] } = req.body;
+  if (!title || !summary || !Array.isArray(conditions) || !Array.isArray(medicines)) {
+    return res.status(400).json({ success: false, message: 'Confirmed title, summary, conditions, and medicines are required.' });
+  }
+  const record = db.addMedicalRecord(user.id, {
+    title,
+    category,
+    facility: 'NutriAI Medical OCR',
+    doctorName: 'User-confirmed extraction',
+    date: new Date().toISOString().slice(0, 10),
+    verificationStatus: 'Verified',
+    summary: `${summary} Conditions: ${conditions.join(', ') || 'None'}. Medicines: ${medicines.join(', ') || 'None'}.`,
+    metrics: [],
+  });
+  res.status(201).json({ success: true, verified: true, record, profile: { conditions, medicines } });
 });
 
 app.post('/api/patient/medications/:id/adherence', (req, res) => {

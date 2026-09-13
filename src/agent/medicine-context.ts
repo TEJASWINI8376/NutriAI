@@ -10,13 +10,13 @@ export interface MedicineResult {
 
 // Prototype interaction data — only established examples
 const KNOWN_INTERACTIONS: Record<string, string[]> = {
-  warfarin: ['vitamin k rich foods'],
+  warfarin: ['vitamin k', 'spinach', 'kale', 'broccoli', 'collard'],
   levothyroxine: ['calcium', 'iron'],
 };
 
 export function checkMedicineContext(medicines: string[], ingredients: string[]): MedicineResult {
-  const medicinesLower = medicines.map((m) => m.toLowerCase());
-  const ingredientsLower = ingredients.map((i) => i.toLowerCase());
+  const medicinesLower = medicines.map((m) => m.toLowerCase().replace(/\s+/g, ' ').trim());
+  const ingredientsText = ingredients.join(' ').toLowerCase().replace(/\s+/g, ' ');
 
   const relevantChecks: string[] = [];
   const possibleInteractions: MedicineResult['possibleInteractions'] = [];
@@ -26,14 +26,12 @@ export function checkMedicineContext(medicines: string[], ingredients: string[])
       relevantChecks.push(medicine);
 
       for (const foodItem of KNOWN_INTERACTIONS[medicine]) {
-        for (const ingredient of ingredientsLower) {
-          if (ingredient.includes(foodItem)) {
-            possibleInteractions.push({
-              medicine,
-              foodComponent: foodItem,
-              message: `A known food-medicine interaction may be relevant for ${medicine} and ${foodItem}.`,
-            });
-          }
+        if (ingredientsText.includes(foodItem)) {
+          possibleInteractions.push({
+            medicine,
+            foodComponent: foodItem,
+            message: `A known food-medicine interaction may be relevant for ${medicine} and ${foodItem}.`,
+          });
         }
       }
     }
