@@ -33,7 +33,7 @@ interface DatabaseSchema {
   auditLogs: { id: string; userId: string; action: string; timestamp: string; ip?: string }[];
 }
 
-const DB_DIR = path.join(process.cwd(), 'data');
+const DB_DIR = process.env.NUTRIAI_DATA_DIR || path.join(process.cwd(), 'loginpage', 'data');
 const DB_FILE = path.join(DB_DIR, 'nutriai-database.json');
 const LEGACY_DB_FILE = path.join(DB_DIR, 'carepulse-database.json');
 

@@ -4,7 +4,15 @@
   "functions": {
     "api/[...path].ts": {
       "maxDuration": 60,
-      "includeFiles": "dist/server.cjs"
+      "includeFiles": "dist/server.cjs, loginpage/data/*.json"
+    },
+    "api/auth/[...path].ts": {
+      "maxDuration": 60,
+      "includeFiles": "dist/server.cjs, loginpage/data/*.json"
+    },
+    "api/patient/[...path].ts": {
+      "maxDuration": 60,
+      "includeFiles": "dist/server.cjs, loginpage/data/*.json"
     }
   }
 }
