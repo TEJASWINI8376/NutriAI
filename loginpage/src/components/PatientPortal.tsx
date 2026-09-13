@@ -15,7 +15,7 @@ import {
   Camera,
   Sparkles,
   ChevronRight,
-  Bot,
+  Search,
 } from 'lucide-react';
 import type { User, VitalRecord, Appointment, MedicalRecord, Medication, CareTeamMember, GatewayStatus } from '../types.ts';
 import { api } from '../api.ts';
@@ -32,10 +32,12 @@ interface PatientPortalProps {
   showToast: (msg: string, icon?: string) => void;
   onOpenFoodAnalysis?: () => void;
   onOpenScanner?: () => void;
+  /** Opens the scanner directly on the camera tab — used by the floating button */
+  onOpenScannerCamera?: () => void;
   onOpen3DJourney?: () => void;
 }
 
-export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, showToast, onOpenFoodAnalysis, onOpenScanner }) => {
+export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, showToast, onOpenFoodAnalysis, onOpenScanner, onOpenScannerCamera }) => {
   const [activeTab, setActiveTab] = useState<'vitals' | 'appointments' | 'records' | 'medications' | 'careteam'>('vitals');
   const [vitals, setVitals] = useState<VitalRecord[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -422,8 +424,8 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
           <button
             id="floatingBotScanBtn"
             type="button"
-            onClick={onOpenScanner ?? onOpenFoodAnalysis}
-            title="Scan Food — Open AI Scanner"
+            onClick={onOpenScannerCamera ?? onOpenScanner ?? onOpenFoodAnalysis}
+            title="Scan Food — Open Camera"
             aria-label="Scan Food"
             className="
               relative flex items-center justify-center
@@ -439,15 +441,8 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
             {/* Pulsing glow ring */}
             <span className="absolute inset-0 rounded-2xl bg-[#006948] animate-ping opacity-20 pointer-events-none" />
 
-            {/* Bot face icon built from lucide Bot + ScanLine overlay */}
-            <span className="relative flex flex-col items-center justify-center gap-0">
-              <Bot className="w-7 h-7 text-white drop-shadow-sm" />
-              <span
-                className="absolute -bottom-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-emerald-300 border-2 border-[#004d35] shadow"
-              >
-                <ScanLine className="w-3 h-3 text-[#004d35]" />
-              </span>
-            </span>
+            {/* Search icon */}
+            <Search className="relative w-6 h-6 text-white drop-shadow-sm" />
           </button>
         </div>
       )}

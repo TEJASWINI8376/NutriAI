@@ -36,6 +36,7 @@ import { InspectionProduct, NutritionField, PatientProfile, DecisionResult } fro
 export default function App() {
   const [viewMode, setViewMode] = useState<'journey' | 'app' | 'auth'>('journey');
   const [pendingScan, setPendingScan] = useState(false);
+  const [pendingScanCamera, setPendingScanCamera] = useState(false);
   const [products, setProducts] = useState<InspectionProduct[]>([]);
   const [activeProduct, setActiveProduct] = useState<InspectionProduct | null>(null);
   const [session, setSession] = useState(() => localStorage.getItem('nutriai.session'));
@@ -116,11 +117,12 @@ export default function App() {
 
   // Auto-open scanner when navigating via Scan Now shortcut from PatientPortal
   useEffect(() => {
-    if (pendingScan && showFoodAnalysis) {
+    if ((pendingScan || pendingScanCamera) && showFoodAnalysis) {
       setPendingScan(false);
+      setPendingScanCamera(false);
       setIsRetakeOpen(true);
     }
-  }, [pendingScan, showFoodAnalysis]);
+  }, [pendingScan, pendingScanCamera, showFoodAnalysis]);
 
   // Verify Sodium Field handler
   const handleVerifySodium = async (verifiedValue: string) => {
@@ -370,6 +372,10 @@ export default function App() {
           setPendingScan(true);
           setShowFoodAnalysis(true);
         }}
+        onOpenScannerCamera={() => {
+          setPendingScanCamera(true);
+          setShowFoodAnalysis(true);
+        }}
         showToast={(message) => triggerToast(message, 'Clinical gateway updated.')}
       />
     );
@@ -405,7 +411,7 @@ export default function App() {
           <div className="flex items-center justify-center">
             <button type="button" onClick={() => setIsRetakeOpen(true)} className="h-12 px-6 rounded-xl bg-[#006948] text-white font-bold cursor-pointer hover:bg-[#005238] transition-all">Scan a food label</button>
           </div>
-          <RetakeModal isOpen={isRetakeOpen} onClose={() => setIsRetakeOpen(false)} onProductScanned={handleProductScanned} />
+          <RetakeModal isOpen={isRetakeOpen} onClose={() => setIsRetakeOpen(false)} onProductScanned={handleProductScanned} initialTab={pendingScanCamera ? 'camera' : 'barcode'} autoStartCamera={pendingScanCamera} />
         </div>
       </div>
     );
@@ -713,6 +719,8 @@ export default function App() {
         isOpen={isRetakeOpen}
         onClose={() => setIsRetakeOpen(false)}
         onProductScanned={handleProductScanned}
+        initialTab={pendingScanCamera ? 'camera' : 'barcode'}
+        autoStartCamera={pendingScanCamera}
       />
 
       <HistoryModal

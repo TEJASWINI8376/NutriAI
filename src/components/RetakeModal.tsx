@@ -18,15 +18,21 @@ interface RetakeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onProductScanned: (product: InspectionProduct) => void;
+  /** If set, the modal opens on this tab immediately. */
+  initialTab?: 'barcode' | 'samples' | 'camera' | 'upload';
+  /** If true, the camera stream starts automatically when the modal opens. */
+  autoStartCamera?: boolean;
 }
 
 export const RetakeModal: React.FC<RetakeModalProps> = ({
   isOpen,
   onClose,
   onProductScanned,
+  initialTab = 'barcode',
+  autoStartCamera = false,
 }) => {
   const [selectedPanel, setSelectedPanel] = useState<string>('Rear Nutrition Table');
-  const [activeTab, setActiveTab] = useState<'barcode' | 'samples' | 'camera' | 'upload'>('barcode');
+  const [activeTab, setActiveTab] = useState<'barcode' | 'samples' | 'camera' | 'upload'>(initialTab);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
@@ -37,8 +43,18 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
   const streamRef = useRef<MediaStream | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Reset tab to initialTab and optionally auto-start camera each time modal opens
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      setActiveTab(initialTab);
+      setCapturedImage(null);
+      setError(null);
+      setBarcodeInput('');
+      if (autoStartCamera || initialTab === 'camera') {
+        // Small delay so the video element is mounted
+        setTimeout(() => startCamera(), 150);
+      }
+    } else {
       stopCamera();
       setCapturedImage(null);
       setError(null);
