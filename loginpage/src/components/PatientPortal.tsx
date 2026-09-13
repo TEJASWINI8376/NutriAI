@@ -9,7 +9,6 @@ import {
   FolderHeart,
   Pill,
   Users,
-  Shield,
   Lock,
   ScanLine,
   Camera,
@@ -257,37 +256,7 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Clinical Alerts / Quick Patient Summary Bar */}
-            <div className="bg-white rounded-2xl p-4 border border-[#e5eeff] shadow-xs flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#effcf6] text-[#006947] flex items-center justify-center shrink-0">
-                  <Shield className="w-5 h-5 text-[#006947]" />
-                </div>
-                <div>
-                  <h4 className="text-[13px] font-bold text-[#0b1c30]">
-                    Electronic Health Profile Synchronized
-                  </h4>
-                  <p className="text-[11px] text-[#707881]">
-                    Blood Type: <span className="font-bold text-[#0b1c30]">{user.bloodType || 'A+'}</span> • Allergies: <span className="text-red-700 font-semibold">{user.allergies?.join(', ') || 'NKDA'}</span> • Primary: <span className="text-[#006194] font-semibold">Dr. Sarah Jenkins, MD</span>
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setActiveTab('appointments')}
-                  className="px-3 py-1.5 text-[12px] font-bold bg-[#eff4ff] hover:bg-[#e0f0fe] text-[#006194] rounded-xl transition-colors cursor-pointer"
-                >
-                  Schedule Consultation
-                </button>
-                <button
-                  onClick={() => showToast('Full clinical summary generated and certified.', 'assignment_turned_in')}
-                  className="px-3 py-1.5 text-[12px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors cursor-pointer"
-                >
-                  Print Summary
-                </button>
-              </div>
-            </div>
 
             {/* ── Quick Scan Food Card ─────────────────────────────────────── */}
             {(onOpenScanner || onOpenFoodAnalysis) && (
