@@ -92,6 +92,13 @@ function getAuthenticatedUser(req: express.Request): User | null {
   const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
   if (!token) return null;
 
+  // First try opaque session tokens (cp_tok_*) created by db.createSession()
+  if (token.startsWith('cp_tok_')) {
+    const user = db.getUserByToken(token);
+    return user;
+  }
+
+  // Then try HMAC JWT tokens created by createSessionToken()
   const [payload, signature] = token.split('.');
   if (!payload || !signature) return null;
   const expected = createHmac('sha256', process.env.AUTH_SECRET || 'nutriai-development-secret').update(payload).digest('base64url');
