@@ -11,6 +11,7 @@ import {
   Users,
   Shield,
   Lock,
+  Sparkles,
 } from 'lucide-react';
 import type { User, VitalRecord, Appointment, MedicalRecord, Medication, CareTeamMember, GatewayStatus } from '../types.ts';
 import { api } from '../api.ts';
@@ -26,9 +27,10 @@ interface PatientPortalProps {
   onLogout: () => void;
   showToast: (msg: string, icon?: string) => void;
   onOpenFoodAnalysis?: () => void;
+  onOpen3DJourney?: () => void;
 }
 
-export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, showToast, onOpenFoodAnalysis }) => {
+export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, showToast, onOpenFoodAnalysis, onOpen3DJourney }) => {
   const [activeTab, setActiveTab] = useState<'vitals' | 'appointments' | 'records' | 'medications' | 'careteam'>('vitals');
   const [vitals, setVitals] = useState<VitalRecord[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -143,6 +145,16 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
 
           {/* User Profile & Quick Actions */}
           <div className="flex items-center gap-2.5">
+            {onOpen3DJourney && (
+              <button
+                onClick={onOpen3DJourney}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-bold text-emerald-800 bg-emerald-100/90 hover:bg-emerald-200 text-emerald-900 rounded-xl transition-all border border-emerald-300 shadow-2xs cursor-pointer active:scale-95"
+                title="Experience 3D Animated Scroll Journey"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="hidden sm:inline">3D Story</span>
+              </button>
+            )}
             {onOpenFoodAnalysis && (
               <button
                 onClick={onOpenFoodAnalysis}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Clock } from 'lucide-react';
+import { ArrowLeft, Clock, Sparkles } from 'lucide-react';
 
 interface HeaderProps {
   onBack?: () => void;
@@ -7,6 +7,7 @@ interface HeaderProps {
   historyCount?: number;
   onOpenProfile?: () => void;
   profileConditionsCount?: number;
+  onOpen3DJourney?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -15,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   historyCount = 0,
   onOpenProfile,
   profileConditionsCount = 0,
+  onOpen3DJourney,
 }) => {
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-[#faf8ff]/90 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-b border-[#eaedff]">
@@ -23,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             id="backBtn"
             aria-label="Back"
-            className="w-11 h-11 flex items-center justify-center rounded-full text-[#131b2e] hover:bg-[#e2e7ff] active:scale-95 transition-all"
+            className="w-11 h-11 flex items-center justify-center rounded-full text-[#131b2e] hover:bg-[#e2e7ff] active:scale-95 transition-all cursor-pointer"
             onClick={onBack}
             type="button"
           >
@@ -33,20 +35,30 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               alt="NutriAI Logo"
               className="h-8 w-auto object-contain"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnYvgsvVrIbKMYWwMm-OHiQxDEn8Ijzg0TsD-j_c0BlRaNTVttMHLF94qvqoUp166EceRlePJJtHFZbirPi_iVb8dyDyU98eS6WzQ-1ITTUzsPeBzRZ428utVRPxGJg7m04pT8V6CrjhDQp-jI6_hygkWIgU5c4mCwDKabhSfO46enxK25YPbX8oHanM3NLm7HrBrTPyOWH2iBHB7SfoVgM8SfCMJDSJWG9hvB2EyCY90NNZnPij2A"
+              src="/nutriai-logo.svg"
             />
             <h1 className="font-semibold text-[18px] leading-[24px] text-[#131b2e] tracking-tight">
-              Product Inspection Details
+              Product Inspection
             </h1>
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {onOpen3DJourney && (
+            <button
+              onClick={onOpen3DJourney}
+              title="Experience 3D Animated Scroll Journey"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200/80 transition-all cursor-pointer active:scale-95"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              <span>3D Story</span>
+            </button>
+          )}
           {onOpenHistory && (
             <button
               id="historyBtn"
               onClick={onOpenHistory}
               title="Inspection History"
-              className="relative p-2 rounded-full text-[#3d4a42] hover:bg-[#e2e7ff] transition-colors"
+              className="relative p-2 rounded-full text-[#3d4a42] hover:bg-[#e2e7ff] transition-colors cursor-pointer"
             >
               <Clock className="w-5 h-5" />
               {historyCount > 0 && (

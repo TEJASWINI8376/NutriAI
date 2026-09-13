@@ -23,9 +23,10 @@ import type { User } from '../types.ts';
 interface AuthScreenProps {
   onSuccess: (user: User) => void;
   showToast: (message: string, icon?: string) => void;
+  onOpen3DJourney?: () => void;
 }
 
-export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) => {
+export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast, onOpen3DJourney }) => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [identifier, setIdentifier] = useState('');
   const [fullName, setFullName] = useState('');
@@ -110,6 +111,15 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
 
   return (
     <main className="relative min-h-screen w-full flex flex-col items-center justify-center px-4 py-10 bg-[#f8faff] overflow-hidden">
+      {onOpen3DJourney && (
+        <button
+          onClick={onOpen3DJourney}
+          className="fixed top-5 left-5 z-50 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-slate-200 text-slate-700 text-xs font-bold shadow-xs hover:bg-white active:scale-95 transition-all cursor-pointer"
+        >
+          <span>← Back to 3D Story</span>
+        </button>
+      )}
+
       {/* Soft Ambient Background Glows */}
       <div className="absolute top-10 -left-24 w-80 h-80 bg-emerald-300/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 -right-24 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl pointer-events-none" />
