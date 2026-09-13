@@ -1,4 +1,17 @@
 import React, { useState } from 'react';
+import {
+  Plus,
+  HeartPulse,
+  Activity,
+  Wind,
+  Droplet,
+  Thermometer,
+  Clock,
+  TrendingDown,
+  TrendingUp,
+  Minus,
+  X,
+} from 'lucide-react';
 import type { VitalRecord } from '../types.ts';
 import { api } from '../api.ts';
 
@@ -85,18 +98,18 @@ export const VitalsModule: React.FC<VitalsModuleProps> = ({ vitals, onVitalAdded
     }
   };
 
-  const getVitalIcon = (type: VitalRecord['type']) => {
+  const renderVitalIcon = (type: VitalRecord['type']) => {
     switch (type) {
       case 'heartRate':
-        return 'cardiology';
+        return <HeartPulse className="w-5 h-5 text-[#006194]" />;
       case 'bloodPressure':
-        return 'vital_signs';
+        return <Activity className="w-5 h-5 text-[#006194]" />;
       case 'oxygen':
-        return 'pulmonology';
+        return <Wind className="w-5 h-5 text-[#006194]" />;
       case 'glucose':
-        return 'water_drop';
+        return <Droplet className="w-5 h-5 text-[#006194]" />;
       case 'temperature':
-        return 'device_thermostat';
+        return <Thermometer className="w-5 h-5 text-[#006194]" />;
     }
   };
 
@@ -116,7 +129,7 @@ export const VitalsModule: React.FC<VitalsModuleProps> = ({ vitals, onVitalAdded
           onClick={() => setModalOpen(true)}
           className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#006194] hover:bg-[#007bb9] text-white text-[13px] font-bold shadow-xs transition-all active:scale-[0.98] cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[18px]">add</span>
+          <Plus className="w-4 h-4" />
           <span>Log Reading</span>
         </button>
       </div>
@@ -130,9 +143,7 @@ export const VitalsModule: React.FC<VitalsModuleProps> = ({ vitals, onVitalAdded
           >
             <div className="flex items-start justify-between mb-2">
               <div className="w-9 h-9 rounded-xl bg-[#eff4ff] text-[#006194] flex items-center justify-center">
-                <span className="material-symbols-outlined text-[20px]">
-                  {getVitalIcon(vital.type)}
-                </span>
+                {renderVitalIcon(vital.type)}
               </div>
               {getStatusBadge(vital.status)}
             </div>
@@ -153,15 +164,17 @@ export const VitalsModule: React.FC<VitalsModuleProps> = ({ vitals, onVitalAdded
             {/* Micro Sparkline or Trend Preview */}
             <div className="flex items-center justify-between text-[11px] text-[#707881] pt-2 border-t border-[#f1f5f9]">
               <span className="inline-flex items-center gap-1">
-                <span className="material-symbols-outlined text-[14px] text-[#006a61]">
-                  schedule
-                </span>
+                <Clock className="w-3.5 h-3.5 text-[#006a61]" />
                 {vital.recordedAt}
               </span>
               <span className="inline-flex items-center gap-0.5 font-semibold text-[#006947]">
-                <span className="material-symbols-outlined text-[14px]">
-                  {vital.trend === 'down' ? 'trending_down' : vital.trend === 'up' ? 'trending_up' : 'trending_flat'}
-                </span>
+                {vital.trend === 'down' ? (
+                  <TrendingDown className="w-3.5 h-3.5" />
+                ) : vital.trend === 'up' ? (
+                  <TrendingUp className="w-3.5 h-3.5" />
+                ) : (
+                  <Minus className="w-3.5 h-3.5" />
+                )}
                 Synced
               </span>
             </div>
@@ -176,7 +189,7 @@ export const VitalsModule: React.FC<VitalsModuleProps> = ({ vitals, onVitalAdded
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-9 h-9 rounded-xl bg-[#eff4ff] text-[#006194] flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[20px]">vital_signs</span>
+                  <Activity className="w-5 h-5 text-[#006194]" />
                 </div>
                 <div>
                   <h3 className="text-[16px] font-bold text-[#0b1c30]">Record Clinical Metric</h3>
@@ -185,9 +198,9 @@ export const VitalsModule: React.FC<VitalsModuleProps> = ({ vitals, onVitalAdded
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="p-1 rounded-full text-slate-400 hover:text-slate-600"
+                className="p-1 rounded-full text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <X className="w-5 h-5" />
               </button>
             </div>
 

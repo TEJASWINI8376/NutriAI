@@ -1,4 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import {
+  CheckCircle2,
+  Utensils,
+  ShieldCheck,
+  LogOut,
+  Activity,
+  Calendar,
+  FolderHeart,
+  Pill,
+  Users,
+  Shield,
+  Lock,
+} from 'lucide-react';
 import type { User, VitalRecord, Appointment, MedicalRecord, Medication, CareTeamMember, GatewayStatus } from '../types.ts';
 import { api } from '../api.ts';
 import { VitalsModule } from './VitalsModule.tsx';
@@ -68,9 +81,9 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
     setAppointments((prev) => [newAppt, ...prev]);
   };
 
-  const handleAppointmentCancelled = (id: string) => {
+  const handleAppointmentCancelled = (apptId: string) => {
     setAppointments((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, status: 'cancelled' as const } : a))
+      prev.map((a) => (a.id === apptId ? { ...a, status: 'cancelled' as const } : a))
     );
   };
 
@@ -81,17 +94,15 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
   const handleAdherenceToggled = (medId: string, timeSlot: string) => {
     setMedications((prev) =>
       prev.map((m) => {
-        if (m.id === medId) {
-          const current = m.adherenceToday?.[timeSlot];
-          return {
-            ...m,
-            adherenceToday: {
-              ...(m.adherenceToday || {}),
-              [timeSlot]: !current,
-            },
-          };
-        }
-        return m;
+        if (m.id !== medId) return m;
+        const current = m.takenToday?.[timeSlot] || false;
+        return {
+          ...m,
+          takenToday: {
+            ...m.takenToday,
+            [timeSlot]: !current,
+          },
+        };
       })
     );
   };
@@ -105,7 +116,7 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
           <div className="flex items-center gap-3">
             <div className="relative flex items-center justify-center w-10 h-10 rounded-2xl bg-white shadow-xs p-1 border border-slate-200">
               <div className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 rounded-full bg-[#006a61] text-white">
-                <span className="material-symbols-outlined text-[10px]">verified</span>
+                <CheckCircle2 className="w-2.5 h-2.5 text-white" />
               </div>
               <img
                 alt="NutriAI"
@@ -138,7 +149,7 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
                 className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-semibold text-[#006947] bg-[#effcf6] hover:bg-[#dff8eb] rounded-xl transition-colors cursor-pointer"
                 title="Open food analysis workspace"
               >
-                <span className="material-symbols-outlined text-[16px]">restaurant</span>
+                <Utensils className="w-3.5 h-3.5 text-[#006947]" />
                 <span>Food Analysis</span>
               </button>
             )}
@@ -147,7 +158,7 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
               className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-semibold text-[#006194] bg-[#eff4ff] hover:bg-[#e0f0fe] rounded-xl transition-colors cursor-pointer"
               title="View HIPAA PHI cryptographic audit logs"
             >
-              <span className="material-symbols-outlined text-[16px]">security</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-[#006194]" />
               <span>HIPAA Ledger</span>
             </button>
 
@@ -180,7 +191,7 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
               className="p-2 rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
               title="Sign Out from Clinical Gateway"
             >
-              <span className="material-symbols-outlined text-[20px]">logout</span>
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -190,36 +201,39 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
       <nav className="bg-white border-b border-[#e5eeff] px-4 lg:px-8 overflow-x-auto scrollbar-none">
         <div className="max-w-7xl mx-auto flex items-center gap-1 py-2">
           {[
-            { id: 'vitals', label: 'Vitals & Metrics', icon: 'vital_signs' },
-            { id: 'appointments', label: 'Appointments', icon: 'calendar_month', badge: appointments.filter(a => a.status !== 'cancelled').length },
-            { id: 'records', label: 'Medical Records', icon: 'folder_shared', badge: medicalRecords.length },
-            { id: 'medications', label: 'Medications Protocol', icon: 'medication', badge: medications.length },
-            { id: 'careteam', label: 'Care Team', icon: 'medical_services' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-[13px] font-bold transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === tab.id
-                  ? 'bg-[#eff4ff] text-[#006194] shadow-xs'
-                  : 'text-[#707881] hover:text-[#0b1c30] hover:bg-slate-50'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">{tab.icon}</span>
-              <span>{tab.label}</span>
-              {typeof tab.badge === 'number' && tab.badge > 0 && (
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                    activeTab === tab.id
-                      ? 'bg-[#006194] text-white'
-                      : 'bg-slate-200 text-slate-700'
-                  }`}
-                >
-                  {tab.badge}
-                </span>
-              )}
-            </button>
-          ))}
+            { id: 'vitals', label: 'Vitals & Metrics', icon: Activity },
+            { id: 'appointments', label: 'Appointments', icon: Calendar, badge: appointments.filter(a => a.status !== 'cancelled').length },
+            { id: 'records', label: 'Medical Records', icon: FolderHeart, badge: medicalRecords.length },
+            { id: 'medications', label: 'Medications Protocol', icon: Pill, badge: medications.length },
+            { id: 'careteam', label: 'Care Team', icon: Users },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-[13px] font-bold transition-all whitespace-nowrap cursor-pointer ${
+                  activeTab === tab.id
+                    ? 'bg-[#eff4ff] text-[#006194] shadow-xs'
+                    : 'text-[#707881] hover:text-[#0b1c30] hover:bg-slate-50'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+                {typeof tab.badge === 'number' && tab.badge > 0 && (
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                      activeTab === tab.id
+                        ? 'bg-[#006194] text-white'
+                        : 'bg-slate-200 text-slate-700'
+                    }`}
+                  >
+                    {tab.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </nav>
 
@@ -238,7 +252,7 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
             <div className="bg-white rounded-2xl p-4 border border-[#e5eeff] shadow-xs flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#effcf6] text-[#006947] flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[20px]">health_and_safety</span>
+                  <Shield className="w-5 h-5 text-[#006947]" />
                 </div>
                 <div>
                   <h4 className="text-[13px] font-bold text-[#0b1c30]">
@@ -314,7 +328,7 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
                 <img
                   className="w-full h-full object-cover"
                   alt="Dr. Sarah Jenkins, MD"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgok82iLZmBm92-YmTHYPi-QN_60LyvTHBSNS-OIpktHH2mZgcJnfGhrd9J3bJEnnO9tXE2HFIeEnhko558DqvpahUre2heWL4ydeetViirU9zYJ4hinN3jLSPWCKmwUK0hpDIlqLJzmRjd834Zzf_FBFgKfUFvLSXU6aW7KooiUBFFgXqIFNBb_bg8Xbhd5k38m_Ju7FWXMDtWgpk2gwlMOpCuVzKjls0cGMUnIYsoOTTU2CY5rJx"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgok82iLZmBm92-YmTHYPi-QN_60LyvTHBSNS-OIpktHH2mZgcJnfGhrd9J3bJEnnO9tXE2HFIeEnhko558DqvpahUre2heWL4ydeetViirU9zYJ4hinN3jLSPWCKmwUK0hpDIlqLJzmRjd834Zzf_FBFgKfUFvLSXU6aW7KooiUBFFgXqIFNBb_bg8Xbhd5k38m_Ju7FWXMDtWgpk2gwlMOqCuVzKjls0cGMUnIYsoOTTU2CY5rJx"
                 />
               </div>
               <div className="flex flex-col min-w-0 flex-1">
@@ -322,9 +336,7 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
                   <span className="text-[13px] font-bold text-[#0b1c30] truncate">
                     Dr. Sarah Jenkins, MD
                   </span>
-                  <span className="material-symbols-outlined text-[#006a61] text-[16px]">
-                    check_circle
-                  </span>
+                  <CheckCircle2 className="w-4 h-4 text-[#006a61]" />
                 </div>
                 <p className="text-[12px] text-[#3f4850] truncate">
                   "Your medical records are synchronized in real-time."
@@ -335,7 +347,7 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
             {/* Trust & Regulatory Footer */}
             <div className="flex flex-col items-center justify-center gap-1 text-center py-6">
               <div className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#006a61]">
-                <span className="material-symbols-outlined text-[16px]">lock</span>
+                <Lock className="w-3.5 h-3.5 text-[#006a61]" />
                 <span>256-bit HIPAA-compliant encryption</span>
               </div>
               <p className="text-[11px] text-[#707881]">
