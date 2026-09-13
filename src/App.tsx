@@ -388,9 +388,8 @@ export default function App() {
           <HeartPulse className="w-10 h-10 text-[#006948] mx-auto mb-4" />
           <h1 className="text-2xl font-bold">Your dashboard is ready</h1>
           <p className="text-sm text-[#3d4a42] mt-2 mb-6">Scan a food label to begin your first personalized analysis. No sample products are loaded.</p>
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center">
             <button type="button" onClick={() => setIsRetakeOpen(true)} className="h-12 px-6 rounded-xl bg-[#006948] text-white font-bold cursor-pointer hover:bg-[#005238] transition-all">Scan a food label</button>
-            <button type="button" onClick={() => setViewMode('journey')} className="h-12 px-5 rounded-xl bg-[#e2e7ff] text-[#131b2e] font-bold cursor-pointer hover:bg-[#d0d8fc] transition-all">3D Story</button>
           </div>
           <RetakeModal isOpen={isRetakeOpen} onClose={() => setIsRetakeOpen(false)} onProductScanned={handleProductScanned} />
         </div>
@@ -411,7 +410,6 @@ export default function App() {
         historyCount={products.length}
         onOpenProfile={() => setIsProfileOpen(true)}
         profileConditionsCount={patientProfile.conditions.length}
-        onOpen3DJourney={() => setViewMode('journey')}
       />
 
       {/* Main Content Area */}
@@ -741,16 +739,6 @@ export default function App() {
         patientConditions={patientProfile.conditions}
         patientMedicines={patientProfile.medicines}
       />
-
-      {/* Floating 3D Experience Switcher */}
-      <button
-        onClick={() => setViewMode('journey')}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-700/25 hover:bg-emerald-700 active:scale-95 transition-all text-xs font-bold border border-emerald-500/30 cursor-pointer"
-        title="Experience 3D Interactive Journey"
-      >
-        <Sparkles className="w-4 h-4 text-emerald-200" />
-        <span>3D Story</span>
-      </button>
     </div>
   );
 }
