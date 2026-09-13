@@ -1082,8 +1082,8 @@ export const NutriScene3D: React.FC<NutriScene3DProps> = ({ scrollProgress, clas
       const state = sceneRef.current;
       if (!state) return;
 
-      // Smooth scroll interpolation (lerp)
-      state.currentScroll += (state.targetScroll - state.currentScroll) * 0.08;
+      // Smooth scroll interpolation (lerp) — tuned to 0.22 for responsive synchronization with RAF-damped scroll
+      state.currentScroll += (state.targetScroll - state.currentScroll) * 0.22;
       const p = Math.max(0, Math.min(1, state.currentScroll));
 
       const w = container.clientWidth || window.innerWidth;

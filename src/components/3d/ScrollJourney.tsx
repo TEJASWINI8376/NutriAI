@@ -114,21 +114,43 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Scroll listener tracking 0 to 1
+  // RAF-based smooth scroll interpolation loop (cinema-grade exponential dampening)
+  const targetProgressRef = useRef(0);
+  const currentProgressRef = useRef(0);
+
   useEffect(() => {
+    let rafId: number;
+
     const handleScroll = () => {
       if (!scrollContainerRef.current) return;
-      const rect = scrollContainerRef.current.getBoundingClientRect();
-      const totalScrollable = rect.height - window.innerHeight;
+      const totalScrollable = scrollContainerRef.current.scrollHeight - window.innerHeight;
       if (totalScrollable <= 0) return;
-      const current = Math.max(0, -rect.top);
-      const p = Math.max(0, Math.min(1, current / totalScrollable));
-      setScrollProgress(p);
+      const p = Math.max(0, Math.min(1, window.scrollY / totalScrollable));
+      targetProgressRef.current = p;
+    };
+
+    const updateSmoothScroll = () => {
+      const diff = targetProgressRef.current - currentProgressRef.current;
+      if (Math.abs(diff) > 0.00005) {
+        currentProgressRef.current += diff * 0.12; // buttery smooth 12% spring dampening
+        setScrollProgress(currentProgressRef.current);
+      } else if (currentProgressRef.current !== targetProgressRef.current) {
+        currentProgressRef.current = targetProgressRef.current;
+        setScrollProgress(currentProgressRef.current);
+      }
+      rafId = requestAnimationFrame(updateSmoothScroll);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    currentProgressRef.current = targetProgressRef.current;
+    setScrollProgress(targetProgressRef.current);
+    rafId = requestAnimationFrame(updateSmoothScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Compute active stage (1 to 5)
@@ -155,29 +177,34 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
     });
   };
 
-  // Rock-solid stage interpolation with guaranteed 100% solid opacity plateau windows
+  // Rock-solid stage interpolation with smoothstep hermite easing & hardware acceleration
   const getStageTransform = (stageIndex: number) => {
+    const smoothstep = (min: number, max: number, value: number) => {
+      const x = Math.max(0, Math.min(1, (value - min) / (max - min)));
+      return x * x * (3 - 2 * x);
+    };
+
     // STAGE 1: INTRO HERO (0% to 20%)
     if (stageIndex === 1) {
-      if (scrollProgress <= 0.15) {
+      if (scrollProgress <= 0.14) {
         return {
           opacity: 1,
-          transform: 'translateY(0px) scale(1)',
+          transform: 'translate3d(0, 0px, 0) scale(1)',
           pointerEvents: 'auto' as const,
           zIndex: 20,
         };
       } else if (scrollProgress <= 0.22) {
-        const factor = (0.22 - scrollProgress) / 0.07;
+        const ease = 1 - smoothstep(0.14, 0.22, scrollProgress);
         return {
-          opacity: Math.max(0, Math.min(1, factor)),
-          transform: `translateY(${(1 - factor) * -25}px) scale(${0.96 + factor * 0.04})`,
-          pointerEvents: factor > 0.4 ? ('auto' as const) : ('none' as const),
+          opacity: ease,
+          transform: `translate3d(0, ${(1 - ease) * -28}px, 0) scale(${0.96 + ease * 0.04})`,
+          pointerEvents: ease > 0.3 ? ('auto' as const) : ('none' as const),
           zIndex: 20,
         };
       } else {
         return {
           opacity: 0,
-          transform: 'translateY(-30px) scale(0.96)',
+          transform: 'translate3d(0, -32px, 0) scale(0.96)',
           pointerEvents: 'none' as const,
           zIndex: 0,
         };
@@ -189,22 +216,21 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
       if (scrollProgress < 0.16 || scrollProgress > 0.44) {
         return {
           opacity: 0,
-          transform: `translateY(${scrollProgress < 0.16 ? 30 : -30}px) scale(0.95)`,
+          transform: `translate3d(0, ${scrollProgress < 0.16 ? 30 : -30}px, 0) scale(0.95)`,
           pointerEvents: 'none' as const,
           zIndex: 0,
         };
       }
-      let factor = 1;
-      if (scrollProgress < 0.22) {
-        factor = (scrollProgress - 0.16) / 0.06;
-      } else if (scrollProgress > 0.38) {
-        factor = (0.44 - scrollProgress) / 0.06;
+      let ease = 1;
+      if (scrollProgress < 0.23) {
+        ease = smoothstep(0.16, 0.23, scrollProgress);
+      } else if (scrollProgress > 0.37) {
+        ease = 1 - smoothstep(0.37, 0.44, scrollProgress);
       }
-      const clamped = Math.max(0, Math.min(1, factor));
       return {
-        opacity: clamped,
-        transform: `translateY(${(1 - clamped) * (scrollProgress < 0.22 ? 25 : -25)}px) scale(${0.95 + clamped * 0.05})`,
-        pointerEvents: clamped > 0.3 ? ('auto' as const) : ('none' as const),
+        opacity: ease,
+        transform: `translate3d(0, ${(1 - ease) * (scrollProgress < 0.23 ? 28 : -28)}px, 0) scale(${0.95 + ease * 0.05})`,
+        pointerEvents: ease > 0.3 ? ('auto' as const) : ('none' as const),
         zIndex: 20,
       };
     }
@@ -214,22 +240,21 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
       if (scrollProgress < 0.36 || scrollProgress > 0.64) {
         return {
           opacity: 0,
-          transform: `translateY(${scrollProgress < 0.36 ? 30 : -30}px) scale(0.95)`,
+          transform: `translate3d(0, ${scrollProgress < 0.36 ? 30 : -30}px, 0) scale(0.95)`,
           pointerEvents: 'none' as const,
           zIndex: 0,
         };
       }
-      let factor = 1;
-      if (scrollProgress < 0.42) {
-        factor = (scrollProgress - 0.36) / 0.06;
-      } else if (scrollProgress > 0.58) {
-        factor = (0.64 - scrollProgress) / 0.06;
+      let ease = 1;
+      if (scrollProgress < 0.43) {
+        ease = smoothstep(0.36, 0.43, scrollProgress);
+      } else if (scrollProgress > 0.57) {
+        ease = 1 - smoothstep(0.57, 0.64, scrollProgress);
       }
-      const clamped = Math.max(0, Math.min(1, factor));
       return {
-        opacity: clamped,
-        transform: `translateY(${(1 - clamped) * (scrollProgress < 0.42 ? 25 : -25)}px) scale(${0.95 + clamped * 0.05})`,
-        pointerEvents: clamped > 0.3 ? ('auto' as const) : ('none' as const),
+        opacity: ease,
+        transform: `translate3d(0, ${(1 - ease) * (scrollProgress < 0.43 ? 28 : -28)}px, 0) scale(${0.95 + ease * 0.05})`,
+        pointerEvents: ease > 0.3 ? ('auto' as const) : ('none' as const),
         zIndex: 20,
       };
     }
@@ -239,22 +264,21 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
       if (scrollProgress < 0.58 || scrollProgress > 0.82) {
         return {
           opacity: 0,
-          transform: `translateY(${scrollProgress < 0.58 ? 30 : -30}px) scale(0.95)`,
+          transform: `translate3d(0, ${scrollProgress < 0.58 ? 30 : -30}px, 0) scale(0.95)`,
           pointerEvents: 'none' as const,
           zIndex: 0,
         };
       }
-      let factor = 1;
-      if (scrollProgress < 0.64) {
-        factor = (scrollProgress - 0.58) / 0.06;
-      } else if (scrollProgress > 0.76) {
-        factor = (0.82 - scrollProgress) / 0.06;
+      let ease = 1;
+      if (scrollProgress < 0.65) {
+        ease = smoothstep(0.58, 0.65, scrollProgress);
+      } else if (scrollProgress > 0.75) {
+        ease = 1 - smoothstep(0.75, 0.82, scrollProgress);
       }
-      const clamped = Math.max(0, Math.min(1, factor));
       return {
-        opacity: clamped,
-        transform: `translateY(${(1 - clamped) * (scrollProgress < 0.64 ? 25 : -25)}px) scale(${0.95 + clamped * 0.05})`,
-        pointerEvents: clamped > 0.3 ? ('auto' as const) : ('none' as const),
+        opacity: ease,
+        transform: `translate3d(0, ${(1 - ease) * (scrollProgress < 0.65 ? 28 : -28)}px, 0) scale(${0.95 + ease * 0.05})`,
+        pointerEvents: ease > 0.3 ? ('auto' as const) : ('none' as const),
         zIndex: 20,
       };
     }
@@ -264,21 +288,21 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
       if (scrollProgress < 0.76) {
         return {
           opacity: 0,
-          transform: 'translateY(30px) scale(0.95)',
+          transform: 'translate3d(0, 30px, 0) scale(0.95)',
           pointerEvents: 'none' as const,
           zIndex: 0,
         };
       }
-      const factor = Math.max(0, Math.min(1, (scrollProgress - 0.76) / 0.08));
+      const ease = smoothstep(0.76, 0.84, scrollProgress);
       return {
-        opacity: factor,
-        transform: `translateY(${(1 - factor) * 20}px) scale(${0.96 + factor * 0.04})`,
-        pointerEvents: factor > 0.2 ? ('auto' as const) : ('none' as const),
+        opacity: ease,
+        transform: `translate3d(0, ${(1 - ease) * 25}px, 0) scale(${0.96 + ease * 0.04})`,
+        pointerEvents: ease > 0.2 ? ('auto' as const) : ('none' as const),
         zIndex: 30,
       };
     }
 
-    return { opacity: 0, transform: 'translateY(0px)', pointerEvents: 'none' as const, zIndex: 0 };
+    return { opacity: 0, transform: 'translate3d(0, 0px, 0)', pointerEvents: 'none' as const, zIndex: 0 };
   };
 
   // Stage 4 timeline animation steps
@@ -308,7 +332,7 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           {/* STAGE 1: NUTRIAGENT INTRO — CLEAN HERO & FEATURE HIGHLIGHTS    */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center max-w-5xl mx-auto px-3 sm:px-6 py-2 sm:py-8 text-center transition-all duration-300 pointer-events-none"
+            className="absolute inset-0 flex flex-col items-center justify-center max-w-5xl mx-auto px-3 sm:px-6 py-2 sm:py-8 text-center will-change-[transform,opacity] pointer-events-none"
             style={getStageTransform(1)}
           >
             {/* Centered Hero Text Container — Perfectly proportioned for phones */}
@@ -318,77 +342,18 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
                 transform: `translate3d(${mouseOffset.x * 8}px, ${mouseOffset.y * 8}px, 0)`,
               }}
             >
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-full bg-emerald-100 border-2 border-emerald-400 shadow-xs mb-2 sm:mb-5">
-                <span className="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-[#004d34]" />
-                </span>
-                <span className="text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-wider text-[#003824]">
-                  AI-Powered Nutrition & Health Intelligence
-                </span>
-              </div>
-
               {/* Dominant Hero Headline — Responsive so mobile never clips */}
               <h1 className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[5.5rem] font-black text-[#002f1f] tracking-tight leading-[1.08] mb-1.5 sm:mb-4 font-sans drop-shadow-sm">
                 Eat Smart. <span className="text-[#047857]">Live Better.</span>
               </h1>
 
               {/* Supporting Subtitle */}
-              <p className="text-xs sm:text-xl lg:text-[1.5rem] text-[#0f172a] font-extrabold max-w-xs sm:max-w-2xl mx-auto mb-3 sm:mb-6 leading-snug sm:leading-relaxed">
+              <p className="text-sm sm:text-xl lg:text-[1.6rem] text-[#0f172a] font-extrabold max-w-xs sm:max-w-2xl mx-auto mb-6 sm:mb-10 leading-snug sm:leading-relaxed">
                 Personalized nutrition and health intelligence, powered by AI.
               </p>
 
-              {/* 3 Feature Highlights: Sleek compact horizontal rows on mobile, 3-column cards on desktop */}
-              <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2 sm:gap-4 max-w-4xl mx-auto mb-3 sm:mb-6 text-left w-full">
-                <div className="p-2 sm:p-5 rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-md border border-emerald-200/90 sm:border-2 shadow-xs hover:border-emerald-400 transition-all flex items-center sm:flex-col sm:items-start gap-2.5 sm:gap-0 sm:justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3 sm:mb-2.5 shrink-0">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100 border border-emerald-300 sm:border-2 flex items-center justify-center shrink-0 shadow-xs">
-                      <Scan className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
-                    </div>
-                    <h4 className="text-xs sm:text-base font-black text-slate-900 block sm:hidden">Optical Food Scan</h4>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-sm sm:text-base font-black text-slate-900 hidden sm:block">Optical Food Scan</h4>
-                    <p className="text-[11px] sm:text-sm font-bold text-slate-700 leading-snug sm:leading-relaxed">
-                      Real-time camera OCR extracts nutrition panels & ingredients in 60 FPS.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-2 sm:p-5 rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-md border border-emerald-200/90 sm:border-2 shadow-xs hover:border-emerald-400 transition-all flex items-center sm:flex-col sm:items-start gap-2.5 sm:gap-0 sm:justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3 sm:mb-2.5 shrink-0">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100 border border-emerald-300 sm:border-2 flex items-center justify-center shrink-0 shadow-xs">
-                      <HeartPulse className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
-                    </div>
-                    <h4 className="text-xs sm:text-base font-black text-slate-900 block sm:hidden">Clinical EHR Cross-Check</h4>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-sm sm:text-base font-black text-slate-900 hidden sm:block">Clinical EHR Cross-Check</h4>
-                    <p className="text-[11px] sm:text-sm font-bold text-slate-700 leading-snug sm:leading-relaxed">
-                      Cross-analyzes sodium, sugars, and allergens against diagnosed conditions.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-2 sm:p-5 rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-md border border-emerald-200/90 sm:border-2 shadow-xs hover:border-emerald-400 transition-all flex items-center sm:flex-col sm:items-start gap-2.5 sm:gap-0 sm:justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3 sm:mb-2.5 shrink-0">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100 border border-emerald-300 sm:border-2 flex items-center justify-center shrink-0 shadow-xs">
-                      <Pill className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
-                    </div>
-                    <h4 className="text-xs sm:text-base font-black text-slate-900 block sm:hidden">Rx Drug Safety</h4>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-sm sm:text-base font-black text-slate-900 hidden sm:block">Rx Drug Safety</h4>
-                    <p className="text-[11px] sm:text-sm font-bold text-slate-700 leading-snug sm:leading-relaxed">
-                      Automated safety check with active prescriptions to prevent adverse reactions.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
               {/* Animated Scroll Cue */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-full bg-emerald-50/95 border-2 border-emerald-300 shadow-xs text-[11px] sm:text-sm font-black text-[#004d34]">
+              <div className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-2.5 rounded-full bg-emerald-50/95 border-2 border-emerald-300 shadow-xs text-xs sm:text-sm font-black text-[#004d34]">
                 <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948] animate-bounce" />
                 <span>Scroll down or tap Next below</span>
               </div>
@@ -399,15 +364,11 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           {/* STAGE 2: REALISTIC TILTED PHONE SCANNING THE LABEL (20% - 40%) */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex flex-col justify-between max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-8 transition-all duration-300 pointer-events-none"
+            className="absolute inset-0 flex flex-col justify-between max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-8 will-change-[transform,opacity] pointer-events-none"
             style={getStageTransform(2)}
           >
             {/* Top Scanning Header */}
             <div className="w-full text-center max-w-2xl mx-auto z-20 pointer-events-auto">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-2 rounded-full bg-emerald-100 text-[10px] sm:text-sm font-black uppercase text-[#003824] border-2 border-emerald-400 mb-1 sm:mb-2.5 shadow-xs">
-                <Scan className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#006948]" />
-                Step 2: Real-Time Optical Food Scan
-              </span>
               <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#002f1f] tracking-tight leading-tight">
                 Product &amp; Label Analysis
               </h2>
@@ -440,15 +401,11 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           {/* STAGE 3: REAL PHONE SCANNING + PATIENT PROFILE (40% - 60%)     */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-between max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-8 transition-all duration-300 pointer-events-none"
+            className="absolute inset-0 flex flex-col items-center justify-between max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-8 will-change-[transform,opacity] pointer-events-none"
             style={getStageTransform(3)}
           >
             {/* Top Stage Header */}
             <div className="text-center max-w-2xl mx-auto z-20 pointer-events-auto">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-2 rounded-full bg-emerald-100 text-[10px] sm:text-sm font-black uppercase text-[#003824] border-2 border-emerald-400 mb-1 sm:mb-2 shadow-xs">
-                <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#006948]" />
-                Step 3: Real Phone Scanning Meets Patient Profile
-              </span>
               <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#002f1f] tracking-tight leading-tight">
                 Live Clinical Telemetry Cross-Check
               </h2>
@@ -568,16 +525,12 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           {/* STAGE 4: AI AGENT REASONING ENGINE (60% - 80%)                 */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6 transition-all duration-300 pointer-events-none"
+            className="absolute inset-0 flex flex-col items-center justify-center max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6 will-change-[transform,opacity] pointer-events-none"
             style={getStageTransform(4)}
           >
             <div className="w-full max-w-3xl mx-auto pointer-events-auto z-20 pb-12 sm:pb-0">
               {/* Header */}
               <div className="text-center mb-3 sm:mb-6">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-emerald-100 text-[10px] sm:text-xs font-black uppercase text-[#003824] border-2 border-emerald-400 mb-1.5 sm:mb-2 shadow-xs">
-                  <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#006948]" />
-                  Step 4: AI Multi-Agent Reasoning Pipeline
-                </span>
                 <h2 className="text-2xl sm:text-4xl font-black text-[#002f1f] tracking-tight leading-tight">
                   Autonomous Clinical Verification
                 </h2>
@@ -640,7 +593,7 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           {/* STAGE 5: FINAL SLIDE — LOGIN / CREATE ACCOUNT                 */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex items-center justify-center max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-4 pointer-events-auto z-30 transition-all duration-300"
+            className="absolute inset-0 flex items-center justify-center max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-4 pointer-events-auto z-30 will-change-[transform,opacity]"
             style={getStageTransform(5)}
           >
             {/* Scrollable Container so everything fits on any screen height */}
@@ -648,10 +601,6 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
               
               {/* Header */}
               <div className="text-center mb-3 sm:mb-6">
-                <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-4 sm:py-2 rounded-full bg-emerald-100 text-[10px] sm:text-sm font-black uppercase text-[#003824] border-2 border-emerald-400 mb-1.5 sm:mb-2 shadow-xs">
-                  <ShieldCheck className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#006948]" />
-                  Final Step: Get Started with NutriAgent
-                </span>
                 <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#002f1f] tracking-tight leading-[1.1] mb-1 sm:mb-2">
                   Personalize Your Nutrition Intelligence
                 </h2>
