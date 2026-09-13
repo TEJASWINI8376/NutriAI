@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import path from 'path';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { GoogleGenAI, Type } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
 import { runPipeline } from './src/agent/pipeline';
@@ -89,7 +90,28 @@ let productsDatabase: InspectionProduct[] = [
 ];
 function getAuthenticatedUser(req: express.Request): User | null {
   const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
-  return token ? db.getUserByToken(token) : null;
+  if (!token) return null;
+
+  const [payload, signature] = token.split('.');
+  if (!payload || !signature) return null;
+  const expected = createHmac('sha256', process.env.AUTH_SECRET || 'nutriai-development-secret').update(payload).digest('base64url');
+  if (signature.length !== expected.length || !timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null;
+  try {
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { userId: string; expiresAt: number };
+    if (decoded.expiresAt < Date.now()) return null;
+    const user = db.findUserById(decoded.userId);
+    if (!user) return null;
+    const { passwordHash, passwordSalt, ...safeUser } = user;
+    return safeUser;
+  } catch {
+    return null;
+  }
+}
+
+function createSessionToken(userId: string) {
+  const payload = Buffer.from(JSON.stringify({ userId, expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000 })).toString('base64url');
+  const signature = createHmac('sha256', process.env.AUTH_SECRET || 'nutriai-development-secret').update(payload).digest('base64url');
+  return `${payload}.${signature}`;
 }
 
 app.post('/api/auth/register', (req, res) => {
@@ -101,7 +123,7 @@ app.post('/api/auth/register', (req, res) => {
       password: req.body.password,
       role: 'patient',
     });
-    res.status(201).json({ success: true, token: result.token, user: result.user, message: 'Account registered successfully.' });
+    res.status(201).json({ success: true, token: createSessionToken(result.user.id), user: result.user, message: 'Account registered successfully.' });
   } catch (error: any) {
     res.status(400).json({ success: false, message: error.message || 'Registration failed.' });
   }
@@ -110,7 +132,7 @@ app.post('/api/auth/register', (req, res) => {
 app.post('/api/auth/login', (req, res) => {
   try {
     const result = db.loginUser(req.body.identifier, req.body.password);
-    res.json({ success: true, token: result.token, user: result.user, message: 'Authenticated successfully.' });
+    res.json({ success: true, token: createSessionToken(result.user.id), user: result.user, message: 'Authenticated successfully.' });
   } catch (error: any) {
     res.status(401).json({ success: false, message: error.message || 'Authentication failed.' });
   }
@@ -120,7 +142,7 @@ app.post('/api/auth/quick-login', (req, res) => {
   try {
     const provider = req.body.provider === 'Apple' ? 'Apple' : 'Google';
     const result = db.quickFederatedLogin(provider);
-    res.json({ success: true, token: result.token, user: result.user, message: 'Authenticated successfully.' });
+    res.json({ success: true, token: createSessionToken(result.user.id), user: result.user, message: 'Authenticated successfully.' });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message || 'Authentication failed.' });
   }
