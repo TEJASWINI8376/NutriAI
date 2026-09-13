@@ -63,7 +63,7 @@ Module._load = function patchedModuleLoad(request, parent, isMain) {
 
 // Do not print the key. Only expose safe diagnostics for Render logs.
 console.log(`[NutriAI] Gemini API key configured: ${configuredKey ? 'yes' : 'no'}`);
-console.log('[NutriAI] Gemini API version: v1`);
+console.log('[NutriAI] Gemini API version: v1');
 console.log('[NutriAI] Gemini model migration: gemini-2.5-flash -> gemini-3.6-flash');
 
 require('../dist/server.cjs');
