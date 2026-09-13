@@ -1,135 +1,135 @@
-# NutriAI
-### 🌿 NutriAI — Your Personalized Food & Health Intelligence
+# 🌿 NutriAI — Personalized Food & Health Intelligence
 
-**NutriAI** is an AI-powered personalized nutrition assistant designed to help users make more informed food choices based on their individual health information. Instead of giving generic dietary advice, NutriAI connects **patient health data with real-world food information** to provide a personalized and explainable **“Can I Eat This?”** assessment.
+**NutriAI** is an AI-powered personalized nutrition assistant that helps users make informed food choices based on their individual health profile. Instead of generic dietary advice, NutriAI connects **patient health data with real-world food information** to provide a personalized, explainable **"Can I Eat This?"** assessment.
 
-The app works through three integrated components.
-
-**👤 Patient & Medical:** Users create a health profile and can upload medical reports and prescriptions through their camera, gallery, or PDF. Medical OCR extracts relevant information, which is displayed for user verification. Only after confirmation is the information added to the user's verified health profile.
-
-**📷 Food Analysis:** Users can scan a food product or upload an image of its label. Food OCR extracts ingredients, serving size, and nutritional information such as calories, sugar, sodium, fat, saturated fat, carbohydrates, and protein. Uncertain or low-confidence information is identified and can undergo basic verification.
-
-**🤖 Agent & Decision:** NutriAI's decision layer combines the verified patient profile with the analyzed food information. Its agent investigates which factors are relevant to the individual, verifies important information, and applies defined rules to assess potential dietary concerns. When relevant, it can also consider food–medicine context.
-
-The final result is presented through a simple **🟢 Suitable, 🟡 Use Caution, or 🔴 Not Recommended** indicator, accompanied by a clear explanation of **why** the result was reached and supporting evidence or sources. An activity timeline can also show how the agent reached its assessment.
-
-NutriAI is designed to make nutrition information **personalized, transparent, and easy to understand**, while keeping the user involved in confirming extracted medical and food data.
-
-**NutriAI: Know your health. Understand your food. Make informed choices.**
-
-# 🌿 NutriAgent
-
-
-
-> An agentic AI dietary decision-support system that creates a patient's health profile from existing medical information, analyzes packaged food, verifies uncertain information, and explains whether the food is generally suitable for that patient.
+> Patients with diagnosed conditions (diabetes, hypertension, high cholesterol, etc.) often find packaged food labels confusing. NutriAI bridges that gap — instantly, transparently, and personally.
 
 ---
 
-## 1. Problem
+## ✨ Key Features
 
-Patients who already have diagnosed conditions such as **diabetes, hypertension, high cholesterol, or cardiovascular conditions** often receive dietary advice from doctors, but still find it difficult to decide whether a particular packaged food is appropriate for them.
+### 👤 Patient Health Profile
+- Create a health profile by entering diagnosed conditions, medicines, and dietary restrictions
+- Upload medical reports & prescriptions — AI (OCR) extracts relevant information
+- User confirms extracted data before it is used in any analysis
+- Profile persists across sessions and powers the AI decision engine
 
-Food labels can contain complicated serving sizes, sugars, sodium, carbohydrates, fats, and unfamiliar ingredients. Patients may also have **medicines or dietary restrictions** that need to be considered.
+### 📷 Food Scanning & Analysis
+- **Quick Scan** directly from the main dashboard — no extra navigation required
+  - Prominent "Scan Food" card at the top of the dashboard
+  - Floating AI bot button (bottom-right) for one-tap access from anywhere
+- Scan food labels via **Camera** or **Upload an image**
+- OCR extracts: ingredients, serving size, calories, sugar, sodium, fat, carbohydrates, protein
+- Low-confidence fields are flagged for verification before use
+- Switch between multiple scanned products in the product switcher
 
----
+### 🤖 Agentic AI Decision Engine
+- Combines verified patient profile + analyzed food data
+- Investigates relevant factors, verifies uncertain information, applies evidence-based rules
+- Checks food–medicine interactions where applicable
+- Returns a clear **🟢 Suitable · 🟡 Use Caution · 🔴 Not Recommended** verdict
+- Every decision includes a transparent explanation and supporting evidence
 
-## 2. Proposed Solution
-
-The patient creates a **personalized health profile** by uploading existing medical reports and prescriptions, or by entering their known diagnosed conditions and dietary restrictions.
-
-The patient can then **scan or upload a packaged-food label**. NutriAgent:
-
-1. **Extracts** the ingredients and nutrition information
-2. **Verifies** important information using trusted sources
-3. **Checks** relevant food–medicine interactions where applicable
-4. **Passes** verified information to a transparent rule-based assessment engine
-
----
-
-## 3. What Makes It Agentic?
-
-| Stage | Agent Behavior |
-|---|---|
-| **Goal** | Understand the patient's health profile and the food-related question |
-| **Plan** | Decide which patient, food, nutrition, ingredient, and evidence information is required |
-| **Act** | Select and use medical-report, OCR, nutrition, ingredient, interaction, and evidence tools |
-| **Observe** | Inspect extracted information, source quality, and confidence |
-| **Evaluate** | Detect missing, uncertain, or conflicting information |
-| **Adapt** | Retry OCR, use another source, verify information, or ask the patient for clearer input |
-| **Outcome** | Generate an explainable, evidence-backed dietary assessment |
-
----
-
-## 4. Patient Health Profile
-
-The patient can provide information in two ways:
-
-1. **Upload** existing medical reports and prescriptions
-2. **Manually enter** known diagnosed conditions and dietary restrictions
-
-AI extracts relevant information from uploaded documents, and the patient confirms the extracted information before it is used.
-
-**Example profile:**
-
-- 🩺 **Conditions:** Diabetes, Hypertension
-- 💊 **Medicines:** Prescribed medicines entered or extracted from prescription
-- 🥗 **Dietary restrictions:** Low sugar, Low sodium
-- 📊 **Relevant test values:** Extracted when clearly available
+### 🏥 Patient Portal (Medical Dashboard)
+- Full EHR-style dashboard with tabs: **Vitals & Metrics, Appointments, Medical Records, Medications Protocol, Care Team**
+- Log vitals (heart rate, blood pressure, oxygen, glucose, temperature)
+- Schedule and manage appointments
+- Upload and manage medical records
+- Track medication adherence
+- HIPAA-compliant audit ledger
 
 ---
 
-## 5. Main Tools
-
-| Tool | Purpose |
-|---|---|
-| **Medical Report OCR / Document AI** | Extract relevant health information from uploaded reports |
-| **Prescription Extraction** | Identify prescribed medicines and relevant details |
-| **Food OCR** | Extract nutrition and ingredient information from food labels |
-| **Nutrition Lookup** | Retrieve or verify product nutrition data |
-| **Ingredient Knowledge** | Identify and explain unfamiliar or relevant ingredients |
-| **Food–Medicine Interaction** | Check only known, evidence-backed interactions when applicable |
-| **Evidence Retrieval** | Retrieve information from curated authoritative sources |
-| **Verification** | Compare information and detect conflicts or uncertainty |
-| **Rule Engine** | Apply documented evidence-based dietary rules |
-
----
-
-## Development
+## 🚀 Getting Started
 
 ### Prerequisites
+- [Node.js](https://nodejs.org/) v18+ and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- A `.env` file with a valid `GEMINI_API_KEY` (see `.env.example`)
 
-- [Node.js](https://nodejs.org/) and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-### Getting Started
+### Run Locally
 
 ```sh
 git clone https://github.com/TEJASWINI8376/NutriAI.git
 cd NutriAI
-npm i
+npm install
 npm run dev
 ```
 
+The app will be available at **http://localhost:3000**.
+
 ---
 
-## Tech Stack
+## 🛠 Tech Stack
 
-- **Frontend:** React 19 · TypeScript · Tailwind CSS v4 · Motion
-- **Backend:** Express · Google GenAI
-- **Build:** Vite
-# nutriAI
-NutrIA is an AI-powered personalized nutrition and food-safety assistant that helps users understand whether a particular food is suitable for them based on their health profile, medical reports, prescriptions, ingredients, and nutritional information.
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 19 · TypeScript · Tailwind CSS v4 · Lucide React · Motion |
+| **Backend** | Express · Google GenAI (`@google/genai`) |
+| **AI / OCR** | Gemini Vision API (food label & medical document OCR) |
+| **Build** | Vite · esbuild |
+| **Auth** | Salted scrypt password hashes · opaque session tokens |
+| **Database** | SQLite (via `loginpage/server/db`) |
 
-## Authentication
+---
 
-The patient-medical branch includes a dependency-free `AuthService` in `auth.js` for the initial account flow:
+## 🤖 Agentic Pipeline
 
-- Registers normalized email addresses with salted scrypt password hashes.
-- Creates opaque, expiring session tokens on login.
-- Authenticates and logs out sessions without exposing password hashes.
-- Rejects weak passwords, duplicate accounts, invalid credentials, and expired sessions.
+| Stage | Behavior |
+|---|---|
+| **Goal** | Understand the patient's health profile and the food question |
+| **Plan** | Decide which patient, food, nutrition, ingredient, and evidence data is needed |
+| **Act** | Use OCR, nutrition lookup, ingredient knowledge, and interaction tools |
+| **Observe** | Inspect extracted data, source quality, and confidence scores |
+| **Evaluate** | Detect missing, uncertain, or conflicting information |
+| **Adapt** | Retry OCR, use another source, verify, or request clearer input |
+| **Outcome** | Generate an explainable, evidence-backed dietary assessment |
 
-Run the tests with:
+---
+
+## 🔐 Authentication
+
+A dependency-free `AuthService` in `auth.js` handles account flows:
+
+- Registers normalized email addresses with **salted scrypt** password hashes
+- Creates **opaque, expiring session tokens** on login
+- Rejects weak passwords, duplicate accounts, invalid credentials, and expired sessions
+
+Run the auth tests with:
 
 ```bash
 node --test auth.test.js
 ```
+
+---
+
+## 📁 Project Structure
+
+```
+NutriAI/
+├── src/
+│   ├── App.tsx                      # Root app — auth/journey/portal/food-analysis routing
+│   ├── components/
+│   │   ├── RetakeModal.tsx           # Food scanner (camera, upload, barcode, samples)
+│   │   ├── Header.tsx                # Food analysis header
+│   │   ├── ContextCard.tsx           # Product context card
+│   │   ├── FieldCard.tsx             # Nutrition field display
+│   │   ├── DecisionResultModal.tsx   # "Can I Eat This?" result
+│   │   └── ...
+│   └── agent/
+│       ├── pipeline.ts               # Agentic pipeline orchestration
+│       ├── investigator.ts           # Evidence investigation
+│       └── explanation.ts            # Decision explanation generation
+├── loginpage/src/components/
+│   ├── PatientPortal.tsx             # Main patient dashboard (Quick Scan card + floating bot)
+│   ├── AuthScreen.tsx                # Login / registration
+│   ├── VitalsModule.tsx              # Vitals tab
+│   ├── AppointmentsModule.tsx        # Appointments tab
+│   ├── RecordsModule.tsx             # Medical records tab
+│   ├── MedicationsModule.tsx         # Medications tab
+│   └── CareTeamModule.tsx            # Care team tab
+└── server.ts                         # Express server + Vite SSR + API routes
+```
+
+---
+
+**NutriAI: Know your health. Understand your food. Make informed choices.**

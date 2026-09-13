@@ -383,28 +383,6 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
               />
             )}
 
-            {/* Medical Care Team Spotlight (Matching the mock design) */}
-            <div className="w-full flex items-center gap-3 p-4 rounded-2xl bg-white shadow-xs border border-[#e5eeff] mt-8">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 bg-[#d3e4fe] border border-slate-200">
-                <img
-                  className="w-full h-full object-cover"
-                  alt="Dr. Sarah Jenkins, MD"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgok82iLZmBm92-YmTHYPi-QN_60LyvTHBSNS-OIpktHH2mZgcJnfGhrd9J3bJEnnO9tXE2HFIeEnhko558DqvpahUre2heWL4ydeetViirU9zYJ4hinN3jLSPWCKmwUK0hpDIlqLJzmRjd834Zzf_FBFgKfUFvLSXU6aW7KooiUBFFgXqIFNBb_bg8Xbhd5k38m_Ju7FWXMDtWgpk2gwlMOqCuVzKjls0cGMUnIYsoOTTU2CY5rJx"
-                />
-              </div>
-              <div className="flex flex-col min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[13px] font-bold text-[#0b1c30] truncate">
-                    Dr. Sarah Jenkins, MD
-                  </span>
-                  <CheckCircle2 className="w-4 h-4 text-[#006a61]" />
-                </div>
-                <p className="text-[12px] text-[#3f4850] truncate">
-                  "Your medical records are synchronized in real-time."
-                </p>
-              </div>
-            </div>
-
             {/* Trust & Regulatory Footer */}
             <div className="flex flex-col items-center justify-center gap-1 text-center py-6">
               <div className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#006a61]">
