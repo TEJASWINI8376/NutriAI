@@ -1,6 +1,6 @@
-const assert = require('node:assert/strict');
-const test = require('node:test');
-const { AuthService } = require('./auth');
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { AuthService } from './auth.js';
 
 test('registers users without exposing password hashes', () => {
   const auth = new AuthService();

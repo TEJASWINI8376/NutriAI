@@ -99,6 +99,18 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
   };
 
   const runAnalysis = async (imagePayload: string, samplePreset?: string) => {
+    const presetBarcodes: Record<string, string> = {
+      cheerios: '016000275270',
+      nutella: '3017620422003',
+      granola_bar: '7394376616228',
+      greek_yogurt: '20047559',
+    };
+
+    if (samplePreset && presetBarcodes[samplePreset]) {
+      await handleBarcodeLookup(presetBarcodes[samplePreset]);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
@@ -353,12 +365,12 @@ export const RetakeModal: React.FC<RetakeModalProps> = ({
                     },
                     {
                       name: 'Oatly Barista Edition Oat Milk',
-                      code: '7340055300057',
+                      code: '7394376616228',
                       badge: 'Verified OFF',
                     },
                     {
                       name: 'Heinz Tomato Ketchup',
-                      code: '013000006008',
+                      code: '8715700407760',
                       badge: 'Verified OFF',
                     },
                   ].map((item) => (
