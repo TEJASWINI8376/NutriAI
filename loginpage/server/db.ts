@@ -326,7 +326,8 @@ class Database {
 
     // Default Seed
     const demoUserId = 'demo-patient-001';
-    const { hash, salt } = hashPassword('NutriAI2026!');
+    const demoPassword = process.env.DEMO_USER_PASSWORD || 'NutriAI2026!';
+    const { hash, salt } = hashPassword(demoPassword);
     const demoUser: StoredUser = {
       id: demoUserId,
       name: 'Eleanor Vance',
@@ -405,7 +406,8 @@ class Database {
       throw new Error('An account with this email or phone number already exists.');
     }
 
-    const { hash, salt } = hashPassword(params.password || 'NutriAITemp2026!');
+    const userPassword = params.password || crypto.randomBytes(16).toString('hex');
+    const { hash, salt } = hashPassword(userPassword);
     const newId = crypto.randomUUID();
     const mrnRandom = Math.floor(100000 + Math.random() * 900000);
 
@@ -450,9 +452,7 @@ class Database {
     }
 
     if (password) {
-      const isValid =
-        verifyPassword(password, user.passwordHash, user.passwordSalt) ||
-        (user.email === 'eleanor.vance@example.com' && (password === 'CarePulse2026!' || password === 'NutriAI2026!'));
+      const isValid = verifyPassword(password, user.passwordHash, user.passwordSalt);
       if (!isValid) {
         throw new Error('Invalid credentials. Please verify your password.');
       }
