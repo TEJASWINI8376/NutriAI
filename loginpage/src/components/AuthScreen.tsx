@@ -1,4 +1,22 @@
 import React, { useState } from 'react';
+import {
+  Mail,
+  Lock,
+  User as UserIcon,
+  Phone,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  ArrowRight,
+  Key,
+  CheckCircle2,
+  Sparkles,
+  X,
+  MailCheck,
+  Activity,
+  Loader2,
+  Leaf,
+} from 'lucide-react';
 import { api } from '../api.ts';
 import type { User } from '../types.ts';
 
@@ -91,52 +109,57 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
   };
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen w-full px-4 py-8 bg-[#f8f9ff]">
-      <div className="flex flex-col items-center w-full max-w-md">
-        {/* Top Ambient Graphic / Brand Identity Hub */}
-        <div className="flex flex-col items-center text-center pt-2 pb-6 px-2">
-          {/* Brand App Logo Badge */}
-          <div className="relative flex items-center justify-center w-24 h-24 mb-4 rounded-3xl bg-[#ffffff] shadow-md p-2 border border-slate-100">
-            <div className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-6 h-6 rounded-full bg-[#006a61] text-white shadow-sm">
-              <span className="material-symbols-outlined text-[14px]">verified</span>
+    <main className="relative min-h-screen w-full flex flex-col items-center justify-center px-4 py-10 bg-[#f8faff] overflow-hidden">
+      {/* Soft Ambient Background Glows */}
+      <div className="absolute top-10 -left-24 w-80 h-80 bg-emerald-300/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 -right-24 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="relative z-10 flex flex-col items-center w-full max-w-md">
+        {/* Top Brand Hub */}
+        <div className="flex flex-col items-center text-center mb-6 px-2">
+          {/* Brand Logo Emblem */}
+          <div className="relative flex items-center justify-center w-20 h-20 mb-3 rounded-2xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 shadow-xl shadow-emerald-700/20 p-4 border border-emerald-400/30">
+            <div className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 text-white shadow-md border-2 border-white">
+              <ShieldCheck className="w-3.5 h-3.5" />
             </div>
-            <img
-              alt="NutriAI emblem"
-              className="w-full h-full object-contain rounded-2xl"
-              src="/nutriai-logo.svg"
-              referrerPolicy="no-referrer"
-            />
+            <div className="relative flex items-center justify-center text-white">
+              <Leaf className="w-9 h-9 text-emerald-200" />
+              <Activity className="w-5 h-5 text-white absolute -bottom-0.5" />
+            </div>
           </div>
 
-          {/* App Identity & Tagline */}
-          <h1 className="text-[28px] font-bold text-[#0b1c30] tracking-tight mb-1 font-sans">
-            NutriAI
+          {/* App Title & Subtitle */}
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-1 font-sans">
+            Nutri<span className="text-emerald-600">AI</span>
           </h1>
-          <p className="text-[14px] text-[#3f4850] max-w-xs leading-relaxed">
+          <p className="text-sm text-slate-600 max-w-xs leading-relaxed">
             Your AI-powered nutrition and health intelligence, verified.
           </p>
 
-          {/* Clinical Gateway Status Pill */}
-          <div className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-[#eff4ff] text-[#006194] border border-[#d3e4fe]/50">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#00855b] animate-pulse"></span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#006a61]">
+          {/* Gateway Status Badge */}
+          <div className="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70 shadow-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+            </span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">
               Clinical Gateway Online
             </span>
           </div>
         </div>
 
         {/* Primary Interactive Card */}
-        <div className="w-full bg-[#ffffff] rounded-3xl shadow-sm border border-[#e5eeff] p-6 mb-6">
+        <div className="w-full bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_12px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-200/80 p-6 sm:p-8 mb-5">
           {/* Segmented Mode Switcher */}
-          <div className="relative flex p-1 mb-6 rounded-xl bg-[#eff4ff]" role="tablist">
+          <div className="relative flex p-1 mb-6 rounded-xl bg-slate-100/90 border border-slate-200/60" role="tablist">
             <button
               id="tab-login"
               type="button"
               onClick={() => setMode('login')}
-              className={`flex-1 py-2.5 rounded-lg text-[14px] font-semibold transition-all duration-200 text-center ${
+              className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 text-center cursor-pointer ${
                 mode === 'login'
-                  ? 'bg-white text-[#006194] shadow-sm'
-                  : 'text-[#3f4850] hover:text-[#0b1c30]'
+                  ? 'bg-white text-emerald-700 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               Sign In
@@ -145,10 +168,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
               id="tab-register"
               type="button"
               onClick={() => setMode('register')}
-              className={`flex-1 py-2.5 rounded-lg text-[14px] font-semibold transition-all duration-200 text-center ${
+              className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 text-center cursor-pointer ${
                 mode === 'register'
-                  ? 'bg-white text-[#006194] shadow-sm'
-                  : 'text-[#3f4850] hover:text-[#0b1c30]'
+                  ? 'bg-white text-emerald-700 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               Create Account
@@ -159,13 +182,13 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
           <form className="flex flex-col gap-4" onSubmit={handleSubmit} id="auth-form">
             {mode === 'register' && (
               <div className="flex flex-col gap-1.5">
-                <label className="text-[12px] font-semibold text-[#3f4850] px-0.5" htmlFor="name-input">
+                <label className="text-xs font-bold text-slate-700 px-0.5" htmlFor="name-input">
                   Full Legal Name
                 </label>
                 <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-3.5 text-[#707881] pointer-events-none text-[20px]">
-                    person
-                  </span>
+                  <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400">
+                    <UserIcon className="w-5 h-5" />
+                  </div>
                   <input
                     id="name-input"
                     type="text"
@@ -173,7 +196,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Eleanor Vance"
                     required={mode === 'register'}
-                    className="w-full h-12 pl-11 pr-4 rounded-xl bg-[#eff4ff] text-[#0b1c30] text-[14px] placeholder:text-[#707881] focus:bg-white focus:ring-2 focus:ring-[#006194] focus:outline-none transition-all border border-transparent focus:border-[#006194]"
+                    className="w-full h-12 pl-11 pr-4 rounded-xl bg-slate-50 text-slate-900 text-sm placeholder:text-slate-400 border border-slate-200 focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition-all"
                   />
                 </div>
               </div>
@@ -181,13 +204,13 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
 
             {/* Identifier Field */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-[#3f4850] px-0.5" htmlFor="identifier-input">
+              <label className="text-xs font-bold text-slate-700 px-0.5" htmlFor="identifier-input">
                 Mobile Number or Email
               </label>
               <div className="relative flex items-center">
-                <span className="material-symbols-outlined absolute left-3.5 text-[#707881] pointer-events-none text-[20px]">
-                  alternate_email
-                </span>
+                <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="w-5 h-5" />
+                </div>
                 <input
                   id="identifier-input"
                   type="text"
@@ -196,27 +219,27 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder="name@example.com or phone"
                   required
-                  className="w-full h-12 pl-11 pr-4 rounded-xl bg-[#eff4ff] text-[#0b1c30] text-[14px] placeholder:text-[#707881] focus:bg-white focus:ring-2 focus:ring-[#006194] focus:outline-none transition-all border border-transparent focus:border-[#006194]"
+                  className="w-full h-12 pl-11 pr-4 rounded-xl bg-slate-50 text-slate-900 text-sm placeholder:text-slate-400 border border-slate-200 focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition-all"
                 />
               </div>
             </div>
 
             {mode === 'register' && (
               <div className="flex flex-col gap-1.5">
-                <label className="text-[12px] font-semibold text-[#3f4850] px-0.5" htmlFor="phone-input">
+                <label className="text-xs font-bold text-slate-700 px-0.5" htmlFor="phone-input">
                   Mobile Phone for SMS Verification
                 </label>
                 <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-3.5 text-[#707881] pointer-events-none text-[20px]">
-                    phone
-                  </span>
+                  <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400">
+                    <Phone className="w-5 h-5" />
+                  </div>
                   <input
                     id="phone-input"
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+1 (555) 234-5678"
-                    className="w-full h-12 pl-11 pr-4 rounded-xl bg-[#eff4ff] text-[#0b1c30] text-[14px] placeholder:text-[#707881] focus:bg-white focus:ring-2 focus:ring-[#006194] focus:outline-none transition-all border border-transparent focus:border-[#006194]"
+                    className="w-full h-12 pl-11 pr-4 rounded-xl bg-slate-50 text-slate-900 text-sm placeholder:text-slate-400 border border-slate-200 focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition-all"
                   />
                 </div>
               </div>
@@ -225,7 +248,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
             {/* Password Field */}
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between px-0.5">
-                <label className="text-[12px] font-semibold text-[#3f4850]" htmlFor="password-input">
+                <label className="text-xs font-bold text-slate-700" htmlFor="password-input">
                   Password
                 </label>
                 {mode === 'login' && (
@@ -236,16 +259,16 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
                       setForgotPasswordOpen(true);
                       setResetSent(false);
                     }}
-                    className="text-[12px] font-semibold text-[#006194] hover:underline focus:outline-none"
+                    className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:underline focus:outline-none cursor-pointer"
                   >
                     Forgot Password?
                   </button>
                 )}
               </div>
               <div className="relative flex items-center">
-                <span className="material-symbols-outlined absolute left-3.5 text-[#707881] pointer-events-none text-[20px]">
-                  lock
-                </span>
+                <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="w-5 h-5" />
+                </div>
                 <input
                   id="password-input"
                   type={showPassword ? 'text' : 'password'}
@@ -254,37 +277,35 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
-                  className="w-full h-12 pl-11 pr-12 rounded-xl bg-[#eff4ff] text-[#0b1c30] text-[14px] placeholder:text-[#707881] focus:bg-white focus:ring-2 focus:ring-[#006194] focus:outline-none transition-all border border-transparent focus:border-[#006194]"
+                  className="w-full h-12 pl-11 pr-12 rounded-xl bg-slate-50 text-slate-900 text-sm placeholder:text-slate-400 border border-slate-200 focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition-all"
                 />
                 <button
                   type="button"
                   aria-label="Toggle password visibility"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-0 top-0 bottom-0 w-12 flex items-center justify-center text-[#707881] hover:text-[#0b1c30] transition-colors focus:outline-none"
+                  className="absolute right-0 top-0 bottom-0 w-12 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors focus:outline-none cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[20px]" id="password-eye-icon">
-                    {showPassword ? 'visibility_off' : 'visibility'}
-                  </span>
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
 
             {/* Remember & Security Row */}
             <div className="flex items-center justify-between py-1">
-              <label className="flex items-center gap-2.5 cursor-pointer">
+              <label className="flex items-center gap-2.5 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={rememberDevice}
                   onChange={(e) => setRememberDevice(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#006194] focus:ring-0 cursor-pointer accent-[#006194]"
+                  className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 accent-emerald-600 cursor-pointer"
                 />
-                <span className="text-[12px] text-[#3f4850] select-none font-medium">
+                <span className="text-xs text-slate-600 font-medium">
                   Remember this device
                 </span>
               </label>
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#006947] bg-[#effcf6] px-2 py-0.5 rounded-md border border-[#c1f4db]">
-                <span className="material-symbols-outlined text-[14px]">verified_user</span>
-                Trusted Unit
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/80">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Trusted Unit</span>
               </span>
             </div>
 
@@ -293,17 +314,17 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
               id="submit-cta"
               type="submit"
               disabled={isLoading}
-              className="w-full h-[52px] mt-1 rounded-xl bg-[#006194] hover:bg-[#007bb9] active:scale-[0.99] text-white text-[14px] font-bold shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full h-12 mt-1 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 hover:from-emerald-700 hover:to-teal-800 active:scale-[0.99] text-white text-sm font-bold shadow-md shadow-emerald-700/20 hover:shadow-lg hover:shadow-emerald-700/30 transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
             >
               {isLoading ? (
                 <>
-                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  <Loader2 className="w-5 h-5 animate-spin" />
                   <span>Verifying credentials...</span>
                 </>
               ) : (
                 <>
-                  <span>{mode === 'login' ? 'Login' : 'Create Account'}</span>
-                  <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+                  <span>{mode === 'login' ? 'Sign In' : 'Create Account'}</span>
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
@@ -311,8 +332,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
 
           {/* Visual Splitter */}
           <div className="relative flex items-center justify-center my-6">
-            <div className="w-full h-px bg-[#d3e4fe]"></div>
-            <span className="absolute px-3 bg-white text-[12px] font-medium text-[#707881]">
+            <div className="w-full h-px bg-slate-200"></div>
+            <span className="absolute px-3 bg-white text-xs font-medium text-slate-500">
               or continue with
             </span>
           </div>
@@ -324,9 +345,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
               type="button"
               onClick={() => handleQuickAuth('Google')}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2.5 h-12 rounded-xl bg-[#eff4ff] hover:bg-[#e5eeff] text-[#0b1c30] text-[14px] font-semibold active:scale-[0.98] transition-all border border-[#d3e4fe]/50 cursor-pointer"
+              className="flex items-center justify-center gap-2.5 h-11 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-xs font-bold active:scale-[0.98] transition-all border border-slate-200 cursor-pointer shadow-2xs"
             >
-              <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
@@ -340,9 +361,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
               type="button"
               onClick={() => handleQuickAuth('Apple')}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2 h-12 rounded-xl bg-[#eff4ff] hover:bg-[#e5eeff] text-[#0b1c30] text-[14px] font-semibold active:scale-[0.98] transition-all border border-[#d3e4fe]/50 cursor-pointer"
+              className="flex items-center justify-center gap-2 h-11 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-xs font-bold active:scale-[0.98] transition-all border border-slate-200 cursor-pointer shadow-2xs"
             >
-              <svg className="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 1.01-2.85-.92.04-2.02.62-2.67 1.37-.58.66-1.08 1.72-1.03 2.76 1.04.08 2.07-.53 2.69-1.28z" />
               </svg>
               <span>Apple</span>
@@ -350,26 +371,27 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
           </div>
 
           {/* Quick Demo Credentials Fill Button */}
-          <div className="mt-4 pt-3 border-t border-[#f1f5f9] text-center">
+          <div className="mt-5 pt-4 border-t border-slate-100 text-center">
             <button
               type="button"
               onClick={fillDemoAccount}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-[#006194] bg-[#eff4ff] hover:bg-[#e0f0fe] rounded-lg transition-colors"
+              className="w-full py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 text-emerald-800 border border-emerald-200/80 font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs group"
             >
-              <span className="material-symbols-outlined text-[16px]">key</span>
-              <span>Fill Verified Patient Demo Account</span>
+              <Key className="w-3.5 h-3.5 text-emerald-600 group-hover:rotate-12 transition-transform shrink-0" />
+              <span>Auto-Fill Demo Patient Account</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             </button>
           </div>
 
-          {/* Toggle Footer Lead */}
+          {/* Mode Switch Toggle Footer */}
           <div className="mt-4 pt-2 text-center">
-            <p className="text-[14px] text-[#3f4850]">
+            <p className="text-xs text-slate-600">
               <span>{mode === 'login' ? 'New to NutriAI?' : 'Already have an account?'}</span>{' '}
               <button
                 id="footer-toggle-btn"
                 type="button"
                 onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-                className="font-bold text-[#006194] hover:underline focus:outline-none ml-1 cursor-pointer"
+                className="font-bold text-emerald-600 hover:text-emerald-700 hover:underline focus:outline-none ml-1 cursor-pointer"
               >
                 {mode === 'login' ? 'Create Account' : 'Sign In'}
               </button>
@@ -377,9 +399,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
           </div>
         </div>
 
-        {/* Medical Care Team Spotlight / Reassurance Snapshot */}
-        <div className="w-full flex items-center gap-3 p-4 rounded-2xl bg-white shadow-sm border border-[#e5eeff] mb-6">
-          <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 bg-[#d3e4fe] border border-slate-200">
+        {/* Medical Care Team Spotlight */}
+        <div className="w-full flex items-center gap-3.5 p-3.5 rounded-2xl bg-white/90 backdrop-blur-xs shadow-xs border border-slate-200/80 mb-5">
+          <div className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 bg-slate-100 border border-slate-200 shadow-2xs">
             <img
               className="w-full h-full object-cover"
               alt="Dr. Sarah Jenkins, MD"
@@ -388,14 +410,12 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
           </div>
           <div className="flex flex-col min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <span className="text-[13px] font-bold text-[#0b1c30] truncate">
+              <span className="text-xs font-bold text-slate-900 truncate">
                 Dr. Sarah Jenkins, MD
               </span>
-              <span className="material-symbols-outlined text-[#006a61] text-[16px]">
-                check_circle
-              </span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             </div>
-            <p className="text-[12px] text-[#3f4850] truncate">
+            <p className="text-[11px] text-slate-600 truncate mt-0.5">
               "Your medical records are synchronized in real-time."
             </p>
           </div>
@@ -403,11 +423,11 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
 
         {/* Trust & Regulatory Micro-footer */}
         <div className="flex flex-col items-center justify-center gap-1 text-center px-4">
-          <div className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[#006a61]">
-            <span className="material-symbols-outlined text-[16px]">lock</span>
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800">
+            <Lock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <span>256-bit HIPAA-compliant encryption</span>
           </div>
-          <p className="text-[11px] text-[#707881]">
+          <p className="text-[10px] text-slate-500 font-medium">
             Protected health information (PHI) verified • ISO 27001 Certified
           </p>
         </div>
@@ -415,41 +435,41 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
 
       {/* Forgot Password Modal */}
       {forgotPasswordOpen && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-slate-100">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#006194] text-[24px]">lock_reset</span>
-                <h3 className="text-[16px] font-bold text-[#0b1c30]">Password Recovery</h3>
+                <Key className="w-5 h-5 text-emerald-600" />
+                <h3 className="text-base font-bold text-slate-900">Password Recovery</h3>
               </div>
               <button
                 onClick={() => setForgotPasswordOpen(false)}
-                className="p-1 rounded-full text-slate-400 hover:text-slate-600"
+                className="p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {resetSent ? (
               <div className="text-center py-4">
-                <div className="w-12 h-12 rounded-full bg-[#effcf6] text-[#006947] flex items-center justify-center mx-auto mb-3">
-                  <span className="material-symbols-outlined text-[28px]">mark_email_read</span>
+                <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
+                  <MailCheck className="w-6 h-6" />
                 </div>
-                <p className="text-[14px] font-semibold text-[#0b1c30] mb-1">Recovery Code Sent</p>
-                <p className="text-[12px] text-[#3f4850] mb-5">
+                <p className="text-sm font-bold text-slate-900 mb-1">Recovery Code Sent</p>
+                <p className="text-xs text-slate-600 mb-5 leading-relaxed">
                   Check your inbox or SMS for instructions to securely restore your clinical access credentials.
                 </p>
                 <button
                   type="button"
                   onClick={() => setForgotPasswordOpen(false)}
-                  className="w-full h-11 bg-[#006194] text-white rounded-xl text-[14px] font-bold"
+                  className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold transition-colors cursor-pointer"
                 >
                   Return to Sign In
                 </button>
               </div>
             ) : (
               <form onSubmit={handleForgotPassword} className="flex flex-col gap-4">
-                <p className="text-[12px] text-[#3f4850] leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   Enter your verified email or mobile number associated with your NutriAI clinical file to receive an authorized passkey link.
                 </p>
                 <input
@@ -458,19 +478,19 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, showToast }) 
                   onChange={(e) => setResetIdentifier(e.target.value)}
                   placeholder="name@example.com or phone"
                   required
-                  className="w-full h-11 px-3.5 rounded-xl bg-[#eff4ff] text-[#0b1c30] text-[14px] focus:bg-white focus:ring-2 focus:ring-[#006194] focus:outline-none"
+                  className="w-full h-11 px-3.5 rounded-xl bg-slate-50 text-slate-900 text-sm border border-slate-200 focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition-all"
                 />
-                <div className="flex gap-2">
+                <div className="flex gap-2 pt-1">
                   <button
                     type="button"
                     onClick={() => setForgotPasswordOpen(false)}
-                    className="flex-1 h-11 bg-[#f1f5f9] text-[#3f4850] text-[14px] font-semibold rounded-xl hover:bg-[#e2e8f0]"
+                    className="flex-1 h-11 bg-slate-100 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-200 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 h-11 bg-[#006194] text-white text-[14px] font-bold rounded-xl hover:bg-[#007bb9]"
+                    className="flex-1 h-11 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl transition-colors cursor-pointer shadow-sm"
                   >
                     Send Link
                   </button>
