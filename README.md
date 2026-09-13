@@ -43,8 +43,8 @@
 ## 🚀 Getting Started
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) v18+ and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-- A `.env` file with a valid `GEMINI_API_KEY` (see `.env.example`)
+- [Node.js](https://nodejs.org/) v18+ and npm
+- A server-side `GEMINI_API_KEY` for Camera/Upload OCR (see `.env.example`)
 
 ### Run Locally
 
@@ -56,6 +56,29 @@ npm run dev
 ```
 
 The app will be available at **http://localhost:3000**.
+
+### Render deployment — important
+
+The food scanner intentionally uses **Open Food Facts as the primary source for barcode lookups** and **Gemini Vision as the OCR fallback for Camera/Upload scans**. A Camera/Upload scan without a barcode therefore needs a server-side Gemini API key.
+
+If the deployed scanner shows:
+
+```text
+Food scanning requires a Gemini API key or a barcode found in Open Food Facts.
+```
+
+this means the deployed server does not have `GEMINI_API_KEY` available. The key must be configured in the hosting provider's **Environment Variables/Secrets**; it must **not** be committed to this repository.
+
+For Render:
+1. Open the NutriAI Web Service.
+2. Open **Environment**.
+3. Add `GEMINI_API_KEY` with your Google AI Studio/Gemini API key as the value.
+4. Save the environment change and redeploy the service.
+5. Open the deployed app and retry **Camera OCR → Analyze Panel**.
+
+Barcode Search continues to work without Gemini when the product barcode exists in Open Food Facts.
+
+> **Security:** Never paste a real API key into `.env.example`, source code, GitHub issues, or commits. Use the hosting provider's secret/environment-variable store.
 
 ---
 
