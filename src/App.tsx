@@ -35,6 +35,7 @@ import { InspectionProduct, NutritionField, PatientProfile, DecisionResult } fro
 
 export default function App() {
   const [viewMode, setViewMode] = useState<'journey' | 'app' | 'auth'>('journey');
+  const [pendingScan, setPendingScan] = useState(false);
   const [products, setProducts] = useState<InspectionProduct[]>([]);
   const [activeProduct, setActiveProduct] = useState<InspectionProduct | null>(null);
   const [session, setSession] = useState(() => localStorage.getItem('nutriai.session'));
@@ -112,6 +113,14 @@ export default function App() {
       setToast((prev) => ({ ...prev, show: false }));
     }, 3500);
   };
+
+  // Auto-open scanner when navigating via Scan Now shortcut from PatientPortal
+  useEffect(() => {
+    if (pendingScan && showFoodAnalysis) {
+      setPendingScan(false);
+      setIsRetakeOpen(true);
+    }
+  }, [pendingScan, showFoodAnalysis]);
 
   // Verify Sodium Field handler
   const handleVerifySodium = async (verifiedValue: string) => {
@@ -357,6 +366,10 @@ export default function App() {
           setViewMode('journey');
         }}
         onOpenFoodAnalysis={() => setShowFoodAnalysis(true)}
+        onOpenScanner={() => {
+          setPendingScan(true);
+          setShowFoodAnalysis(true);
+        }}
         showToast={(message) => triggerToast(message, 'Clinical gateway updated.')}
       />
     );
@@ -380,6 +393,7 @@ export default function App() {
       </div>
     );
   }
+
 
   if (!activeProduct) {
     return (

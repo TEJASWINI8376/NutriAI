@@ -11,6 +11,11 @@ import {
   Users,
   Shield,
   Lock,
+  ScanLine,
+  Camera,
+  Sparkles,
+  ChevronRight,
+  Bot,
 } from 'lucide-react';
 import type { User, VitalRecord, Appointment, MedicalRecord, Medication, CareTeamMember, GatewayStatus } from '../types.ts';
 import { api } from '../api.ts';
@@ -26,10 +31,11 @@ interface PatientPortalProps {
   onLogout: () => void;
   showToast: (msg: string, icon?: string) => void;
   onOpenFoodAnalysis?: () => void;
+  onOpenScanner?: () => void;
   onOpen3DJourney?: () => void;
 }
 
-export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, showToast, onOpenFoodAnalysis }) => {
+export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, showToast, onOpenFoodAnalysis, onOpenScanner }) => {
   const [activeTab, setActiveTab] = useState<'vitals' | 'appointments' | 'records' | 'medications' | 'careteam'>('vitals');
   const [vitals, setVitals] = useState<VitalRecord[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -281,6 +287,60 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
               </div>
             </div>
 
+            {/* ── Quick Scan Food Card ─────────────────────────────────────── */}
+            {(onOpenScanner || onOpenFoodAnalysis) && (
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#006948] via-[#007a55] to-[#004d35] p-5 shadow-lg border border-[#005238]/40">
+                {/* Decorative orb */}
+                <div className="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-white/5 pointer-events-none" />
+                <div className="absolute -bottom-6 -left-4 w-24 h-24 rounded-full bg-white/5 pointer-events-none" />
+
+                <div className="relative flex flex-col sm:flex-row sm:items-center gap-4">
+                  {/* Icon cluster */}
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 shrink-0">
+                      <ScanLine className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="text-[17px] font-extrabold text-white tracking-tight leading-tight">
+                          Scan Food
+                        </h2>
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-100 bg-white/15 px-2 py-0.5 rounded-full border border-white/20">
+                          <Sparkles className="w-3 h-3" />
+                          AI-Powered
+                        </span>
+                      </div>
+                      <p className="text-[12px] text-emerald-100 mt-0.5 leading-snug">
+                        Scan a food label to instantly check nutrition &amp; ingredients
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* CTA Buttons */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      id="quickScanCameraBtn"
+                      type="button"
+                      onClick={onOpenScanner ?? onOpenFoodAnalysis}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-[12px] font-bold transition-all cursor-pointer active:scale-95"
+                    >
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>Camera</span>
+                    </button>
+                    <button
+                      id="quickScanNowBtn"
+                      type="button"
+                      onClick={onOpenScanner ?? onOpenFoodAnalysis}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-[#006948] text-[13px] font-extrabold shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95"
+                    >
+                      <span>Scan Now</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Tab Modules */}
             {activeTab === 'vitals' && (
               <VitalsModule
@@ -365,6 +425,53 @@ export const PatientPortal: React.FC<PatientPortalProps> = ({ user, onLogout, sh
           logs={recentAudits}
           onClose={() => setAuditModalOpen(false)}
         />
+      )}
+
+      {/* ── Floating AI Bot Scan Button ─────────────────────────────── */}
+      {(onOpenScanner || onOpenFoodAnalysis) && (
+        <div className="fixed bottom-6 right-5 z-50 flex flex-col items-end gap-2 group">
+          {/* Tooltip */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none mb-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-1"
+          >
+            <span className="inline-block bg-[#0b1c30] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl shadow-lg whitespace-nowrap">
+              Scan Food
+            </span>
+          </div>
+
+          {/* FAB */}
+          <button
+            id="floatingBotScanBtn"
+            type="button"
+            onClick={onOpenScanner ?? onOpenFoodAnalysis}
+            title="Scan Food — Open AI Scanner"
+            aria-label="Scan Food"
+            className="
+              relative flex items-center justify-center
+              w-14 h-14 rounded-2xl
+              bg-gradient-to-br from-[#006948] to-[#004d35]
+              shadow-[0_4px_20px_rgba(0,105,72,0.55)]
+              hover:shadow-[0_6px_28px_rgba(0,105,72,0.75)]
+              hover:scale-110 active:scale-95
+              transition-all duration-200 cursor-pointer
+              border border-[#00a36c]/40
+            "
+          >
+            {/* Pulsing glow ring */}
+            <span className="absolute inset-0 rounded-2xl bg-[#006948] animate-ping opacity-20 pointer-events-none" />
+
+            {/* Bot face icon built from lucide Bot + ScanLine overlay */}
+            <span className="relative flex flex-col items-center justify-center gap-0">
+              <Bot className="w-7 h-7 text-white drop-shadow-sm" />
+              <span
+                className="absolute -bottom-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-emerald-300 border-2 border-[#004d35] shadow"
+              >
+                <ScanLine className="w-3 h-3 text-[#004d35]" />
+              </span>
+            </span>
+          </button>
+        </div>
       )}
     </div>
   );
