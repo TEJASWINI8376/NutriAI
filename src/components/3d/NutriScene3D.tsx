@@ -47,9 +47,11 @@ export const NutriScene3D: React.FC<NutriScene3DProps> = ({ scrollProgress, clas
     const scene = new THREE.Scene();
     scene.background = null; // transparent to blend with clean gradient background
 
-    // Camera setup
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-    camera.position.set(0, 0, 7.5);
+    // Camera setup - wider FOV on mobile portrait so objects fit horizontally
+    const aspect = width / height;
+    const isMobileInit = width < 768 || aspect < 1.0;
+    const camera = new THREE.PerspectiveCamera(isMobileInit ? 50 : 42, aspect, 0.1, 100);
+    camera.position.set(0, 0, isMobileInit ? 8.5 : 7.5);
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({
@@ -1084,6 +1086,11 @@ export const NutriScene3D: React.FC<NutriScene3DProps> = ({ scrollProgress, clas
       state.currentScroll += (state.targetScroll - state.currentScroll) * 0.08;
       const p = Math.max(0, Math.min(1, state.currentScroll));
 
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      const asp = w / h;
+      const isMobile = w < 768 || asp < 1.0;
+
       // -----------------------------------------------------------
       // 1. Food Package & Real 3D Smartphone Placement Across Stages
       // -----------------------------------------------------------
@@ -1097,34 +1104,63 @@ export const NutriScene3D: React.FC<NutriScene3DProps> = ({ scrollProgress, clas
         state.scanBeamGroup.visible = false;
       } else if (p < 0.40) {
         // Stage 2: Initial Product & Phone Scanning!
-        // Food Package on LEFT, Phone on RIGHT tilted toward package
         const enterP = Math.min(1, Math.max(0, (p - 0.18) / 0.07));
-        const s = enterP * 1.05;
-        state.foodBoxGroup.scale.set(s, s, s);
-        state.foodBoxGroup.position.set(
-          -2.6 + enterP * 0.95, // rests at -1.65 (left side)
-          Math.sin(elapsed * 1.5) * 0.05,
-          0.2
-        );
-        state.foodBoxGroup.rotation.set(
-          0.12 + Math.cos(elapsed * 1.2) * 0.02,
-          0.38, // angled toward the right so nutrition facts directly face the phone and viewer
-          -0.04
-        );
 
-        // Real 3D Smartphone on the RIGHT, slightly closer in Z (depth) and angled toward the product
-        const phoneS = enterP * 1.0;
-        state.phoneGroup.scale.set(phoneS, phoneS, phoneS);
-        state.phoneGroup.position.set(
-          1.5, // on the right side of the package
-          -0.15 + Math.sin(elapsed * 1.5 + 0.5) * 0.04,
-          1.15 // closer to viewer than package (0.2) creating authentic 3D depth
-        );
-        state.phoneGroup.rotation.set(
-          0.10 + Math.sin(elapsed * 1.1) * 0.02,
-          -0.42 + Math.cos(elapsed * 0.9) * 0.02, // rotated toward the product on left (~ -24 deg)
-          -0.03
-        );
+        if (isMobile) {
+          // MOBILE PORTRAIT: Package on upper-left, Smartphone on lower-right angled toward package
+          const boxS = enterP * 0.76;
+          state.foodBoxGroup.scale.set(boxS, boxS, boxS);
+          state.foodBoxGroup.position.set(
+            -0.68,
+            0.55 + Math.sin(elapsed * 1.5) * 0.03,
+            0.05
+          );
+          state.foodBoxGroup.rotation.set(
+            0.10 + Math.cos(elapsed * 1.2) * 0.02,
+            0.32,
+            -0.03
+          );
+
+          const phoneS = enterP * 0.70;
+          state.phoneGroup.scale.set(phoneS, phoneS, phoneS);
+          state.phoneGroup.position.set(
+            0.52,
+            -0.55 + Math.sin(elapsed * 1.5 + 0.5) * 0.03,
+            0.92
+          );
+          state.phoneGroup.rotation.set(
+            0.18 + Math.sin(elapsed * 1.1) * 0.02,
+            -0.34 + Math.cos(elapsed * 0.9) * 0.02,
+            -0.04
+          );
+        } else {
+          // DESKTOP: Package on left, Smartphone on right
+          const s = enterP * 1.05;
+          state.foodBoxGroup.scale.set(s, s, s);
+          state.foodBoxGroup.position.set(
+            -2.6 + enterP * 0.95,
+            Math.sin(elapsed * 1.5) * 0.05,
+            0.2
+          );
+          state.foodBoxGroup.rotation.set(
+            0.12 + Math.cos(elapsed * 1.2) * 0.02,
+            0.38,
+            -0.04
+          );
+
+          const phoneS = enterP * 1.0;
+          state.phoneGroup.scale.set(phoneS, phoneS, phoneS);
+          state.phoneGroup.position.set(
+            1.5,
+            -0.15 + Math.sin(elapsed * 1.5 + 0.5) * 0.04,
+            1.15
+          );
+          state.phoneGroup.rotation.set(
+            0.10 + Math.sin(elapsed * 1.1) * 0.02,
+            -0.42 + Math.cos(elapsed * 0.9) * 0.02,
+            -0.03
+          );
+        }
 
         // Local laser bar on food box
         laserGroup.visible = enterP > 0.4;
@@ -1186,25 +1222,41 @@ export const NutriScene3D: React.FC<NutriScene3DProps> = ({ scrollProgress, clas
         }
       } else if (p < 0.60) {
         // Stage 3: Real Phone Scanning Meets Patient Profile
-        // Package and Phone remain visible on the left/center, framing Eleanor's EHR card on the right
         const localP = (p - 0.40) / 0.20;
-        state.foodBoxGroup.position.set(
-          -1.65 - localP * 0.35,
-          -0.1 + Math.sin(elapsed * 1.4) * 0.04,
-          0.2 - localP * 0.3
-        );
-        state.foodBoxGroup.rotation.set(0.14, 0.42 + localP * 0.08, -0.04);
-        const s = 1.05 - localP * 0.1;
-        state.foodBoxGroup.scale.set(s, s, s);
+        if (isMobile) {
+          state.foodBoxGroup.position.set(
+            -0.58,
+            1.25 + Math.sin(elapsed * 1.4) * 0.03,
+            -0.3
+          );
+          state.foodBoxGroup.rotation.set(0.12, 0.35, -0.03);
+          state.foodBoxGroup.scale.set(0.55, 0.55, 0.55);
 
-        // Phone shifts slightly inwards to frame with the EHR card
-        state.phoneGroup.position.set(
-          1.5 - localP * 1.4,
-          -0.15 + Math.sin(elapsed * 1.5 + 0.5) * 0.04,
-          1.15 - localP * 0.1
-        );
-        state.phoneGroup.rotation.set(0.08, -0.35 + localP * 0.1, -0.02);
-        state.phoneGroup.scale.set(1.0, 1.0, 1.0);
+          state.phoneGroup.position.set(
+            0.48,
+            0.85 + Math.sin(elapsed * 1.5 + 0.5) * 0.03,
+            0.35
+          );
+          state.phoneGroup.rotation.set(0.10, -0.28, -0.02);
+          state.phoneGroup.scale.set(0.55, 0.55, 0.55);
+        } else {
+          state.foodBoxGroup.position.set(
+            -1.65 - localP * 0.35,
+            -0.1 + Math.sin(elapsed * 1.4) * 0.04,
+            0.2 - localP * 0.3
+          );
+          state.foodBoxGroup.rotation.set(0.14, 0.42 + localP * 0.08, -0.04);
+          const s = 1.05 - localP * 0.1;
+          state.foodBoxGroup.scale.set(s, s, s);
+
+          state.phoneGroup.position.set(
+            1.5 - localP * 1.4,
+            -0.15 + Math.sin(elapsed * 1.5 + 0.5) * 0.04,
+            1.15 - localP * 0.1
+          );
+          state.phoneGroup.rotation.set(0.08, -0.35 + localP * 0.1, -0.02);
+          state.phoneGroup.scale.set(1.0, 1.0, 1.0);
+        }
 
         laserGroup.visible = localP < 0.25;
         state.scanBeamGroup.visible = localP < 0.25;
@@ -1217,10 +1269,10 @@ export const NutriScene3D: React.FC<NutriScene3DProps> = ({ scrollProgress, clas
           -0.1 - localP * 1.5
         );
         state.foodBoxGroup.rotation.set(0.15 + localP * 0.3, 0.58 + localP * 0.8, -0.04);
-        const s = Math.max(0.01, 0.95 - localP * 0.75);
+        const s = Math.max(0.01, (isMobile ? 0.7 : 0.95) - localP * 0.75);
         state.foodBoxGroup.scale.set(s, s, s);
 
-        const ps = Math.max(0.01, 1.0 - localP * 0.95);
+        const ps = Math.max(0.01, (isMobile ? 0.7 : 1.0) - localP * 0.95);
         state.phoneGroup.scale.set(ps, ps, ps);
         state.phoneGroup.position.set(0.1 - localP * 1.0, -0.15, 1.0 - localP * 2.0);
 
@@ -1241,9 +1293,9 @@ export const NutriScene3D: React.FC<NutriScene3DProps> = ({ scrollProgress, clas
       // -----------------------------------------------------------
       if (p >= 0.55 && p <= 0.88) {
         const coreFactor = Math.sin(((p - 0.55) / 0.33) * Math.PI);
-        const coreScale = coreFactor * 1.25;
+        const coreScale = coreFactor * (isMobile ? 0.85 : 1.25);
         state.aiCoreGroup.scale.set(coreScale, coreScale, coreScale);
-        state.aiCoreGroup.position.set(0, 0.2, 0.2);
+        state.aiCoreGroup.position.set(0, isMobile ? 0.6 : 0.2, 0.2);
         innerCore.rotation.y = elapsed * 1.2;
         innerCore.rotation.x = elapsed * 0.8;
         ring1.rotation.z = elapsed * 1.5;
@@ -1272,14 +1324,22 @@ export const NutriScene3D: React.FC<NutriScene3DProps> = ({ scrollProgress, clas
       // 4. Smooth Camera Trajectory (Dollys closer during Step 2)
       // -----------------------------------------------------------
       if (p < 0.18) {
-        state.camera.position.set(0, 0, 7.5);
+        state.camera.position.set(0, 0, isMobile ? 8.5 : 7.5);
       } else if (p < 0.40) {
         // Smoothly dollys in closer to frame the food package and scanning phone
         const camP = (p - 0.18) / 0.22;
-        state.camera.position.set(camP * 0.1, 0, 7.5 - camP * 0.85); // dollys from 7.5 down to 6.65
+        if (isMobile) {
+          state.camera.position.set(0, 0, 8.5 - camP * 0.7);
+        } else {
+          state.camera.position.set(camP * 0.1, 0, 7.5 - camP * 0.85); // dollys from 7.5 down to 6.65
+        }
       } else if (p < 0.65) {
         const camP = (p - 0.40) / 0.25;
-        state.camera.position.set(0.1 - camP * 0.35, 0, 6.65 - camP * 0.3);
+        if (isMobile) {
+          state.camera.position.set(0, 0.2 * camP, 7.8 - camP * 0.3);
+        } else {
+          state.camera.position.set(0.1 - camP * 0.35, 0, 6.65 - camP * 0.3);
+        }
       } else {
         const camP = (p - 0.65) / 0.35;
         state.camera.position.set(-0.25 + camP * 0.25, 0, 6.35 + camP * 0.7);
@@ -1297,7 +1357,10 @@ export const NutriScene3D: React.FC<NutriScene3DProps> = ({ scrollProgress, clas
       if (!container || !sceneRef.current) return;
       const w = container.clientWidth || window.innerWidth;
       const h = container.clientHeight || window.innerHeight;
-      sceneRef.current.camera.aspect = w / h;
+      const asp = w / h;
+      const mobile = w < 768 || asp < 1.0;
+      sceneRef.current.camera.aspect = asp;
+      sceneRef.current.camera.fov = mobile ? 50 : 42;
       sceneRef.current.camera.updateProjectionMatrix();
       sceneRef.current.renderer.setSize(w, h);
     };

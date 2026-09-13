@@ -301,87 +301,96 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
       <NutriScene3D scrollProgress={scrollProgress} />
 
       {/* 2. Fixed Viewport Container Housing the 5-Stage Story Arc (guaranteed locked in viewport) */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-10 px-4 sm:px-8">
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-10 px-2 sm:px-8">
         <div className="relative w-full max-w-7xl h-full flex items-center justify-center">
 
           {/* ============================================================== */}
           {/* STAGE 1: NUTRIAGENT INTRO — CLEAN HERO & FEATURE HIGHLIGHTS    */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center max-w-5xl mx-auto px-4 py-8 text-center transition-all duration-300 pointer-events-none"
+            className="absolute inset-0 flex flex-col items-center justify-center max-w-5xl mx-auto px-3 sm:px-6 py-2 sm:py-8 text-center transition-all duration-300 pointer-events-none"
             style={getStageTransform(1)}
           >
-            {/* Centered Hero Text Container — Big, bold, impactful typography */}
+            {/* Centered Hero Text Container — Perfectly proportioned for phones */}
             <div
-              className="w-full text-center z-20 pointer-events-auto max-w-4xl mx-auto"
+              className="w-full text-center z-20 pointer-events-auto max-w-4xl mx-auto my-auto"
               style={{
                 transform: `translate3d(${mouseOffset.x * 8}px, ${mouseOffset.y * 8}px, 0)`,
               }}
             >
               {/* Badge */}
-              <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-emerald-100 border-2 border-emerald-400 shadow-md mb-6">
-                <span className="relative flex h-3 w-3">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-full bg-emerald-100 border-2 border-emerald-400 shadow-xs mb-2 sm:mb-5">
+                <span className="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-[#004d34]" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-[#004d34]" />
                 </span>
-                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-[#003824]">
+                <span className="text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-wider text-[#003824]">
                   AI-Powered Nutrition & Health Intelligence
                 </span>
               </div>
 
-              {/* Dominant Large Hero Headline */}
-              <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-8xl xl:text-[5.8rem] font-black text-[#002f1f] tracking-tight leading-[1.04] mb-5 font-sans drop-shadow-sm">
+              {/* Dominant Hero Headline — Responsive so mobile never clips */}
+              <h1 className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[5.5rem] font-black text-[#002f1f] tracking-tight leading-[1.08] mb-1.5 sm:mb-4 font-sans drop-shadow-sm">
                 Eat Smart. <span className="text-[#047857]">Live Better.</span>
               </h1>
 
-              {/* Large, High-Contrast Supporting Subtitle */}
-              <p className="text-xl sm:text-2xl lg:text-[1.7rem] text-[#0f172a] font-extrabold max-w-4xl mx-auto mb-8 leading-relaxed">
+              {/* Supporting Subtitle */}
+              <p className="text-xs sm:text-xl lg:text-[1.5rem] text-[#0f172a] font-extrabold max-w-xs sm:max-w-2xl mx-auto mb-3 sm:mb-6 leading-snug sm:leading-relaxed">
                 Personalized nutrition and health intelligence, powered by AI.
               </p>
 
-              {/* 3 Clinical Intelligence Feature Cards — Larger text and icons */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8 text-left">
-                <div className="p-4 sm:p-5 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-emerald-200/90 shadow-sm hover:border-emerald-400 transition-all flex flex-col justify-between">
-                  <div className="flex items-center gap-3 mb-2.5">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center shrink-0 shadow-xs">
-                      <Scan className="w-5 h-5 text-[#006948]" />
+              {/* 3 Feature Highlights: Sleek compact horizontal rows on mobile, 3-column cards on desktop */}
+              <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2 sm:gap-4 max-w-4xl mx-auto mb-3 sm:mb-6 text-left w-full">
+                <div className="p-2 sm:p-5 rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-md border border-emerald-200/90 sm:border-2 shadow-xs hover:border-emerald-400 transition-all flex items-center sm:flex-col sm:items-start gap-2.5 sm:gap-0 sm:justify-between">
+                  <div className="flex items-center gap-2 sm:gap-3 sm:mb-2.5 shrink-0">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100 border border-emerald-300 sm:border-2 flex items-center justify-center shrink-0 shadow-xs">
+                      <Scan className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
                     </div>
-                    <h4 className="text-sm sm:text-base font-black text-slate-900">Optical Food Scan</h4>
+                    <h4 className="text-xs sm:text-base font-black text-slate-900 block sm:hidden">Optical Food Scan</h4>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-slate-700 leading-relaxed">
-                    Real-time camera OCR extracts complex nutrition panels & ingredients in 60 FPS.
-                  </p>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm sm:text-base font-black text-slate-900 hidden sm:block">Optical Food Scan</h4>
+                    <p className="text-[11px] sm:text-sm font-bold text-slate-700 leading-snug sm:leading-relaxed">
+                      Real-time camera OCR extracts nutrition panels & ingredients in 60 FPS.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="p-4 sm:p-5 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-emerald-200/90 shadow-sm hover:border-emerald-400 transition-all flex flex-col justify-between">
-                  <div className="flex items-center gap-3 mb-2.5">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center shrink-0 shadow-xs">
-                      <HeartPulse className="w-5 h-5 text-[#006948]" />
+                <div className="p-2 sm:p-5 rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-md border border-emerald-200/90 sm:border-2 shadow-xs hover:border-emerald-400 transition-all flex items-center sm:flex-col sm:items-start gap-2.5 sm:gap-0 sm:justify-between">
+                  <div className="flex items-center gap-2 sm:gap-3 sm:mb-2.5 shrink-0">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100 border border-emerald-300 sm:border-2 flex items-center justify-center shrink-0 shadow-xs">
+                      <HeartPulse className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
                     </div>
-                    <h4 className="text-sm sm:text-base font-black text-slate-900">Clinical EHR Cross-Check</h4>
+                    <h4 className="text-xs sm:text-base font-black text-slate-900 block sm:hidden">Clinical EHR Cross-Check</h4>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-slate-700 leading-relaxed">
-                    Cross-analyzes sodium, sugars, and allergens against your diagnosed medical conditions.
-                  </p>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm sm:text-base font-black text-slate-900 hidden sm:block">Clinical EHR Cross-Check</h4>
+                    <p className="text-[11px] sm:text-sm font-bold text-slate-700 leading-snug sm:leading-relaxed">
+                      Cross-analyzes sodium, sugars, and allergens against diagnosed conditions.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="p-4 sm:p-5 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-emerald-200/90 shadow-sm hover:border-emerald-400 transition-all flex flex-col justify-between">
-                  <div className="flex items-center gap-3 mb-2.5">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center shrink-0 shadow-xs">
-                      <Pill className="w-5 h-5 text-[#006948]" />
+                <div className="p-2 sm:p-5 rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-md border border-emerald-200/90 sm:border-2 shadow-xs hover:border-emerald-400 transition-all flex items-center sm:flex-col sm:items-start gap-2.5 sm:gap-0 sm:justify-between">
+                  <div className="flex items-center gap-2 sm:gap-3 sm:mb-2.5 shrink-0">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-100 border border-emerald-300 sm:border-2 flex items-center justify-center shrink-0 shadow-xs">
+                      <Pill className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
                     </div>
-                    <h4 className="text-sm sm:text-base font-black text-slate-900">Rx Drug Safety</h4>
+                    <h4 className="text-xs sm:text-base font-black text-slate-900 block sm:hidden">Rx Drug Safety</h4>
                   </div>
-                  <p className="text-xs sm:text-sm font-bold text-slate-700 leading-relaxed">
-                    Automated safety validation with your active prescriptions to prevent adverse reactions.
-                  </p>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm sm:text-base font-black text-slate-900 hidden sm:block">Rx Drug Safety</h4>
+                    <p className="text-[11px] sm:text-sm font-bold text-slate-700 leading-snug sm:leading-relaxed">
+                      Automated safety check with active prescriptions to prevent adverse reactions.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Subtle Animated Scroll Cue with Larger Text */}
-              <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-emerald-50/95 border-2 border-emerald-300 shadow-xs text-xs sm:text-sm font-black text-[#004d34]">
-                <ChevronDown className="w-5 h-5 text-[#006948] animate-bounce" />
-                <span>Scroll down to experience 3D optical scan journey</span>
+              {/* Animated Scroll Cue */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-full bg-emerald-50/95 border-2 border-emerald-300 shadow-xs text-[11px] sm:text-sm font-black text-[#004d34]">
+                <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948] animate-bounce" />
+                <span>Scroll down or tap Next below</span>
               </div>
             </div>
           </div>
@@ -390,38 +399,38 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           {/* STAGE 2: REALISTIC TILTED PHONE SCANNING THE LABEL (20% - 40%) */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex flex-col justify-between max-w-6xl mx-auto px-4 py-5 sm:py-8 transition-all duration-300 pointer-events-none"
+            className="absolute inset-0 flex flex-col justify-between max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-8 transition-all duration-300 pointer-events-none"
             style={getStageTransform(2)}
           >
             {/* Top Scanning Header */}
             <div className="w-full text-center max-w-2xl mx-auto z-20 pointer-events-auto">
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-100 text-xs sm:text-sm font-black uppercase text-[#003824] border-2 border-emerald-400 mb-2.5 shadow-xs">
-                <Scan className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-2 rounded-full bg-emerald-100 text-[10px] sm:text-sm font-black uppercase text-[#003824] border-2 border-emerald-400 mb-1 sm:mb-2.5 shadow-xs">
+                <Scan className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#006948]" />
                 Step 2: Real-Time Optical Food Scan
               </span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#002f1f] tracking-tight">
-                Product & Label Analysis
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#002f1f] tracking-tight leading-tight">
+                Product &amp; Label Analysis
               </h2>
-              <p className="text-sm sm:text-base font-bold text-slate-800 mt-2 max-w-xl mx-auto">
+              <p className="text-xs sm:text-base font-bold text-slate-800 mt-1 sm:mt-2 max-w-xl mx-auto">
                 Your smartphone camera frames and scans the package nutrition facts with active laser OCR.
               </p>
             </div>
 
-            {/* Bottom Live Scan Telemetry HUD Bar (Framing the 3D Package on Left & 3D Phone on Right) */}
-            <div className="w-full max-w-4xl mx-auto z-20 pointer-events-auto pb-4">
-              <div className="p-3.5 sm:p-4 rounded-2xl bg-white/95 backdrop-blur-xl border-2 border-emerald-300 shadow-[0_10px_35px_rgba(0,77,52,0.14)] flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 text-xs sm:text-sm font-black text-[#003824]">
-                  <span className="relative flex h-3 w-3">
+            {/* Bottom Live Scan Telemetry HUD Bar — pb-14 on mobile so it clears the bottom progress tracker */}
+            <div className="w-full max-w-4xl mx-auto z-20 pointer-events-auto pb-14 sm:pb-4">
+              <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-xl border-2 border-emerald-300 shadow-[0_10px_35px_rgba(0,77,52,0.14)] flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
+                <div className="flex items-center gap-2 text-[11px] sm:text-sm font-black text-[#003824]">
+                  <span className="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-[#006948]" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-[#006948]" />
                   </span>
-                  <span>Active 3D Optical Scan: Nature's Harvest Organic Trail Mix</span>
+                  <span className="truncate">Active Scan: Nature's Harvest Trail Mix</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-mono font-black">
-                  <span className="bg-emerald-50 text-[#004d34] px-2.5 py-1 rounded-lg border border-emerald-300">140 kcal</span>
-                  <span className="bg-emerald-50 text-[#004d34] px-2.5 py-1 rounded-lg border border-emerald-300">45mg Sodium</span>
-                  <span className="bg-emerald-50 text-[#004d34] px-2.5 py-1 rounded-lg border border-emerald-300">6g Sugars</span>
-                  <span className="bg-emerald-50 text-[#004d34] px-2.5 py-1 rounded-lg border border-emerald-300">4g Protein</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-mono font-black flex-wrap justify-center">
+                  <span className="bg-emerald-50 text-[#004d34] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg border border-emerald-300">140 kcal</span>
+                  <span className="bg-emerald-50 text-[#004d34] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg border border-emerald-300">45mg Sodium</span>
+                  <span className="bg-emerald-50 text-[#004d34] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg border border-emerald-300">6g Sugars</span>
+                  <span className="bg-emerald-50 text-[#004d34] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg border border-emerald-300">4g Protein</span>
                 </div>
               </div>
             </div>
@@ -431,28 +440,28 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           {/* STAGE 3: REAL PHONE SCANNING + PATIENT PROFILE (40% - 60%)     */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-between max-w-6xl mx-auto px-4 py-5 sm:py-8 transition-all duration-300 pointer-events-none"
+            className="absolute inset-0 flex flex-col items-center justify-between max-w-6xl mx-auto px-3 sm:px-4 py-3 sm:py-8 transition-all duration-300 pointer-events-none"
             style={getStageTransform(3)}
           >
             {/* Top Stage Header */}
             <div className="text-center max-w-2xl mx-auto z-20 pointer-events-auto">
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-100 text-xs sm:text-sm font-black uppercase text-[#003824] border-2 border-emerald-400 mb-2 shadow-xs">
-                <Activity className="w-4 h-4 text-[#006948]" />
-                Step 3: Real Phone Scanning Meets Patient Health Profile
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-2 rounded-full bg-emerald-100 text-[10px] sm:text-sm font-black uppercase text-[#003824] border-2 border-emerald-400 mb-1 sm:mb-2 shadow-xs">
+                <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#006948]" />
+                Step 3: Real Phone Scanning Meets Patient Profile
               </span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#002f1f] tracking-tight">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#002f1f] tracking-tight leading-tight">
                 Live Clinical Telemetry Cross-Check
               </h2>
-              <p className="text-sm sm:text-base font-bold text-slate-800 mt-1 max-w-xl mx-auto">
-                Your phone directly checks the scanned food against Eleanor's conditions and active prescriptions.
+              <p className="text-xs sm:text-base font-bold text-slate-800 mt-0.5 sm:mt-1 max-w-xl mx-auto">
+                Phone directly checks scanned food against Eleanor's conditions and active prescriptions.
               </p>
             </div>
 
-            {/* Main Stage 3 Grid: 3D Product & Phone on Left + Patient Health Record Card on Right */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-center my-auto pointer-events-auto z-20">
+            {/* Main Stage 3 Content: On mobile portrait, Eleanor's EHR card fits in the lower half smoothly */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 w-full items-center my-auto pointer-events-auto z-20 max-h-[62vh] sm:max-h-none overflow-y-auto modal-scroll pb-16 sm:pb-0">
               
-              {/* LEFT / CENTER: Clear viewport space showcasing 3D Package & 3D Phone with AR Telemetry Badge */}
-              <div className="lg:col-span-6 flex flex-col justify-center items-start pl-2 sm:pl-6 pointer-events-none">
+              {/* LEFT / DESKTOP ONLY: AR Telemetry Badge (shown on desktop, hidden on small mobile to give room to EHR) */}
+              <div className="hidden lg:flex lg:col-span-6 flex-col justify-center items-start pl-2 sm:pl-6 pointer-events-none">
                 <div className="pointer-events-auto p-4 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-emerald-300 shadow-md max-w-sm space-y-2">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-5 h-5 text-[#006948]" />
@@ -468,79 +477,79 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
                 </div>
               </div>
 
-              {/* RIGHT: Patient Electronic Health Record (EHR) Card */}
-              <div className="lg:col-span-6 space-y-3.5">
+              {/* RIGHT (or FULL on mobile): Patient Electronic Health Record (EHR) Card */}
+              <div className="col-span-1 lg:col-span-6 space-y-2 sm:space-y-3.5 w-full max-w-xl mx-auto">
                 {/* Patient Vitals & Identification */}
-                <div className="p-5 rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-emerald-300 shadow-[0_15px_40px_rgba(0,77,52,0.12)]">
-                  <div className="flex items-center justify-between mb-3 pb-3 border-b border-slate-200">
-                    <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-2xl bg-emerald-100 border-2 border-emerald-400 text-[#003824] flex items-center justify-center font-black text-base shadow-xs">
+                <div className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-emerald-300 shadow-[0_15px_40px_rgba(0,77,52,0.12)]">
+                  <div className="flex items-center justify-between mb-2 sm:mb-3 pb-2 sm:pb-3 border-b border-slate-200">
+                    <div className="flex items-center gap-2.5 sm:gap-3">
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-emerald-100 border-2 border-emerald-400 text-[#003824] flex items-center justify-center font-black text-sm sm:text-base shadow-xs">
                         EV
                       </div>
                       <div>
-                        <h3 className="font-black text-slate-900 text-base">Eleanor Vance</h3>
-                        <p className="text-xs font-bold text-slate-600">MRN: #NTR-94281 • Age 42 • Female</p>
+                        <h3 className="font-black text-slate-900 text-sm sm:text-base">Eleanor Vance</h3>
+                        <p className="text-[11px] sm:text-xs font-bold text-slate-600">MRN: #NTR-94281 • Age 42 • Female</p>
                       </div>
                     </div>
-                    <span className="px-3 py-1 rounded-full bg-emerald-100 border-2 border-emerald-300 text-[#004d34] text-xs font-black">
+                    <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-emerald-100 border-2 border-emerald-300 text-[#004d34] text-[10px] sm:text-xs font-black">
                       EHR Active
                     </span>
                   </div>
 
                   {/* Vitals Grid */}
-                  <div className="grid grid-cols-3 gap-2.5 text-center">
-                    <div className="p-2.5 rounded-xl bg-slate-50 border-2 border-slate-200">
-                      <span className="text-[10px] text-slate-600 font-bold block uppercase">Blood Pressure</span>
-                      <span className="font-black text-slate-900 text-sm">132/84</span>
-                      <span className="text-[10px] font-bold text-amber-700 block">Stage 1 HTN</span>
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 text-center">
+                    <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-slate-50 border-2 border-slate-200">
+                      <span className="text-[9px] sm:text-[10px] text-slate-600 font-bold block uppercase">Blood Pressure</span>
+                      <span className="font-black text-slate-900 text-xs sm:text-sm">132/84</span>
+                      <span className="text-[9px] sm:text-[10px] font-bold text-amber-700 block">Stage 1 HTN</span>
                     </div>
-                    <div className="p-2.5 rounded-xl bg-slate-50 border-2 border-slate-200">
-                      <span className="text-[10px] text-slate-600 font-bold block uppercase">Heart Rate</span>
-                      <span className="font-black text-slate-900 text-sm">72 bpm</span>
-                      <span className="text-[10px] font-bold text-emerald-700 block">Normal Sinus</span>
+                    <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-slate-50 border-2 border-slate-200">
+                      <span className="text-[9px] sm:text-[10px] text-slate-600 font-bold block uppercase">Heart Rate</span>
+                      <span className="font-black text-slate-900 text-xs sm:text-sm">72 bpm</span>
+                      <span className="text-[9px] sm:text-[10px] font-bold text-emerald-700 block">Normal Sinus</span>
                     </div>
-                    <div className="p-2.5 rounded-xl bg-slate-50 border-2 border-slate-200">
-                      <span className="text-[10px] text-slate-600 font-bold block uppercase">Fasting Glucose</span>
-                      <span className="font-black text-slate-900 text-sm">114 mg/dL</span>
-                      <span className="text-[10px] font-bold text-blue-700 block">HbA1c 6.8%</span>
+                    <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-slate-50 border-2 border-slate-200">
+                      <span className="text-[9px] sm:text-[10px] text-slate-600 font-bold block uppercase">Fasting Glucose</span>
+                      <span className="font-black text-slate-900 text-xs sm:text-sm">114 mg/dL</span>
+                      <span className="text-[9px] sm:text-[10px] font-bold text-blue-700 block">HbA1c 6.8%</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Chronic Conditions & Clinical Targets */}
-                <div className="p-5 rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-emerald-300 shadow-[0_15px_40px_rgba(0,77,52,0.12)]">
-                  <div className="flex items-center gap-2 mb-3">
-                    <HeartPulse className="w-5 h-5 text-[#006948]" />
-                    <h4 className="font-black text-slate-900 text-sm">Clinical Profile & Prescriptions</h4>
+                <div className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-xl border-2 border-emerald-300 shadow-[0_15px_40px_rgba(0,77,52,0.12)]">
+                  <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                    <HeartPulse className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
+                    <h4 className="font-black text-slate-900 text-xs sm:text-sm">Clinical Profile &amp; Prescriptions</h4>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="px-3 py-1 rounded-xl bg-amber-100 text-amber-950 border-2 border-amber-300 text-xs font-black">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-amber-100 text-amber-950 border border-amber-300 sm:border-2 text-[10px] sm:text-xs font-black">
                       Hypertension
                     </span>
-                    <span className="px-3 py-1 rounded-xl bg-blue-100 text-blue-950 border-2 border-blue-300 text-xs font-black">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-blue-100 text-blue-950 border border-blue-300 sm:border-2 text-[10px] sm:text-xs font-black">
                       Type 2 Diabetes
                     </span>
-                    <span className="px-3 py-1 rounded-xl bg-emerald-100 text-[#003824] border-2 border-emerald-300 text-xs font-black">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl bg-emerald-100 text-[#003824] border border-emerald-300 sm:border-2 text-[10px] sm:text-xs font-black">
                       Low Sodium Protocol (&lt;1500mg)
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <div className="p-2.5 rounded-xl bg-slate-50 border-2 border-slate-200 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Pill className="w-4 h-4 text-[#006948]" />
-                        <span className="font-black text-xs text-slate-900">Lisinopril</span>
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2.5">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-slate-50 border border-slate-200 sm:border-2 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Pill className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#006948]" />
+                        <span className="font-black text-[11px] sm:text-xs text-slate-900">Lisinopril</span>
                       </div>
-                      <span className="text-[11px] font-bold text-slate-600">10mg / daily</span>
+                      <span className="text-[10px] sm:text-[11px] font-bold text-slate-600">10mg / daily</span>
                     </div>
 
-                    <div className="p-2.5 rounded-xl bg-slate-50 border-2 border-slate-200 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Pill className="w-4 h-4 text-[#006948]" />
-                        <span className="font-black text-xs text-slate-900">Metformin</span>
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-slate-50 border border-slate-200 sm:border-2 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Pill className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#006948]" />
+                        <span className="font-black text-[11px] sm:text-xs text-slate-900">Metformin</span>
                       </div>
-                      <span className="text-[11px] font-bold text-slate-600">500mg / BID</span>
+                      <span className="text-[10px] sm:text-[11px] font-bold text-slate-600">500mg / BID</span>
                     </div>
                   </div>
                 </div>
@@ -548,8 +557,8 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
             </div>
 
             {/* Bottom Step Indicator */}
-            <div className="text-center z-20">
-              <p className="text-xs font-black text-[#004d34]">
+            <div className="text-center z-20 pb-14 sm:pb-0">
+              <p className="text-[11px] sm:text-xs font-black text-[#004d34]">
                 Scroll down to see the AI Multi-Agent reasoning engine in Step 4 →
               </p>
             </div>
@@ -559,63 +568,63 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           {/* STAGE 4: AI AGENT REASONING ENGINE (60% - 80%)                 */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center max-w-5xl mx-auto px-4 py-6 transition-all duration-300 pointer-events-none"
+            className="absolute inset-0 flex flex-col items-center justify-center max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6 transition-all duration-300 pointer-events-none"
             style={getStageTransform(4)}
           >
-            <div className="w-full max-w-3xl mx-auto pointer-events-auto z-20">
+            <div className="w-full max-w-3xl mx-auto pointer-events-auto z-20 pb-12 sm:pb-0">
               {/* Header */}
-              <div className="text-center mb-6">
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-100 text-xs font-black uppercase text-[#003824] border-2 border-emerald-400 mb-2 shadow-xs">
-                  <Layers className="w-4 h-4 text-[#006948]" />
+              <div className="text-center mb-3 sm:mb-6">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-emerald-100 text-[10px] sm:text-xs font-black uppercase text-[#003824] border-2 border-emerald-400 mb-1.5 sm:mb-2 shadow-xs">
+                  <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#006948]" />
                   Step 4: AI Multi-Agent Reasoning Pipeline
                 </span>
-                <h2 className="text-3xl sm:text-4xl font-black text-[#002f1f] tracking-tight">
+                <h2 className="text-2xl sm:text-4xl font-black text-[#002f1f] tracking-tight leading-tight">
                   Autonomous Clinical Verification
                 </h2>
-                <p className="text-xs sm:text-sm font-bold text-slate-800 mt-1">
+                <p className="text-[11px] sm:text-sm font-bold text-slate-800 mt-0.5 sm:mt-1">
                   Watch NutriAgent's clinical models analyze nutrient ratios, contraindications, and patient vitals in real time.
                 </p>
               </div>
 
               {/* Multi-Agent Reasoning Card */}
-              <div className="bg-white/95 backdrop-blur-2xl rounded-3xl p-6 sm:p-7 shadow-[0_25px_60px_-10px_rgba(0,77,52,0.22)] border-2 border-emerald-300">
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+              <div className="bg-white/95 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 shadow-[0_25px_60px_-10px_rgba(0,77,52,0.22)] border-2 border-emerald-300">
+                <div className="flex items-center justify-between mb-2.5 sm:mb-4 pb-2 sm:pb-3 border-b border-slate-200">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-[#006948]" />
-                    <h4 className="text-base font-black text-slate-900">Clinical Verification Pipeline</h4>
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
+                    <h4 className="text-sm sm:text-base font-black text-slate-900">Clinical Verification Pipeline</h4>
                   </div>
-                  <span className="text-xs font-black text-[#004d34] bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
+                  <span className="text-[10px] sm:text-xs font-black text-[#004d34] bg-emerald-100 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-emerald-300">
                     Running Multi-Agent Synthesis
                   </span>
                 </div>
 
                 {/* Timeline Checklist */}
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {timelineSteps.map((step, idx) => {
                     const isCompleted = agentTimelineProgress >= step.threshold;
                     return (
                       <div
                         key={idx}
-                        className={`p-3 rounded-2xl border-2 transition-all flex items-center justify-between ${
+                        className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl border-2 transition-all flex items-center justify-between ${
                           isCompleted
                             ? 'bg-emerald-50/90 border-emerald-400 text-[#003824]'
                             : 'bg-slate-50/80 border-slate-200 text-slate-500'
                         }`}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                           <div
-                            className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs ${
+                            className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl flex items-center justify-center font-black text-[10px] sm:text-xs shrink-0 ${
                               isCompleted ? 'bg-[#006948] text-white shadow-xs' : 'bg-slate-200 text-slate-600'
                             }`}
                           >
-                            {isCompleted ? <Check className="w-4 h-4" /> : idx + 1}
+                            {isCompleted ? <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : idx + 1}
                           </div>
-                          <span className={`text-xs font-black ${isCompleted ? 'text-slate-900' : 'text-slate-500'}`}>
+                          <span className={`text-[11px] sm:text-xs font-black truncate sm:whitespace-normal ${isCompleted ? 'text-slate-900' : 'text-slate-500'}`}>
                             {step.label}
                           </span>
                         </div>
                         {isCompleted && (
-                          <span className="text-[10px] font-mono font-black text-[#004d34] bg-emerald-200/80 px-2 py-0.5 rounded-full shrink-0">
+                          <span className="text-[9px] sm:text-[10px] font-mono font-black text-[#004d34] bg-emerald-200/80 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0 ml-2">
                             VERIFIED
                           </span>
                         )}
@@ -631,22 +640,22 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
           {/* STAGE 5: FINAL SLIDE — LOGIN / CREATE ACCOUNT                 */}
           {/* ============================================================== */}
           <div
-            className="absolute inset-0 flex items-center justify-center max-w-6xl mx-auto px-4 py-4 pointer-events-auto z-30 transition-all duration-300"
+            className="absolute inset-0 flex items-center justify-center max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-4 pointer-events-auto z-30 transition-all duration-300"
             style={getStageTransform(5)}
           >
             {/* Scrollable Container so everything fits on any screen height */}
-            <div className="w-full max-h-[92vh] overflow-y-auto modal-scroll pr-1 pb-6">
+            <div className="w-full max-h-[88vh] sm:max-h-[92vh] overflow-y-auto modal-scroll px-1 pb-24 sm:pb-8">
               
               {/* Header */}
-              <div className="text-center mb-6">
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 text-xs sm:text-sm font-black uppercase text-[#003824] border-2 border-emerald-400 mb-2 shadow-xs">
-                  <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948]" />
+              <div className="text-center mb-3 sm:mb-6">
+                <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-4 sm:py-2 rounded-full bg-emerald-100 text-[10px] sm:text-sm font-black uppercase text-[#003824] border-2 border-emerald-400 mb-1.5 sm:mb-2 shadow-xs">
+                  <ShieldCheck className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#006948]" />
                   Final Step: Get Started with NutriAgent
                 </span>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#002f1f] tracking-tight leading-[1.1] mb-2">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#002f1f] tracking-tight leading-[1.1] mb-1 sm:mb-2">
                   Personalize Your Nutrition Intelligence
                 </h2>
-                <p className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-slate-800 mt-2 max-w-2xl mx-auto">
+                <p className="text-xs sm:text-base md:text-lg lg:text-xl font-bold text-slate-800 mt-1 max-w-2xl mx-auto">
                   Log in or create your account to unlock continuous clinical food decisions and health profile tracking.
                 </p>
               </div>
@@ -654,31 +663,31 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
               {/* Centered NutriAgent Login / Create Account Card */}
               <div className="max-w-lg sm:max-w-xl md:max-w-2xl w-full mx-auto">
                 <div
-                  className="bg-white/95 backdrop-blur-2xl rounded-[32px] sm:rounded-[36px] p-7 sm:p-10 shadow-[0_30px_70px_-10px_rgba(0,77,52,0.25)] border-2 border-emerald-300 flex flex-col justify-between"
+                  className="bg-white/95 backdrop-blur-2xl rounded-2xl sm:rounded-[36px] p-4 sm:p-10 shadow-[0_30px_70px_-10px_rgba(0,77,52,0.25)] border-2 border-emerald-300 flex flex-col justify-between"
                   style={{
                     transform: `perspective(1000px) rotateY(${mouseOffset.x * 2}deg) rotateX(${mouseOffset.y * 2}deg)`,
                   }}
                 >
                   {/* Brand Header: Logo + NutriAgent title + Tagline */}
                   <div>
-                    <div className="flex items-center gap-4 mb-4 pb-4 border-b border-emerald-200">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-100 border-2 border-emerald-400 flex items-center justify-center shadow-xs shrink-0">
-                        <Leaf className="w-7 h-7 sm:w-8 sm:h-8 text-[#006948]" />
+                    <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-emerald-200">
+                      <div className="w-11 h-11 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-emerald-100 border-2 border-emerald-400 flex items-center justify-center shadow-xs shrink-0">
+                        <Leaf className="w-5 h-5 sm:w-8 sm:h-8 text-[#006948]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#004d34] tracking-tight">
+                          <h3 className="text-xl sm:text-3xl md:text-4xl font-black text-[#004d34] tracking-tight">
                             NutriAgent
                           </h3>
-                          <div className="flex items-center gap-1.5 text-xs sm:text-sm font-black text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-300">
-                            <Lock className="w-3.5 h-3.5 text-[#006948]" />
+                          <div className="flex items-center gap-1 text-[11px] sm:text-sm font-black text-slate-700 bg-slate-100 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-slate-300">
+                            <Lock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#006948]" />
                             <span>HIPAA</span>
                           </div>
                         </div>
-                        <p className="text-sm sm:text-base font-black text-[#059669]">
+                        <p className="text-xs sm:text-base font-black text-[#059669]">
                           Welcome to NutriAgent
                         </p>
-                        <p className="text-xs sm:text-sm font-bold text-slate-700">
+                        <p className="text-[11px] sm:text-sm font-bold text-slate-700">
                           Eat Smart. Live Better.
                         </p>
                       </div>
@@ -686,33 +695,33 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
 
                     {/* Authenticated banner if already signed in, but allow switching to login / signup anytime! */}
                     {isAuthenticated && !forceAuthForm ? (
-                      <div className="space-y-4 my-3">
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-xs sm:text-sm font-black uppercase text-[#004d34] border-2 border-emerald-300 shadow-xs">
-                          <Check className="w-4 h-4 text-[#006948]" />
+                      <div className="space-y-3 sm:space-y-4 my-2 sm:my-3">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-emerald-100 text-[10px] sm:text-sm font-black uppercase text-[#004d34] border-2 border-emerald-300 shadow-xs">
+                          <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#006948]" />
                           Patient Session Active
                         </div>
-                        <h4 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                        <h4 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
                           Signed In: {userName || 'Eleanor Vance'}
                         </h4>
-                        <p className="text-sm sm:text-base font-medium text-slate-700 leading-relaxed">
+                        <p className="text-xs sm:text-base font-medium text-slate-700 leading-relaxed">
                           Your medical records and biometric profiles are securely connected to the clinical engine.
                         </p>
 
-                        <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-2.5">
-                          <div className="flex justify-between text-sm sm:text-base">
+                        <div className="p-3 sm:p-5 rounded-xl sm:rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-2 sm:space-y-2.5">
+                          <div className="flex justify-between text-xs sm:text-base">
                             <span className="text-slate-600 font-bold">Record Number:</span>
                             <span className="font-black text-slate-900 font-mono">#NTR-94281</span>
                           </div>
-                          <div className="flex justify-between text-sm sm:text-base">
+                          <div className="flex justify-between text-xs sm:text-base">
                             <span className="text-slate-600 font-bold">Attending Physician:</span>
                             <span className="font-black text-[#004d34]">Dr. Sarah Jenkins, MD</span>
                           </div>
                         </div>
 
-                        <div className="space-y-3 pt-2">
+                        <div className="space-y-2.5 pt-2">
                           <button
                             onClick={onOpenPortal}
-                            className="w-full h-13 sm:h-14 rounded-2xl bg-[#006948] hover:bg-[#005238] active:scale-98 text-white font-black text-sm sm:text-base shadow-md shadow-emerald-900/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                            className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-[#006948] hover:bg-[#005238] active:scale-98 text-white font-black text-sm sm:text-base shadow-md shadow-emerald-900/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                           >
                             <User className="w-5 h-5" />
                             <span>Open Patient Portal</span>
@@ -720,7 +729,7 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
                           <button
                             type="button"
                             onClick={() => setForceAuthForm(true)}
-                            className="w-full h-12 sm:h-13 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs sm:text-sm border-2 border-slate-300 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                            className="w-full h-11 sm:h-13 rounded-xl sm:rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs sm:text-sm border-2 border-slate-300 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                           >
                             <UserPlus className="w-4 h-4 text-[#006948]" />
                             <span>Sign In With Different Account / Create Account</span>
@@ -731,14 +740,14 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
                       /* Interactive Login / Create Account Form */
                       <div>
                         {/* Mode Toggle Tabs: Login vs Create Account */}
-                        <div className="flex p-1.5 rounded-2xl bg-slate-100 border-2 border-slate-200 mb-5 text-sm sm:text-base font-bold">
+                        <div className="flex p-1 sm:p-1.5 rounded-xl sm:rounded-2xl bg-slate-100 border-2 border-slate-200 mb-4 sm:mb-5 text-xs sm:text-base font-bold">
                           <button
                             type="button"
                             onClick={() => {
                               setAuthMode('login');
                               setAuthError('');
                             }}
-                            className={`flex-1 py-3 sm:py-3.5 rounded-xl transition-all cursor-pointer text-center text-sm sm:text-base ${
+                            className={`flex-1 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl transition-all cursor-pointer text-center text-xs sm:text-base ${
                               authMode === 'login'
                                 ? 'bg-[#006948] text-white shadow-md font-black'
                                 : 'text-slate-700 hover:text-slate-900 font-extrabold'
@@ -752,7 +761,7 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
                               setAuthMode('register');
                               setAuthError('');
                             }}
-                            className={`flex-1 py-3 sm:py-3.5 rounded-xl transition-all cursor-pointer text-center text-sm sm:text-base ${
+                            className={`flex-1 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl transition-all cursor-pointer text-center text-xs sm:text-base ${
                               authMode === 'register'
                                 ? 'bg-[#006948] text-white shadow-md font-black'
                                 : 'text-slate-700 hover:text-slate-900 font-extrabold'
@@ -763,67 +772,67 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
                         </div>
 
                         {/* Clean Standard Login / Register Form */}
-                        <form onSubmit={handleAuthSubmit} className="space-y-4">
+                        <form onSubmit={handleAuthSubmit} className="space-y-3 sm:space-y-4">
                           {authMode === 'register' && (
                             <div>
-                              <label className="block text-xs sm:text-sm font-black text-[#004d34] uppercase tracking-wider mb-1.5">
+                              <label className="block text-[11px] sm:text-sm font-black text-[#004d34] uppercase tracking-wider mb-1 sm:mb-1.5">
                                 Full Name
                               </label>
                               <div className="relative">
-                                <User className="w-5 h-5 text-[#006948] absolute left-3.5 top-3.5 sm:top-4" />
+                                <User className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948] absolute left-3.5 top-3 sm:top-4" />
                                 <input
                                   type="text"
                                   value={authFullName}
                                   onChange={(e) => setAuthFullName(e.target.value)}
                                   placeholder="e.g. Eleanor Vance"
-                                  className="w-full h-12 sm:h-13 pl-11 pr-4 rounded-2xl border-2 border-slate-300 focus:border-[#006948] bg-white text-sm sm:text-base font-bold text-slate-900 placeholder:text-slate-400 outline-none transition-all shadow-inner"
+                                  className="w-full h-11 sm:h-13 pl-10 sm:pl-11 pr-4 rounded-xl sm:rounded-2xl border-2 border-slate-300 focus:border-[#006948] bg-white text-xs sm:text-base font-bold text-slate-900 placeholder:text-slate-400 outline-none transition-all shadow-inner"
                                 />
                               </div>
                             </div>
                           )}
 
                           <div>
-                            <label className="block text-xs sm:text-sm font-black text-[#004d34] uppercase tracking-wider mb-1.5">
+                            <label className="block text-[11px] sm:text-sm font-black text-[#004d34] uppercase tracking-wider mb-1 sm:mb-1.5">
                               Email or Phone Number
                             </label>
                             <div className="relative">
-                              <Mail className="w-5 h-5 text-[#006948] absolute left-3.5 top-3.5 sm:top-4" />
+                              <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948] absolute left-3.5 top-3 sm:top-4" />
                               <input
                                 type="text"
                                 value={authIdentifier}
                                 onChange={(e) => setAuthIdentifier(e.target.value)}
                                 placeholder="Enter email or phone number"
-                                className="w-full h-12 sm:h-13 pl-11 pr-4 rounded-2xl border-2 border-slate-300 focus:border-[#006948] bg-white text-sm sm:text-base font-bold text-slate-900 placeholder:text-slate-400 outline-none transition-all shadow-inner"
+                                className="w-full h-11 sm:h-13 pl-10 sm:pl-11 pr-4 rounded-xl sm:rounded-2xl border-2 border-slate-300 focus:border-[#006948] bg-white text-xs sm:text-base font-bold text-slate-900 placeholder:text-slate-400 outline-none transition-all shadow-inner"
                               />
                             </div>
                           </div>
 
                           <div>
-                            <label className="block text-xs sm:text-sm font-black text-[#004d34] uppercase tracking-wider mb-1.5">
+                            <label className="block text-[11px] sm:text-sm font-black text-[#004d34] uppercase tracking-wider mb-1 sm:mb-1.5">
                               Password
                             </label>
                             <div className="relative">
-                              <Key className="w-5 h-5 text-[#006948] absolute left-3.5 top-3.5 sm:top-4" />
+                              <Key className="w-4 h-4 sm:w-5 sm:h-5 text-[#006948] absolute left-3.5 top-3 sm:top-4" />
                               <input
                                 type="password"
                                 value={authPassword}
                                 onChange={(e) => setAuthPassword(e.target.value)}
                                 placeholder="••••••••"
-                                className="w-full h-12 sm:h-13 pl-11 pr-4 rounded-2xl border-2 border-slate-300 focus:border-[#006948] bg-white text-sm sm:text-base font-bold text-slate-900 placeholder:text-slate-400 outline-none transition-all shadow-inner"
+                                className="w-full h-11 sm:h-13 pl-10 sm:pl-11 pr-4 rounded-xl sm:rounded-2xl border-2 border-slate-300 focus:border-[#006948] bg-white text-xs sm:text-base font-bold text-slate-900 placeholder:text-slate-400 outline-none transition-all shadow-inner"
                               />
                             </div>
                           </div>
 
                           {authError && (
-                            <div className="p-3 rounded-2xl bg-red-50 text-red-900 text-xs sm:text-sm font-bold border-2 border-red-300 flex items-center gap-2.5">
-                              <AlertTriangle className="w-5 h-5 shrink-0 text-red-600" />
+                            <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-red-50 text-red-900 text-xs sm:text-sm font-bold border-2 border-red-300 flex items-center gap-2">
+                              <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-red-600" />
                               <span>{authError}</span>
                             </div>
                           )}
 
                           {authSuccess && (
-                            <div className="p-3 rounded-2xl bg-emerald-50 text-[#004d34] text-xs sm:text-sm font-black border-2 border-emerald-300 flex items-center gap-2.5">
-                              <Check className="w-5 h-5 shrink-0 text-[#006948]" />
+                            <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-emerald-50 text-[#004d34] text-xs sm:text-sm font-black border-2 border-emerald-300 flex items-center gap-2">
+                              <Check className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-[#006948]" />
                               <span>{authSuccess}</span>
                             </div>
                           )}
@@ -831,18 +840,18 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
                           <button
                             type="submit"
                             disabled={authLoading}
-                            className="w-full h-13 sm:h-14 mt-2 rounded-2xl bg-[#006948] hover:bg-[#005238] active:scale-98 text-white font-black text-sm sm:text-base shadow-lg shadow-emerald-950/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                            className="w-full h-12 sm:h-14 mt-1 sm:mt-2 rounded-xl sm:rounded-2xl bg-[#006948] hover:bg-[#005238] active:scale-98 text-white font-black text-xs sm:text-base shadow-lg shadow-emerald-950/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                           >
                             {authLoading ? (
-                              <Loader2 className="w-5 h-5 animate-spin text-white" />
+                              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-white" />
                             ) : authMode === 'login' ? (
                               <>
                                 <span>Login to NutriAgent</span>
-                                <ArrowRight className="w-5 h-5" />
+                                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                               </>
                             ) : (
                               <>
-                                <UserPlus className="w-5 h-5" />
+                                <UserPlus className="w-4 h-4 sm:w-5 sm:h-5" />
                                 <span>Create Account & Start</span>
                               </>
                             )}
@@ -863,8 +872,8 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
                   </div>
 
                   {/* Sub-Footer note */}
-                  <p className="text-xs sm:text-sm font-bold text-slate-600 text-center mt-4 flex items-center justify-center gap-2 pt-3 border-t border-slate-100">
-                    <ShieldCheck className="w-4 h-4 text-[#006948]" />
+                  <p className="text-[11px] sm:text-sm font-bold text-slate-600 text-center mt-3 sm:mt-4 flex items-center justify-center gap-1.5 sm:gap-2 pt-2 sm:pt-3 border-t border-slate-100">
+                    <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#006948]" />
                     <span>Healthy choices. Powered by AI.</span>
                   </p>
                 </div>
@@ -874,18 +883,18 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
         </div>
       </div>
 
-      {/* 4. Bottom Floating Stage Progress Tracker */}
-      <div className="fixed bottom-6 inset-x-0 mx-auto w-fit z-40 px-4 py-2 rounded-full bg-white/95 backdrop-blur-xl border-2 border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.12)] flex items-center gap-3 pointer-events-auto">
+      {/* 4. Bottom Floating Stage Progress Tracker — Compact on mobile */}
+      <div className="fixed bottom-3 sm:bottom-6 inset-x-0 mx-auto w-fit z-40 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/95 backdrop-blur-xl border-2 border-slate-200 shadow-[0_4px_20px_rgba(0,0,0,0.12)] flex items-center gap-2 sm:gap-3 pointer-events-auto">
         <span className="text-[11px] font-black text-[#004d34] uppercase tracking-wider hidden sm:block">
           Step 0{currentStage} / 05
         </span>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1 sm:gap-1.5">
           {[1, 2, 3, 4, 5].map((i) => (
             <button
               key={i}
               onClick={() => jumpToStage(i)}
-              className={`h-2.5 rounded-full transition-all cursor-pointer ${
-                currentStage === i ? 'w-7 bg-[#006948]' : 'w-2.5 bg-slate-300 hover:bg-slate-400'
+              className={`h-2 sm:h-2.5 rounded-full transition-all cursor-pointer ${
+                currentStage === i ? 'w-6 sm:w-7 bg-[#006948]' : 'w-2 sm:w-2.5 bg-slate-300 hover:bg-slate-400'
               }`}
               title={`Jump to Stage ${i}`}
             />
@@ -896,7 +905,7 @@ export const ScrollJourney: React.FC<ScrollJourneyProps> = ({
             if (currentStage < 5) jumpToStage(currentStage + 1);
             else jumpToStage(1);
           }}
-          className="text-xs font-black text-[#006948] hover:text-[#005238] flex items-center gap-1 cursor-pointer"
+          className="text-xs font-black text-[#006948] hover:text-[#005238] flex items-center gap-1 cursor-pointer ml-1"
         >
           <span>{currentStage < 5 ? 'Next' : 'Restart'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
